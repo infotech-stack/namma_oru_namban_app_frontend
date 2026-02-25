@@ -10,13 +10,13 @@ class LoginController extends GetxController {
   void onLogin() {
     final mobile = mobileController.text.trim();
 
-    if (mobile.isEmpty) {
-      AppSnackbar.error("enter_register_number");
-      return;
-    }
+    // if (mobile.isEmpty) {
+    //   AppSnackbar.error("enter_register_number");
+    //   return;
+    // }
 
     // TODO: API call to send OTP
-    Get.toNamed(Routes.home, arguments: {'mobile': mobile});
+    Get.offAllNamed(Routes.wrapper, arguments: {'mobile': mobile});
     AppSnackbar.success("login_success");
   }
 

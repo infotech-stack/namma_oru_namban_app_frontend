@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/localization/app_translations.dart';
+import 'package:userapp/core/localization/language_controller.dart';
 import 'package:userapp/core/route/app_pages.dart';
 import 'package:userapp/core/route/app_routes.dart';
 import 'package:userapp/core/theme/app_colors.dart';
 import 'package:userapp/core/theme/theme_binding.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final LanguageController langController = Get.put(
+    LanguageController(),
+    permanent: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +24,12 @@ class MyApp extends StatelessWidget {
         initialBinding: ThemeBinding(),
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         translations: AppTranslations(),
-        locale: const Locale('en'),
+        locale: langController.currentLocale.value,
         fallbackLocale: const Locale('en'),
-        initialRoute: Routes.home,
+        initialRoute: Routes.splash,
         getPages: AppPages.pages,
       ),
     );

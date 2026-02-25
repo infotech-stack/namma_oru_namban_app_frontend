@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/utils/commons/snackbar/app_snackbar.dart';
 
 class OtpController extends GetxController {
   final List<TextEditingController> otpControllers = List.generate(
@@ -41,21 +42,18 @@ class OtpController extends GetxController {
 
   void onResend() {
     // TODO: Resend OTP API call
-    Get.snackbar(
+    /*  Get.snackbar(
       'OTP',
       'Code resent successfully',
       snackPosition: SnackPosition.BOTTOM,
-    );
+    );*/
+    AppSnackbar.success('Code resent successfully');
   }
 
   void onLogin() {
     final otp = otpControllers.map((c) => c.text.trim()).join();
     if (otp.length < 6) {
-      Get.snackbar(
-        'error'.tr,
-        'fill_fields'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error('fill_fields'.tr);
       return;
     }
     // TODO: Verify OTP API call

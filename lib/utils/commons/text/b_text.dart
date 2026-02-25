@@ -34,7 +34,7 @@ class BText extends StatelessWidget {
       style: TextStyle(
         fontSize: fontSize?.sp ?? 14.sp,
         fontWeight: fontWeight ?? FontWeight.w400,
-        color: color ?? Colors.black,
+        color: color ?? Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

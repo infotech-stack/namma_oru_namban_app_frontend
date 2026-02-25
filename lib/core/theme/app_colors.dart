@@ -10,6 +10,20 @@ class AppTheme {
   static const Color greyMedium = Color(0xFF9E9E9E);
   static const Color greyDark = Color(0xFF616161);
 
+  // ================= RED COLORS =================
+
+  // Light Mode
+  static const Color redLight = Color(0xFFFFEBEE); // soft red bg
+  static const Color red = Color(0xFFE53935); // primary red
+  static const Color redDark = Color(0xFFB71C1C); // dark red
+
+  // ================= GREEN COLORS =================
+
+  // Light Mode
+  static const Color greenLight = Color(0xFFE8F5E9); // soft green bg
+  static const Color green = Color(0xFF43A047); // primary green
+  static const Color greenDark = Color(0xFF1B5E20); // dark green
+
   // ================= LIGHT COLORS =================
   static const Color lightBackground = Colors.white;
   static const Color lightText = Colors.black;
@@ -21,6 +35,7 @@ class AppTheme {
   static const Color darkText = Colors.white;
   static const Color darkCard = Color(0xFF1E1E1E);
   static const Color darkBorder = Color(0xFF2C2C2C);
+  static const Color darkSecondaryColor = Color(0xFF1E1E1E);
 
   // ================= LIGHT THEME =================
   static ThemeData lightTheme = ThemeData(
@@ -43,7 +58,17 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
     ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: lightText),
+      bodyMedium: TextStyle(color: lightText),
+      bodySmall: TextStyle(color: greyDark),
 
+      titleLarge: TextStyle(color: lightText, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(color: lightText),
+      titleSmall: TextStyle(color: lightText),
+
+      labelLarge: TextStyle(color: lightText),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
@@ -79,7 +104,7 @@ class AppTheme {
 
     colorScheme: const ColorScheme.dark(
       primary: primaryColor,
-      secondary: secondaryColor,
+      secondary: darkSecondaryColor,
       surface: darkCard,
       onPrimary: Colors.white,
       onSecondary: Colors.black,
@@ -92,7 +117,17 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
     ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: darkText),
+      bodyMedium: TextStyle(color: darkText),
+      bodySmall: TextStyle(color: greyMedium),
 
+      titleLarge: TextStyle(color: darkText, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(color: darkText),
+      titleSmall: TextStyle(color: darkText),
+
+      labelLarge: TextStyle(color: darkText),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,

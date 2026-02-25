@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
 import 'package:userapp/features/auth/login/presentation/controller/login_scontroller.dart';
 import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
@@ -73,12 +74,15 @@ class LoginScreen extends GetView<LoginController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Gap(20.h),
-          Image.asset(AppAssetsConstants.loginTopImage),
+          SizedBox(
+            height: 250.h,
+            child: Image.asset(AppAssetsConstants.loginTopImage),
+          ),
           Text(
             'book_heavy_vehicles'.tr,
             style: TextStyle(
               color: theme.colorScheme.secondary,
-              fontSize: 26.sp,
+              fontSize: responsiveFont(en: 22.sp, ta: 18.sp),
               fontWeight: FontWeight.w700,
               height: 1.25,
               letterSpacing: -0.3,
@@ -96,7 +100,7 @@ class LoginScreen extends GetView<LoginController> {
       children: [
         BText(
           text: 'welcome_back',
-          fontSize: 20.sp,
+          fontSize: responsiveFont(en: 18.sp, ta: 16.sp),
           fontWeight: FontWeight.w700,
           isLocalized: true,
         ),
@@ -133,9 +137,9 @@ class LoginScreen extends GetView<LoginController> {
     return BButton(
       text: "login_btn",
       isLocalized: true,
-      textColor: theme.secondaryHeaderColor,
+      //textColor: theme.secondaryHeaderColor,
       onTap: controller.onLogin,
-      suffixIcon: Icon(Icons.arrow_forward, color: theme.secondaryHeaderColor),
+      suffixIcon: Icon(Icons.arrow_forward, color: theme.colorScheme.secondary),
     );
   }
 
@@ -146,7 +150,7 @@ class LoginScreen extends GetView<LoginController> {
         children: [
           BText(
             text: 'no_account',
-            fontSize: 13.sp,
+            fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
             color: theme.dividerColor,
             isLocalized: true,
           ),
@@ -154,7 +158,7 @@ class LoginScreen extends GetView<LoginController> {
             onTap: controller.onCreateAccount,
             child: BText(
               text: 'create_account_link',
-              fontSize: 13.sp,
+              fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
               color: Get.theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
               isLocalized: true,

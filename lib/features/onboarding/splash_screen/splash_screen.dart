@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:async';
-
+import 'package:animate_do/animate_do.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/utils/constants/app_images.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -24,14 +27,23 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
     );
+
+    _positionAnimation = Tween<double>(
+      begin: 300, // start from bottom
+      end: 0, // move to center
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.3, // small car
+      end: 1.0, // big car
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
 
-    // Navigate after animation
-    Timer(const Duration(seconds: 3), () {
-      Get.offAllNamed(Routes.signUpScreen);
+    Timer(const Duration(seconds: 4), () {
+      Get.offAllNamed(Routes.loginScreen);
     });
   }
 
@@ -43,51 +55,93 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // Bottom to Top animation
-    _positionAnimation = Tween<double>(
-      begin: screenHeight, // Start from bottom
-      end: screenHeight * 0.25, // Stop near top
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
-    // Small to Big scale animation
-    _scaleAnimation = Tween<double>(
-      begin: 0.3, // Small
-      end: 1.5, // Big
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          // App Name
-          Center(
-            child: Text(
-              "Vehicle Booking",
-              style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF8F9FF), Color(0xFFEDE7FF), Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              /// 🚗 Bottom → Center + Scale Animation
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(0, _positionAnimation.value),
+                    child: Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: SvgPicture.asset(
+                        AppAssetsConstants.appLogo2,
+                        width: 150.w,
+                      ),
+                    ),
+                  );
+                },
+              ),
 
-          // 🚗 Animated Car
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Positioned(
-                top: _positionAnimation.value,
-                left: MediaQuery.of(context).size.width / 2 - 50.w,
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Icon(
-                    Icons.directions_car,
-                    size: 100.w,
-                    color: Colors.blue,
+              SizedBox(height: 60.h),
+
+              FadeInUp(
+                delay: const Duration(milliseconds: 800),
+                child: GradientText(
+                  "UNGA OORU",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 6,
+                    fontFamily: "PlayfairDisplay",
+                  ),
+                  colors: const [Color(0xFF6A00FF), Color(0xFF9D4EDD)],
+                ),
+              ),
+
+              SizedBox(height: 12.h),
+
+              BounceInDown(
+                delay: const Duration(milliseconds: 1500),
+                child: GradientText(
+                  "NANBAN",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42.sp,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 8,
+                    fontFamily: "PlayfairDisplay",
+                  ),
+                  colors: const [
+                    Color(0xFF4B0082),
+                    Color(0xFF7B2CBF),
+                    Color(0xFF9D4EDD),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 40.h),
+
+              FadeIn(
+                delay: const Duration(milliseconds: 2200),
+                child: Text(
+                  "Your Trusted Local Ride Partner",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.black54,
+                    letterSpacing: 1.5,
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

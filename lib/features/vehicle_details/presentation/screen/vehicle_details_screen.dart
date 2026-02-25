@@ -3,12 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/localization/language_controller.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
+import 'package:userapp/features/vehicle_details/presentation/controller/vehicle_detailse_controller.dart';
 import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
-import '../controller/vehicle_detailse_controller.dart';
 
 class VehicleDetailScreen extends GetView<VehicleDetailController> {
-  const VehicleDetailScreen({super.key});
+  VehicleDetailScreen({super.key});
+
+  final langController = Get.find<LanguageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,9 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
               pinned: true,
               delegate: _TopSectionDelegate(
                 child: _buildTopSection(theme),
-                maxHeight: 235.h, // ✅ full height of purple + overlapping image
+                maxHeight: (Get.locale?.languageCode ?? 'en') == 'en'
+                    ? 235.h
+                    : 250.h, // ✅ full height of purple + overlapping image
               ),
             ),
 
@@ -103,23 +109,44 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text(
-                      controller.fare,
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.primary,
+                  Row(
+                    children: [
+                      /// 🌍 Language Toggle
+                      Obx(
+                        () => IconButton(
+                          // splashRadius: 10.r,
+                          constraints: const BoxConstraints(),
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            langController.currentLocale.value.languageCode ==
+                                    'en'
+                                ? Icons.language
+                                : Icons.translate,
+                            color: theme.colorScheme.secondary,
+                            size: 22.sp,
+                          ),
+                          onPressed: () => langController.toggleLanguage(),
+                        ),
                       ),
-                    ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondary,
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Text(
+                          controller.fare,
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -225,7 +252,7 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
             theme,
             Icons.inventory_2_outlined,
             'capacity',
-            '${controller.capacity} ${'ton'.tr}',
+            '${controller.capacity}',
           ),
         ),
         Gap(10.w),
@@ -281,16 +308,18 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
           Gap(6.h),
           BText(
             text: labelKey,
-            fontSize: 10.sp,
+            fontSize: responsiveFont(en: 10.sp, ta: 8.sp),
             color: theme.dividerColor,
             isLocalized: true,
           ),
           Gap(3.h),
           BText(
             text: value,
-            fontSize: 13.sp,
+            fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
             fontWeight: FontWeight.w700,
             isLocalized: false,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -319,7 +348,7 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
         children: [
           BText(
             text: 'vehicle_specifications',
-            fontSize: 15.sp,
+            fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
             fontWeight: FontWeight.w700,
             isLocalized: true,
           ),
@@ -384,7 +413,7 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
       child: BButton(
         text: 'book_now',
         isLocalized: true,
-        textColor: theme.secondaryHeaderColor,
+        // textColor: theme.secondaryHeaderColor,
         onTap: controller.onBookNow,
         suffixIcon: Icon(
           Icons.arrow_forward,
@@ -419,5 +448,7 @@ class _TopSectionDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_TopSectionDelegate oldDelegate) => false;
+  bool shouldRebuild(_TopSectionDelegate oldDelegate) {
+    return oldDelegate.maxHeight != maxHeight || oldDelegate.child != child;
+  }
 }

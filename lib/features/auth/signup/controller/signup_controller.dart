@@ -45,7 +45,7 @@ class SignUpController extends GetxController {
   }
 
   void onLogin() {
-    Get.toNamed(Routes.home);
+    Get.toNamed(Routes.loginScreen);
   }
 
   @override
