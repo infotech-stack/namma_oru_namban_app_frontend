@@ -42,6 +42,18 @@ class VehicleDetailController extends GetxController {
   }
 
   void onBookNow() {
-    Get.toNamed(Routes.home);
+    Get.toNamed(
+      Routes.bookingDetails,
+      arguments: {
+        // sends all vehicle data
+        'name': name,
+        'rating': rating,
+        'capacity': capacity,
+        'fare': fare,
+        'eta': eta,
+        'distance': distance,
+        'imagePath': imagePath ?? '',
+      },
+    );
   }
 }

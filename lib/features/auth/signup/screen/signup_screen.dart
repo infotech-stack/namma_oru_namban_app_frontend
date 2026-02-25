@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/features/auth/signup/controller/signup_controller.dart';
 import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
 import 'package:userapp/utils/commons/textfield/b_textfiled.dart';
 import 'package:userapp/utils/constants/app_images.dart';
-import '../controller/signup_controller.dart';
 
 class SignUpScreen extends GetView<SignUpController> {
   const SignUpScreen({super.key});
@@ -67,6 +68,7 @@ class SignUpScreen extends GetView<SignUpController> {
   }
 
   Widget _buildHeader(ThemeData theme) {
+    final isEnglish = (Get.locale?.languageCode ?? 'en') == 'en';
     return Container(
       width: double.infinity,
       color: Get.theme.colorScheme.primary,
@@ -75,13 +77,16 @@ class SignUpScreen extends GetView<SignUpController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Gap(20.h),
-          Image.asset(AppAssetsConstants.loginTopImage),
+          SizedBox(
+            height: 250.h,
+            child: Image.asset(AppAssetsConstants.loginTopImage),
+          ),
           //SizedBox(height: 10.h),
           Text(
             'book_heavy_vehicles'.tr,
             style: TextStyle(
               color: theme.colorScheme.secondary,
-              fontSize: Get.locale?.languageCode == 'en' ? 26.sp : 20.sp,
+              fontSize: isEnglish ? 22.sp : 18.sp,
               fontWeight: FontWeight.w700,
               height: 1.25,
               letterSpacing: -0.3,
@@ -99,7 +104,7 @@ class SignUpScreen extends GetView<SignUpController> {
       children: [
         BText(
           text: 'create_account',
-          fontSize: Get.locale?.languageCode == 'en' ? 20.sp : 16.sp,
+          fontSize: (Get.locale?.languageCode ?? 'en') == 'en' ? 18.sp : 16.sp,
           fontWeight: FontWeight.w700,
           isLocalized: true,
         ),
@@ -144,11 +149,11 @@ class SignUpScreen extends GetView<SignUpController> {
     return BButton(
       text: "get_code",
       isLocalized: true,
-      textColor: theme.secondaryHeaderColor,
+      // textColor: theme.secondaryHeaderColor,
       onTap: () {
         Get.toNamed(Routes.otpScreen);
       },
-      suffixIcon: Icon(Icons.arrow_forward, color: theme.secondaryHeaderColor),
+      suffixIcon: Icon(Icons.arrow_forward, color: theme.colorScheme.secondary),
     );
   }
 
@@ -159,7 +164,7 @@ class SignUpScreen extends GetView<SignUpController> {
         children: [
           BText(
             text: 'already_account',
-            fontSize: Get.locale?.languageCode == 'en' ? 12.sp : 10.sp,
+            fontSize: responsiveFont(en: 12, ta: 10),
             color: theme.dividerColor,
             isLocalized: true,
           ),

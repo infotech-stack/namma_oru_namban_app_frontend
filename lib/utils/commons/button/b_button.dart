@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
 
 class BButton extends StatelessWidget {
   final String text;
@@ -22,6 +23,10 @@ class BButton extends StatelessWidget {
   final double? borderRadius;
   final EdgeInsetsGeometry? padding;
 
+  /// 🔥 NEW
+  final double? fontSize;
+  final FontWeight? fontWeight;
+
   const BButton({
     super.key,
     required this.text,
@@ -38,6 +43,10 @@ class BButton extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.padding,
+
+    /// 🔥 NEW
+    this.fontSize,
+    this.fontWeight,
   });
 
   @override
@@ -47,7 +56,7 @@ class BButton extends StatelessWidget {
     return GestureDetector(
       onTap: isLoading ? null : onTap,
       child: Container(
-        height: height ?? 56.h,
+        height: height ?? 45.h,
         padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
         decoration: BoxDecoration(
           gradient: isOutline
@@ -93,8 +102,9 @@ class BButton extends StatelessWidget {
                       style: TextStyle(
                         color:
                             textColor ?? (isOutline ? primary : Colors.white),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
+
+                        fontSize: fontSize ?? responsiveFont(en: 16, ta: 14),
+                        fontWeight: fontWeight ?? FontWeight.w600,
                       ),
                     ),
                     if (suffixIcon != null) ...[

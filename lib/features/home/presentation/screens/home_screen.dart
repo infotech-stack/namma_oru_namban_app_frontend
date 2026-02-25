@@ -3,10 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/localization/language_controller.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
 import 'package:userapp/features/home/presentation/controller/home_controller.dart';
+import 'package:userapp/utils/commons/button/b_button.dart';
+import 'package:userapp/utils/commons/text/b_text.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+  final langController = Get.find<LanguageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,7 @@ class HomeScreen extends GetView<HomeController> {
                         delegate: SliverChildBuilderDelegate(
                           (_, index) => InkWell(
                             onTap: () {
-                              controller.onBookNow(vehicles[index]);
+                              controller.onvehicleDetails(vehicles[index]);
                             },
                             child: _buildVehicleCard(theme, vehicles[index]),
                           ),
@@ -88,7 +93,6 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavBar(theme),
       ),
     );
   }
@@ -103,6 +107,14 @@ class HomeScreen extends GetView<HomeController> {
           bottomLeft: Radius.circular(30.r),
           bottomRight: Radius.circular(35.r),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.25),
+            blurRadius: 10,
+            spreadRadius: 2,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       padding: EdgeInsets.only(
         top: 35.h,
@@ -117,10 +129,10 @@ class HomeScreen extends GetView<HomeController> {
           Gap(14.h),
           Obx(
             () => Text(
-              'Hello, ${controller.userName.value}',
+              'greeting_user'.trParams({'name': controller.userName.value}),
               style: TextStyle(
                 color: theme.colorScheme.secondary,
-                fontSize: 20.sp,
+                fontSize: responsiveFont(en: 20.sp, ta: 18.sp),
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -153,16 +165,49 @@ class HomeScreen extends GetView<HomeController> {
           ),
         ),
         Container(
-          width: 40.w,
+          padding: EdgeInsets.symmetric(horizontal: 8.w),
           height: 40.w,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
             color: theme.colorScheme.secondary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(30.r),
           ),
-          child: Icon(
-            Icons.notifications_outlined,
-            color: theme.colorScheme.secondary,
-            size: 22.sp,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// 🌍 Language Toggle
+              Obx(
+                () => IconButton(
+                  splashRadius: 20.r,
+                  constraints: const BoxConstraints(),
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    langController.currentLocale.value.languageCode == 'en'
+                        ? Icons.language
+                        : Icons.translate,
+                    color: theme.colorScheme.secondary,
+                    size: 22.sp,
+                  ),
+                  onPressed: () => langController.toggleLanguage(),
+                ),
+              ),
+
+              //SizedBox(width: 6.w),
+
+              /// 🔔 Notification Icon
+              IconButton(
+                splashRadius: 20.r,
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.notifications_outlined,
+                  color: theme.colorScheme.secondary,
+                  size: 22.sp,
+                ),
+                onPressed: () {
+                  // Notification action
+                },
+              ),
+            ],
           ),
         ),
       ],
@@ -193,8 +238,12 @@ class HomeScreen extends GetView<HomeController> {
                 Gap(8.w),
                 Expanded(
                   child: TextField(
+                    cursorColor: theme.secondaryHeaderColor,
                     controller: controller.searchController,
-                    style: TextStyle(fontSize: 14.sp),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: theme.secondaryHeaderColor,
+                    ),
                     decoration: InputDecoration(
                       filled: false,
                       fillColor: Colors.transparent,
@@ -238,16 +287,21 @@ class HomeScreen extends GetView<HomeController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'choose_vehicle'.tr,
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+            Expanded(
+              child: Text(
+                'choose_vehicle'.tr,
+                style: TextStyle(
+                  fontSize: responsiveFont(en: 16.sp, ta: 12.sp),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
             GestureDetector(
               onTap: controller.onSeeAll,
               child: Text(
                 'see_all'.tr,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
                   color: theme.colorScheme.primary,
                   fontWeight: FontWeight.w600,
                 ),
@@ -256,61 +310,111 @@ class HomeScreen extends GetView<HomeController> {
           ],
         ),
         Gap(14.h),
-        SizedBox(
-          height: 90.h,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: controller.categories.length,
-            separatorBuilder: (_, __) => Gap(12.w),
-            itemBuilder: (_, index) {
-              final cat = controller.categories[index];
-              return GestureDetector(
-                onTap: () => controller.selectCategory(index),
-                child: Obx(() {
-                  final isSelected =
-                      controller.selectedCategoryIndex.value == index;
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedContainer(
+        Container(
+          height: 130.h,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondary,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: theme.brightness == Brightness.dark
+                    ? Colors.black.withValues(alpha: 0.35)
+                    : Colors.black.withValues(alpha: 0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            // ✅ Prevents overflow outside rounded corners
+            borderRadius: BorderRadius.circular(20.r),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 16.h,
+              ), // ✅ Remove horizontal padding here
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: controller.categories.length,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                ), // ✅ Move padding here — fixes first/last item cut
+                separatorBuilder: (_, __) => Gap(16.w),
+                itemBuilder: (_, index) {
+                  final cat = controller.categories[index];
+
+                  return Obx(() {
+                    final isSelected =
+                        controller.selectedCategoryIndex.value == index;
+
+                    return GestureDetector(
+                      onTap: () => controller.selectCategory(index),
+                      child: AnimatedScale(
+                        scale: isSelected ? 1.05 : 1,
                         duration: const Duration(milliseconds: 200),
-                        width: 60.w,
-                        height: 60.h,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.primary.withValues(
-                                  alpha: 0.08,
-                                ),
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                        child: Icon(
-                          cat.icon,
-                          color: isSelected
-                              ? theme.colorScheme.secondary
-                              : theme.colorScheme.primary,
-                          size: 26.sp,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize:
+                              MainAxisSize.min, // ✅ Prevent column expand
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              width: 64.w,
+                              height: 64.w,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.primary.withValues(
+                                        alpha: 0.07,
+                                      ),
+                                borderRadius: BorderRadius.circular(18.r),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: theme.colorScheme.primary
+                                              .withValues(alpha: 0.15),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 6),
+                                        ),
+                                      ]
+                                    : [],
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: cat.imagePath != null
+                                  ? Image.asset(
+                                      cat.imagePath!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(
+                                      cat.icon,
+                                      size: 28.sp,
+                                      color: isSelected
+                                          ? theme.colorScheme.onPrimary
+                                          : theme.colorScheme.primary,
+                                    ),
+                            ),
+                            Gap(8.h),
+                            AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 200),
+                              style: Get.textTheme.bodySmall!.copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? theme.colorScheme.primary
+                                    : theme.dividerColor,
+                              ),
+                              child: Text(cat.labelKey.tr),
+                            ),
+                          ],
                         ),
                       ),
-                      Gap(6.h),
-                      Text(
-                        cat.labelKey.tr,
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.dividerColor,
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-              );
-            },
+                    );
+                  });
+                },
+              ),
+            ),
           ),
         ),
       ],
@@ -328,7 +432,10 @@ class HomeScreen extends GetView<HomeController> {
         children: [
           Text(
             isAll ? 'top_trends'.tr : cat.labelKey.tr,
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: responsiveFont(en: 16.sp, ta: 12.sp),
+              fontWeight: FontWeight.w700,
+            ),
           ),
           Gap(4.h),
           Text(
@@ -366,11 +473,14 @@ class HomeScreen extends GetView<HomeController> {
               width: double.infinity,
               height: 110.h,
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              child: Icon(
-                Icons.local_shipping,
-                size: 40.sp,
-                color: theme.colorScheme.primary,
-              ),
+              child: vehicle.imagePath != null
+                  ? Image.asset(
+                      vehicle.imagePath!,
+                      fit: BoxFit.cover, // 🔥 fills perfectly
+                      width: double.infinity,
+                      height: double.infinity,
+                    )
+                  : Icon(Icons.fire_truck),
             ),
           ),
           Padding(
@@ -381,48 +491,53 @@ class HomeScreen extends GetView<HomeController> {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        vehicle.nameKey,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      child: BText(
+                        text: vehicle.nameKey,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Icon(Icons.star_rounded, color: Colors.amber, size: 14.sp),
-                    Text(
-                      vehicle.rating,
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.dividerColor.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(5.r),
+                      ),
+
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              color: Colors.amber,
+                              size: 14.sp,
+                            ),
+                            Text(
+                              vehicle.rating,
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
                 Gap(4.h),
-                _infoRow(theme, 'Capacity', '${vehicle.capacity} tons'),
-                _infoRow(theme, 'Fare', vehicle.fare),
-                _infoRow(theme, 'ETA', '${vehicle.eta} mins'),
+
+                _infoRow(theme, 'capacity'.tr, '${vehicle.capacity}'),
+                _infoRow(theme, 'fare'.tr, vehicle.fare),
+                _infoRow(theme, 'eta'.tr, '${vehicle.eta} mins'), //${''.tr}
                 Gap(8.h),
-                GestureDetector(
+                BButton(
+                  text: "book_n".tr,
                   onTap: () => controller.onBookNow(vehicle),
-                  child: Container(
-                    width: double.infinity,
-                    height: 32.h,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Book Now',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.secondary,
-                      ),
-                    ),
-                  ),
+                  height: 32,
+                  fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
                 ),
               ],
             ),
@@ -439,12 +554,14 @@ class HomeScreen extends GetView<HomeController> {
         children: [
           Text(
             '$label : ',
-            style: TextStyle(fontSize: 10.sp, color: theme.dividerColor),
+            style: TextStyle(fontSize: 12.sp, color: theme.dividerColor),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -453,73 +570,4 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   // ── BOTTOM NAV ────────────────────────────────────────────────────────────
-
-  Widget _buildBottomNavBar(ThemeData theme) {
-    final navItems = [
-      {'icon': Icons.home_rounded, 'label': 'home'},
-      {'icon': Icons.calendar_month_outlined, 'label': 'my_booking'},
-      {'icon': Icons.person_outline_rounded, 'label': 'profile'},
-    ];
-
-    return Obx(
-      () => Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.secondary,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: SizedBox(
-            height: 60.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(navItems.length, (index) {
-                final isSelected = controller.currentNavIndex.value == index;
-                return GestureDetector(
-                  onTap: () => controller.onNavTapped(index),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 18.w,
-                      vertical: 6.h,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          navItems[index]['icon'] as IconData,
-                          size: 24.sp,
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.dividerColor,
-                        ),
-                        Gap(3.h),
-                        Text(
-                          (navItems[index]['label'] as String).tr,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: isSelected
-                                ? FontWeight.w700
-                                : FontWeight.w400,
-                            color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.dividerColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

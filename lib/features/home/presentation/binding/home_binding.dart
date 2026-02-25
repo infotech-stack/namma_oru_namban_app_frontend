@@ -4,6 +4,6 @@ import 'package:userapp/features/home/presentation/controller/home_controller.da
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<HomeController>(() => HomeController());
+    Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
   }
 }

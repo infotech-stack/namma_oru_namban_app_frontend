@@ -3,8 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:userapp/core/localization/language_controller.dart';
+import 'package:userapp/core/resposnive/responsiveFont.dart';
+import 'package:userapp/core/theme/app_colors.dart';
 import 'package:userapp/features/booking/presentation/controller/booking_controller.dart';
 import 'package:userapp/features/booking/presentation/widget/booking_model_widget.dart';
+import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
 
 class MyBookingScreen extends GetView<MyBookingController> {
@@ -12,6 +16,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
 
   @override
   Widget build(BuildContext context) {
+    final langController = Get.put(LanguageController());
     final theme = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -20,10 +25,33 @@ class MyBookingScreen extends GetView<MyBookingController> {
         statusBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
+        appBar: AppBar(
+          title: BText(
+            text: 'my_booking',
+            fontSize: responsiveFont(en: 16.sp, ta: 12.sp),
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.secondary,
+            isLocalized: true,
+          ),
+          actions: [
+            Obx(
+              () => IconButton(
+                icon: Icon(
+                  langController.currentLocale.value.languageCode == 'en'
+                      ? Icons.language
+                      : Icons.translate,
+                ),
+                onPressed: () {
+                  langController.toggleLanguage();
+                },
+              ),
+            ),
+          ],
+        ),
         backgroundColor: theme.colorScheme.secondary,
         body: Column(
           children: [
-            _buildHeader(theme),
+            //  _buildHeader(theme),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -42,7 +70,6 @@ class MyBookingScreen extends GetView<MyBookingController> {
             ),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavBar(theme),
       ),
     );
   }
@@ -53,7 +80,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
     return Container(
       color: theme.colorScheme.primary,
       padding: EdgeInsets.only(
-        top: 52.h,
+        top: 35.h,
         left: 16.w,
         right: 16.w,
         bottom: 20.h,
@@ -69,13 +96,6 @@ class MyBookingScreen extends GetView<MyBookingController> {
             ),
           ),
           Gap(12.w),
-          BText(
-            text: 'my_booking',
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.secondary,
-            isLocalized: true,
-          ),
         ],
       ),
     );
@@ -204,7 +224,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
                 // Trip Details
                 BText(
                   text: 'trip_details',
-                  fontSize: 14.sp,
+                  fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
                   fontWeight: FontWeight.w700,
                   color: theme.colorScheme.primary,
                   isLocalized: true,
@@ -218,11 +238,20 @@ class MyBookingScreen extends GetView<MyBookingController> {
                     Column(
                       children: [
                         Container(
-                          width: 10.w,
-                          height: 10.h,
+                          width: 15.w,
+                          height: 15.h,
+                          alignment: Alignment.center, // 🔥 important
                           decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: AppTheme.green.withValues(alpha: 0.3),
                             shape: BoxShape.circle,
+                          ),
+                          child: Container(
+                            width: 8.w,
+                            height: 8.h,
+                            decoration: const BoxDecoration(
+                              color: AppTheme.green,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                         Container(
@@ -259,11 +288,20 @@ class MyBookingScreen extends GetView<MyBookingController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 10.w,
-                      height: 10.h,
-                      decoration: const BoxDecoration(
-                        color: Colors.redAccent,
+                      width: 15.w,
+                      height: 15.h,
+                      alignment: Alignment.center, // 🔥 important
+                      decoration: BoxDecoration(
+                        color: AppTheme.red.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
+                      ),
+                      child: Container(
+                        width: 8.w,
+                        height: 8.h,
+                        decoration: const BoxDecoration(
+                          color: AppTheme.red,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                     Gap(10.w),
@@ -297,9 +335,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
                     Gap(10.w),
                     Expanded(child: _infoBox(theme, 'time', b.time)),
                     Gap(10.w),
-                    Expanded(
-                      child: _infoBox(theme, 'eta', '${b.eta} ${'mins'.tr}'),
-                    ),
+                    Expanded(child: _infoBox(theme, 'eta', '${b.eta}')),
                   ],
                 ),
 
@@ -313,7 +349,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
                 // Payment
                 BText(
                   text: 'payment',
-                  fontSize: 14.sp,
+                  fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
                   fontWeight: FontWeight.w700,
                   color: theme.colorScheme.primary,
                   isLocalized: true,
@@ -342,13 +378,13 @@ class MyBookingScreen extends GetView<MyBookingController> {
                       children: [
                         BText(
                           text: b.paymentMethod,
-                          fontSize: 13.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           isLocalized: false,
                         ),
                         BText(
                           text: b.paymentNote,
-                          fontSize: 11.sp,
+                          fontSize: 10.sp,
                           color: theme.dividerColor,
                           isLocalized: false,
                         ),
@@ -366,7 +402,7 @@ class MyBookingScreen extends GetView<MyBookingController> {
                         ),
                         BText(
                           text: b.totalAmount,
-                          fontSize: 15.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: theme.colorScheme.primary,
                           isLocalized: false,
@@ -413,100 +449,13 @@ class MyBookingScreen extends GetView<MyBookingController> {
   // ── Call Driver Button ─────────────────────────────────────────────────────
 
   Widget _buildCallButton(ThemeData theme) {
-    return GestureDetector(
+    return BButton(
+      text: 'call_driver',
       onTap: controller.onCallDriver,
-      child: Container(
-        width: double.infinity,
-        height: 52.h,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.secondary,
-          borderRadius: BorderRadius.circular(30.r),
-          border: Border.all(color: theme.colorScheme.primary, width: 1.5),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.phone_rounded,
-              color: theme.colorScheme.primary,
-              size: 20.sp,
-            ),
-            Gap(8.w),
-            BText(
-              text: 'call_driver',
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.primary,
-              isLocalized: true,
-            ),
-          ],
-        ),
-      ),
+      isOutline: true,
+      prefixIcon: Icon(Icons.call, color: theme.primaryColor),
     );
   }
 
   // ── Bottom Nav ─────────────────────────────────────────────────────────────
-
-  Widget _buildBottomNavBar(ThemeData theme) {
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.secondary,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: SizedBox(
-          height: 60.h,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(theme, Icons.home_rounded, 'home', 0),
-              _navItem(theme, Icons.calendar_month_outlined, 'my_booking', 1),
-              _navItem(theme, Icons.person_outline_rounded, 'profile', 2),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _navItem(ThemeData theme, IconData icon, String labelKey, int index) {
-    final isSelected = index == 1; // My Booking is active
-    return GestureDetector(
-      onTap: () {
-        if (index == 0) Get.back();
-      },
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 6.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24.sp,
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.dividerColor,
-            ),
-            Gap(3.h),
-            BText(
-              text: labelKey,
-              fontSize: 10.sp,
-              isLocalized: true,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.dividerColor,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
