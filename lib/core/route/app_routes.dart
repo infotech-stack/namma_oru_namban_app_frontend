@@ -8,4 +8,5 @@ abstract class Routes {
   static const vehDetails = '/vehDetails';
   static const myBooking = '/myBooking';
   static const bookingDetails = '/bookingDetails';
+  static const favorites = '/favorites';
 }

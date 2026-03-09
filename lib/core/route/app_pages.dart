@@ -9,6 +9,8 @@ import 'package:userapp/features/booking/presentation/binding/my_booking_binding
 import 'package:userapp/features/booking/presentation/screen/my_booking_screen.dart';
 import 'package:userapp/features/booking_details/presentation/binding/booking_details_binding.dart';
 import 'package:userapp/features/booking_details/presentation/screen/booking_details_screen.dart';
+import 'package:userapp/features/favorites/presentation/binding/favorites_binding.dart';
+import 'package:userapp/features/favorites/presentation/screen/favorites_screen.dart';
 import 'package:userapp/features/home/presentation/binding/home_binding.dart';
 import 'package:userapp/features/home/presentation/screens/home_screen.dart';
 import 'package:userapp/features/onboarding/splash_screen/splash_screen.dart';
@@ -92,5 +94,8 @@ class AppPages {
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 300),
     ),
+
+    ///  Favorites Screen
+    GetPage(name: Routes.favorites, page: () => FavoritesScreen()),
   ];
 }

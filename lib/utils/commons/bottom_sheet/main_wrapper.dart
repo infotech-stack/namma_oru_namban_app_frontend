@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/features/booking/presentation/screen/my_booking_screen.dart';
+import 'package:userapp/features/favorites/presentation/screen/favorites_screen.dart';
 import 'package:userapp/features/home/presentation/controller/home_controller.dart';
 import 'package:userapp/features/home/presentation/screens/home_screen.dart';
 import 'package:userapp/features/profile/presentation/screen/profile_screen.dart';
@@ -15,7 +16,12 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   final HomeController controller = Get.find();
 
-  final pages = [HomeScreen(), MyBookingScreen(), ProfileScreen()];
+  final pages = [
+    HomeScreen(),
+    FavoritesScreen(),
+    MyBookingScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   void initState() {
@@ -46,7 +52,7 @@ class _MainWrapperState extends State<MainWrapper> {
           color: theme.colorScheme.secondary,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 15,
               spreadRadius: 0,
               offset: const Offset(0, -1),
@@ -60,8 +66,9 @@ class _MainWrapperState extends State<MainWrapper> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _navItem(theme, Icons.home_rounded, 'home', 0),
-                _navItem(theme, Icons.calendar_month_outlined, 'my_booking', 1),
-                _navItem(theme, Icons.person_outline_rounded, 'profile', 2),
+                _navItem(theme, Icons.favorite_border_outlined, 'fav_title', 1),
+                _navItem(theme, Icons.calendar_month_outlined, 'my_booking', 2),
+                _navItem(theme, Icons.person_outline_rounded, 'profile', 3),
               ],
             ),
           ),

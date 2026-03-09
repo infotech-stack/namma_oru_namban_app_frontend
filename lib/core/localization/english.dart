@@ -165,6 +165,51 @@ const Map<String, String> en = {
   'safety_assurance': 'Safety Assurance',
   'support_24_7': '24/7 Support',
   'confirm_booking': 'Confirm Booking',
+
+  // ══════════════════════════════════════════════════════════════
+  ///  FAVORITES Screen
+  // ══════════════════════════════════════════════════════════════
+  // AppBar
+  'fav_title': 'My Favorites',
+  'fav_subtitle': 'Your saved vehicles',
+
+  // Search
+  'fav_search_hint': 'Search saved vehicles...',
+
+  // Category chips (same as home)
+  'fav_cat_all': 'All',
+  'fav_cat_car': 'Car',
+  'fav_cat_jcb': 'JCB',
+  'fav_cat_lorry': 'Lorry',
+  'fav_cat_bus': 'Bus',
+  'fav_cat_tataace': 'Tata Ace',
+  'fav_cat_tractor': 'Tractor',
+  'fav_cat_agri': 'Agri',
+
+  // Status badges
+  'fav_status_available': 'AVAILABLE',
+  'fav_status_ready': 'READY',
+  'fav_status_busy': 'BUSY',
+
+  // Card buttons
+  'fav_book_now': 'Book Now',
+  'book': 'Book Now',
+
+  'fav_remove_btn': 'Remove',
+
+  // Remove dialog
+  'fav_remove_title': 'Remove Favorite',
+  'fav_remove_subtitle': 'Remove from favorites:',
+  'fav_cancel': 'Cancel',
+
+  // Empty states
+  'fav_empty_title': 'No Favorites Yet',
+  'fav_empty_subtitle': 'Save vehicles you love to quickly book them later.',
+  'fav_empty_filtered_title': 'No Favorites Here',
+  'fav_empty_filtered_subtitle':
+      'You haven\'t saved any vehicle in this category yet.',
+  'fav_browse_btn': 'Browse Vehicles',
+
   //-----Booking Confirm dialog
   'booking_confirmed': 'Booking Confirmed!',
   'vehicle_on_way': 'Your vehicle is on the way',

@@ -63,7 +63,7 @@ class BTextField extends StatelessWidget {
           color: Colors.grey.shade500,
         ),
 
-        filled: true,
+        filled: false,
         fillColor: Colors.grey.shade100,
 
         prefixIcon: prefixIcon,
