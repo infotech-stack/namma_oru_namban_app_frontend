@@ -163,6 +163,51 @@ const Map<String, String> ta = {
   'support_24_7': '24/7 ஆதரவு',
   'confirm_booking': 'பதிவை உறுதிப்படுத்து',
 
+  // ══════════════════════════════════════════════════════════════
+  ///  FAVORITES Screen
+  // ══════════════════════════════════════════════════════════════
+
+  // AppBar
+  'fav_title': 'என் பிடித்தவை',
+  'fav_subtitle': 'உங்கள் சேமித்த வாகனங்கள்',
+
+  // Search
+  'fav_search_hint': 'சேமித்த வாகனங்களை தேடுங்கள்...',
+
+  // Category chips
+  'fav_cat_all': 'அனைத்தும்',
+  'fav_cat_car': 'கார்',
+  'fav_cat_jcb': 'JCB',
+  'fav_cat_lorry': 'லாரி',
+  'fav_cat_bus': 'பேருந்து',
+  'fav_cat_tataace': 'டாடா ஏஸ்',
+  'fav_cat_tractor': 'டிராக்டர்',
+  'fav_cat_agri': 'விவசாயம்',
+
+  // Status badges
+  'fav_status_available': 'கிடைக்கிறது',
+  'fav_status_ready': 'தயார்',
+  'fav_status_busy': 'பிஸி',
+
+  // Card buttons
+  'fav_book_now': 'இப்போது பதிவு செய்',
+  'book': 'பதிவு செய்',
+  'fav_remove_btn': 'நீக்கு',
+
+  // Remove dialog
+  'fav_remove_title': 'பிடித்தவை நீக்கு',
+  'fav_remove_subtitle': 'பிடித்தவைகளிலிருந்து நீக்கவா:',
+  'fav_cancel': 'ரத்து செய்',
+
+  // Empty states
+  'fav_empty_title': 'பிடித்தவை இல்லை',
+  'fav_empty_subtitle':
+      'விரும்பிய வாகனங்களை சேமித்து வேகமாக பதிவு செய்யுங்கள்.',
+  'fav_empty_filtered_title': 'இங்கே பிடித்தவை இல்லை',
+  'fav_empty_filtered_subtitle':
+      'இந்த வகையில் எந்த வாகனமும் சேமிக்கப்படவில்லை.',
+  'fav_browse_btn': 'வாகனங்களை பாரு',
+
   //-----Booking Confirm dialog
   'booking_confirmed': 'பதிவு உறுதிப்படுத்தப்பட்டது!',
   'vehicle_on_way': 'உங்கள் வாகனம் வழியில் உள்ளது',

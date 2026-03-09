@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/features/favorites/presentation/controller/favorites_controller.dart';
 import 'package:userapp/utils/constants/app_images.dart';
 
 class VehicleCategory {
@@ -105,12 +106,23 @@ class HomeController extends GetxController {
   ];
 
   final _allVehicles = <VehicleModel>[
+    // 🚌 Bus
+    VehicleModel(
+      nameKey: 'Mini Bus',
+      rating: '4.5',
+      capacity: '25 Passengers',
+      fare: '₹40/',
+      eta: '20',
+      categoryKey: 'bus',
+      imagePath: AppAssetsConstants.minibus,
+    ),
+
     // 🚗 Car
     VehicleModel(
       nameKey: 'Sedan Car',
       rating: '4.7',
       capacity: '4 ${'passengers'.tr}',
-      fare: '₹10/km',
+      fare: '₹10/',
       eta: '10',
       categoryKey: 'car',
       imagePath: AppAssetsConstants.car2,
@@ -121,7 +133,7 @@ class HomeController extends GetxController {
     //   nameKey: 'Container Truck',
     //   rating: '4.2',
     //   capacity: '8 Ton',
-    //   fare: '₹20/km',
+    //   fare: '₹20/',
     //   eta: '22',
     //   categoryKey: 'truck',
     //   imagePath: AppAssetsConstants.lorry,
@@ -132,29 +144,18 @@ class HomeController extends GetxController {
       nameKey: 'TATA ACE',
       rating: '4.6',
       capacity: '1.5 Ton',
-      fare: '₹18/km',
+      fare: '₹18/',
       eta: '15',
       categoryKey: 'tataace',
       imagePath: AppAssetsConstants.tataAce3,
     ),
 
-    // 🚌 Bus
-    VehicleModel(
-      nameKey: 'Mini Bus',
-      rating: '4.5',
-      capacity: '25 Passengers',
-      fare: '₹40/km',
-      eta: '20',
-      categoryKey: 'bus',
-      imagePath: AppAssetsConstants.minibus,
-    ),
-
     // 🚚 Lorry
     VehicleModel(
-      nameKey: 'Mini Lorry',
+      nameKey: 'Lorry',
       rating: '4.6',
       capacity: '6 Ton',
-      fare: '₹35/km',
+      fare: '₹35/',
       eta: '28',
       categoryKey: 'lorry',
       imagePath: AppAssetsConstants.lorry,
@@ -165,7 +166,7 @@ class HomeController extends GetxController {
       nameKey: 'JCB Machine',
       rating: '4.0',
       capacity: '5 Ton',
-      fare: '₹50/km',
+      fare: '₹50/',
       eta: '30',
       categoryKey: 'jcb',
       imagePath: AppAssetsConstants.jcb,
@@ -176,7 +177,7 @@ class HomeController extends GetxController {
       nameKey: 'Farm Tractor',
       rating: '4.3',
       capacity: '2 Ton',
-      fare: '₹22/km',
+      fare: '₹22/',
       eta: '17',
       categoryKey: 'tractor',
       imagePath: AppAssetsConstants.tractor1,
@@ -187,7 +188,7 @@ class HomeController extends GetxController {
       nameKey: 'Sedan Car',
       rating: '4.3',
       capacity: '5 Passengers',
-      fare: '₹12/km',
+      fare: '₹12/',
       eta: '12',
       categoryKey: 'car',
       imagePath: AppAssetsConstants.car,
@@ -198,7 +199,7 @@ class HomeController extends GetxController {
     //   nameKey: 'Container Truck',
     //   rating: '4.5',
     //   capacity: '10 Ton',
-    //   fare: '₹25/km',
+    //   fare: '₹25/',
     //   eta: '18',
     //   categoryKey: 'truck',
     //   imagePath: AppAssetsConstants.lorry,
@@ -207,7 +208,7 @@ class HomeController extends GetxController {
       nameKey: 'Harvest Machine',
       rating: '4.4',
       capacity: '3 Ton',
-      fare: '₹60/km',
+      fare: '₹60/',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri3,
@@ -217,7 +218,7 @@ class HomeController extends GetxController {
       nameKey: 'TATA ACE',
       rating: '4.6',
       capacity: '1.5 Ton',
-      fare: '₹18/km',
+      fare: '₹18/',
       eta: '15',
       categoryKey: 'tataace',
       imagePath: AppAssetsConstants.tataAce2,
@@ -228,7 +229,7 @@ class HomeController extends GetxController {
       nameKey: 'AC Bus',
       rating: '4.8',
       capacity: '40 Passengers',
-      fare: '₹55/km',
+      fare: '₹55/',
       eta: '18',
       categoryKey: 'bus',
       imagePath: AppAssetsConstants.bus2,
@@ -237,7 +238,7 @@ class HomeController extends GetxController {
       nameKey: 'Harvest Machine',
       rating: '4.4',
       capacity: '3 ACR',
-      fare: '₹60/km',
+      fare: '₹60/',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri2,
@@ -246,17 +247,17 @@ class HomeController extends GetxController {
       nameKey: 'Farm Tractor',
       rating: '4.3',
       capacity: '2 Ton',
-      fare: '₹22/km',
+      fare: '₹22/',
       eta: '17',
       categoryKey: 'tractor',
       imagePath: AppAssetsConstants.tractor2,
     ),
     // 🚚 Lorry
     VehicleModel(
-      nameKey: 'Mini Lorry',
+      nameKey: 'Lorry',
       rating: '4.4',
       capacity: '4 Ton',
-      fare: '₹30/km',
+      fare: '₹30/',
       eta: '25',
       categoryKey: 'lorry',
       imagePath: AppAssetsConstants.lorry2,
@@ -267,7 +268,7 @@ class HomeController extends GetxController {
       nameKey: 'JCB Machine',
       rating: '4.1',
       capacity: '6 Ton',
-      fare: '₹55/km',
+      fare: '₹55/',
       eta: '35',
       categoryKey: 'jcb',
       imagePath: AppAssetsConstants.jcb2,
@@ -278,7 +279,7 @@ class HomeController extends GetxController {
       nameKey: 'Harvest Machine',
       rating: '4.4',
       capacity: '3 Ton',
-      fare: '₹60/km',
+      fare: '₹60/',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri1,
@@ -322,6 +323,21 @@ class HomeController extends GetxController {
         'distance': '3.2',
         'tripsCompleted': '120',
       },
+    );
+  }
+
+  FavoriteVehicle toFavorite(VehicleModel v) {
+    return FavoriteVehicle(
+      // unique id — category + name combine (duplicate avoid)
+      id: '${v.categoryKey}_${v.nameKey}',
+      nameKey: v.nameKey,
+      rating: v.rating,
+      capacity: v.capacity,
+      fare: v.fare,
+      eta: v.eta,
+      categoryKey: v.categoryKey,
+      availabilityStatus: 'available',
+      imagePath: v.imagePath,
     );
   }
 
