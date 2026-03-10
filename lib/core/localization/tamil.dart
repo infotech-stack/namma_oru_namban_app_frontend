@@ -79,24 +79,32 @@ const Map<String, String> ta = {
   '_km': '/ கிமீ',
 
   ///VEHICLE DETAILS SCREEN
-  'back': 'திரும்பு',
-  'heavy_duty': 'கனரக பணி',
+  'heavy_duty': 'கனரக வகை',
   'available_247': '24/7 கிடைக்கும்',
   'trips_completed': 'பயணங்கள் முடிந்தன',
-  'distance': 'தூரம்',
-  'vehicle_specifications': 'வாகன விவரக்குறிப்புகள்',
-  'payload': 'சுமை எடை',
-  'cargo_box': 'சரக்கு பெட்டி',
-  'axle_type': 'அச்சு வகை',
-  'fuel_type': 'எரிபொருள் வகை',
-  'loading_type': 'ஏற்றுதல் வகை',
-  'suitable_for': 'பொருத்தமானது',
-  'multi_axle': 'பல அச்சு',
-  'diesel': 'டீசல்',
-  'rear_loading': 'பின் ஏற்றுதல்',
-  'heavy_goods': 'கனரக சரக்கு',
+
+  // ── Stats row ────────────────────────────────────────────────
   'km': 'கி.மீ',
-  'ton': 'டன்',
+
+  // ── Specifications ───────────────────────────────────────────
+  'vehicle_specifications': 'வாகன விவரங்கள்',
+
+  // Spec labels
+  'spec_engine': 'இயந்திரம்',
+  'spec_fuel': 'எரிபொருள் வகை',
+  'spec_payload': 'சுமை அளவு',
+  'spec_dimensions': 'அளவுகள்',
+  'spec_transmission': 'கியர் வகை',
+  'spec_body_type': 'உடல் வகை',
+  'spec_axle': 'அச்சு அமைப்பு',
+  'spec_year': 'ஆண்டு',
+
+  // ── Reviews ──────────────────────────────────────────────────
+  'reviews': 'மதிப்புரைகள்',
+  'view_all': 'அனைத்தும் பார்க்க',
+
+  // ── Similar vehicles ─────────────────────────────────────────
+  'similar_vehicles': 'இதே போன்ற வாகனங்கள்',
 
   ///Booking Screen
   'booking_id': 'முன்பதிவு எண்',

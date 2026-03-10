@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/utils/constants/app_images.dart';
 
 class VehicleDetailController extends GetxController {
   // Simple plain variables - no Rx, no model class needed
@@ -40,6 +41,13 @@ class VehicleDetailController extends GetxController {
       {'label': 'suitable_for', 'value': 'Heavy Goods'},
     ]);
   }
+
+  List<String?> get vehicleImages => [
+    imagePath, // main image
+    AppAssetsConstants.car2, // test image 2
+    AppAssetsConstants.car, // test image 3
+    null, // null safety test
+  ];
 
   void onBookNow() {
     Get.toNamed(

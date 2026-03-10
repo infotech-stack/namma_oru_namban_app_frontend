@@ -341,6 +341,26 @@ class HomeController extends GetxController {
     );
   }
 
+  void onVehicleCardTap(VehicleModel vehicle) {
+    final currentCat = categories[selectedCategoryIndex.value];
+
+    if (currentCat.filterKey == 'all') {
+      // ── "All" tab — tap → switch to that vehicle's category ──
+      // Find the index of the matching category
+      final catIndex = categories.indexWhere(
+        (c) => c.filterKey == vehicle.categoryKey,
+      );
+      if (catIndex != -1) {
+        // Switch category tab → filtered list shows
+        selectedCategoryIndex.value = catIndex;
+        // Do NOT navigate — stay on HomeScreen, list updates
+      }
+    } else {
+      // ── Specific category tab — tap → vehicle details ─────────
+      onvehicleDetails(vehicle);
+    }
+  }
+
   @override
   void onClose() {
     searchController.dispose();

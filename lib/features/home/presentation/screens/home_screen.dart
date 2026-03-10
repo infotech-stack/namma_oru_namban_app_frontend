@@ -80,7 +80,7 @@ class HomeScreen extends GetView<HomeController> {
                         delegate: SliverChildBuilderDelegate(
                           (_, index) => InkWell(
                             onTap: () {
-                              controller.onvehicleDetails(vehicles[index]);
+                              controller.onVehicleCardTap(vehicles[index]);
                             },
                             child: _buildVehicleCard(theme, vehicles[index]),
                           ),
