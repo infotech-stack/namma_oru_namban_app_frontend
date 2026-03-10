@@ -82,24 +82,35 @@ const Map<String, String> en = {
   '_km': '/ km',
 
   ///VEHICLE DETAILS SCREEN
-  'back': 'Back',
+  // ── Hero section ─────────────────────────────────────────────
   'heavy_duty': 'Heavy Duty',
-  'available_247': '24/7 Available',
-  'trips_completed': 'trips completed',
-  'distance': 'Distance',
-  'vehicle_specifications': 'Vehicle Specifications',
-  'payload': 'Payload',
-  'cargo_box': 'Cargo Box',
-  'axle_type': 'Axle Type',
-  'fuel_type': 'Fuel Type',
-  'loading_type': 'Loading Type',
-  'suitable_for': 'Suitable For',
-  'multi_axle': 'Multi Axle',
-  'diesel': 'Diesel',
-  'rear_loading': 'Rear Loading',
-  'heavy_goods': 'Heavy Goods',
+  'available_247': 'Available 24/7',
+  'trips_completed': 'Trips Completed',
+
+  // ── Stats row ────────────────────────────────────────────────
   'km': 'km',
-  'ton': 'Ton',
+
+  // ── Specifications ───────────────────────────────────────────
+  'vehicle_specifications': 'Specifications',
+
+  // Spec label keys (controller.specs la use பண்ணுற keys)
+  'spec_engine': 'Engine',
+  'spec_fuel': 'Fuel Type',
+  'spec_payload': 'Payload',
+  'spec_dimensions': 'Dimensions',
+  'spec_transmission': 'Transmission',
+  'spec_body_type': 'Body Type',
+  'spec_axle': 'Axle Config',
+  'spec_year': 'Year',
+
+  // ── Reviews ──────────────────────────────────────────────────
+  'reviews': 'Reviews',
+  'view_all': 'View all',
+
+  // ── Similar vehicles ─────────────────────────────────────────
+  'similar_vehicles': 'Similar Vehicles',
+
+  // ── Book button ──────────────────────────────────────────────
 
   ///Booking Screen
   'booking_id': 'Booking ID',
