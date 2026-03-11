@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "262266443708",
+    "project_id": "heavy-vehicle-booking",
+    "storage_bucket": "heavy-vehicle-booking.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262266443708:android:91fa85274f2776b57c3db9",
+        "android_client_info": {
+          "package_name": "com.rksinfotech.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0dKY7dlHiPQZ0naujc_tscmsfH7IPJs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

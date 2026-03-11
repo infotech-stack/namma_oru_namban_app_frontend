@@ -22,7 +22,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
-import 'package:userapp/utils/constants/app_images.dart';
 
 // ── Favorite vehicle model ─────────────────────────────────────
 class FavoriteVehicle {

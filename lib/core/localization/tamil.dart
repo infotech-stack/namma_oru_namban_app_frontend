@@ -106,7 +106,9 @@ const Map<String, String> ta = {
   // ── Similar vehicles ─────────────────────────────────────────
   'similar_vehicles': 'இதே போன்ற வாகனங்கள்',
 
+  //============================================
   ///Booking Screen
+  //============================================
   'booking_id': 'முன்பதிவு எண்',
   'trip_details': 'பயண விவரங்கள்',
   'pickup': 'எடுக்கும் இடம்',
@@ -116,6 +118,7 @@ const Map<String, String> ta = {
   'payment': 'பணம்',
   'total': 'மொத்தம்',
   'call_driver': 'ஓட்டுனரை அழைக்கவும்',
+  'assigned_driver': 'நியமிக்கப்பட்ட ஓட்டுனர்',
 
   // Profile
   'member_since': 'உறுப்பினர் தொடங்கி',
@@ -170,6 +173,13 @@ const Map<String, String> ta = {
   'safety_assurance': 'பாதுகாப்பு உத்தரவாதம்',
   'support_24_7': '24/7 ஆதரவு',
   'confirm_booking': 'பதிவை உறுதிப்படுத்து',
+
+  'payload': 'சுமை அளவு',
+  'cargo_box': 'சரக்கு பெட்டி',
+  'axle_type': 'அச்சு வகை',
+  'fuel_type': 'எரிபொருள் வகை',
+  'loading_type': 'ஏற்றும் முறை',
+  'suitable_for': 'பொருத்தமான சரக்கு',
 
   // ══════════════════════════════════════════════════════════════
   ///  FAVORITES Screen

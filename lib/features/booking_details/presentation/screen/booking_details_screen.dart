@@ -148,7 +148,287 @@ class BookingDetailsScreen extends GetView<BookingDetailsController> {
   }
 
   // ── Vehicle Card ──────────────────────────────────────────────────────────
+  Widget _buildVehicleCard(ThemeData theme, BookingDetailsModel b) {
+    final p = theme.colorScheme.primary;
 
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(14.r),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondary,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: p.withValues(alpha: 0.12)),
+        boxShadow: [
+          BoxShadow(
+            color: p.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Top row: image + info ──────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Vehicle image
+              Container(
+                width: 90.w,
+                height: 78.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      p.withValues(alpha: 0.12),
+                      p.withValues(alpha: 0.05),
+                    ],
+                  ),
+                  border: Border.all(color: p.withValues(alpha: 0.15)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: b.vehicleImagePath.isNotEmpty
+                      ? Image.asset(
+                          b.vehicleImagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Center(
+                            child: Icon(
+                              Icons.local_shipping_rounded,
+                              color: p,
+                              size: 32.sp,
+                            ),
+                          ),
+                        )
+                      : Center(
+                          child: Icon(
+                            Icons.local_shipping_rounded,
+                            color: p,
+                            size: 32.sp,
+                          ),
+                        ),
+                ),
+              ),
+              Gap(12.w),
+
+              // Vehicle name + price + capacity
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name
+                    BText(
+                      text: b.vehicleName,
+                      fontSize: responsiveFont(en: 15.sp, ta: 13.sp),
+                      fontWeight: FontWeight.w800,
+                      isLocalized: false,
+                    ),
+                    Gap(6.h),
+
+                    // Price per km pill
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 3.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: p.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: p.withValues(alpha: 0.20),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.currency_rupee_rounded,
+                                size: 10.sp,
+                                color: p,
+                              ),
+                              BText(
+                                text: b.pricePerKm,
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w700,
+                                color: p,
+                                isLocalized: false,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Gap(6.w),
+
+                        // ETA pill
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 3.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF1E88E5,
+                            ).withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: const Color(
+                                0xFF1E88E5,
+                              ).withValues(alpha: 0.20),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 10.sp,
+                                color: const Color(0xFF1E88E5),
+                              ),
+                              Gap(3.w),
+                              BText(
+                                text: b.eta,
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF1E88E5),
+                                isLocalized: false,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Gap(6.h),
+
+                    // Capacity
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          size: 11.sp,
+                          color: theme.dividerColor,
+                        ),
+                        Gap(4.w),
+                        BText(
+                          text: b.capacity,
+                          fontSize: 11.sp,
+                          color: theme.dividerColor,
+                          isLocalized: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Gap(12.h),
+
+          // ── Divider ────────────────────────────────────────
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  p.withValues(alpha: 0.20),
+                  p.withValues(alpha: 0.20),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          Gap(10.h),
+
+          // ── Driver info row ────────────────────────────────
+          Row(
+            children: [
+              // Driver avatar
+              Container(
+                width: 30.r,
+                height: 30.r,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [p, p.withValues(alpha: 0.70)],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    b.driverName.isNotEmpty
+                        ? b.driverName[0].toUpperCase()
+                        : 'D',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              Gap(8.w),
+
+              // Driver name + label
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BText(
+                      text: b.driverName,
+                      fontSize: responsiveFont(en: 12.sp, ta: 11.sp),
+                      fontWeight: FontWeight.w700,
+                      isLocalized: false,
+                    ),
+                    BText(
+                      text: 'assigned_driver',
+                      fontSize: 9.sp,
+                      color: theme.dividerColor,
+                      isLocalized: true,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Rating badge
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFB300).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: const Color(0xFFFFB300).withValues(alpha: 0.30),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.star_rounded,
+                      size: 12.sp,
+                      color: const Color(0xFFFFB300),
+                    ),
+                    Gap(3.w),
+                    BText(
+                      text: b.driverRating.toString(),
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFFFB300),
+                      isLocalized: false,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  /*
   Widget _buildVehicleCard(ThemeData theme, BookingDetailsModel b) {
     return Container(
       width: double.infinity,
@@ -237,6 +517,7 @@ class BookingDetailsScreen extends GetView<BookingDetailsController> {
       ),
     );
   }
+*/
 
   // ── Trip Details Card ─────────────────────────────────────────────────────
 
