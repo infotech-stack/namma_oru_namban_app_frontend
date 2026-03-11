@@ -1,7 +1,15 @@
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:userapp/features/booking/presentation/widget/booking_model_widget.dart';
 
 class MyBookingController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    requestLocationPermission(); // ← add pannidu
+    // ... existing code
+  }
+
   final booking = Rx<BookingModel>(
     BookingModel(
       bookingId: '#BK20260217',
@@ -21,5 +29,16 @@ class MyBookingController extends GetxController {
 
   void onCallDriver() {
     // TODO: launch phone call
+  }
+}
+
+Future<void> requestLocationPermission() async {
+  final status = await Permission.location.request();
+  if (status.isDenied) {
+    Get.snackbar(
+      'Location Permission',
+      'Please allow location to auto-fill pickup address',
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

@@ -483,7 +483,7 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
                             width: 110.w,
                             child: BText(
                               text: spec['label']!,
-                              fontSize: 12.sp,
+                              fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
                               color: theme.dividerColor,
                               isLocalized: true,
                             ),

@@ -111,8 +111,9 @@ const Map<String, String> en = {
   'similar_vehicles': 'Similar Vehicles',
 
   // ── Book button ──────────────────────────────────────────────
-
+  //=========================================
   ///Booking Screen
+  /////====================================
   'booking_id': 'Booking ID',
   'trip_details': 'Trip Details',
   'pickup': 'PICKUP',
@@ -122,8 +123,10 @@ const Map<String, String> en = {
   'payment': 'Payment',
   'total': 'Total',
   'call_driver': 'Call Driver',
-
+  'assigned_driver': 'Assigned Driver',
+  //==========================================
   // Profile
+  //========================================
   'member_since': 'Member since',
   'edit_profile': 'Edit Profile',
   'payment_methods': 'Payment Methods',
@@ -137,8 +140,9 @@ const Map<String, String> en = {
   'logout_confirm': 'Are you sure you want to log out?',
   'cancel': 'Cancel',
   'confirm': 'Confirm',
-
+  //=============================================
   ///Vehicle booking details screen
+  //=============================================
   'booking_details': 'Booking Details',
   'pickup_address': 'Pickup Address',
   'drop_address': 'Drop Address',
@@ -176,6 +180,13 @@ const Map<String, String> en = {
   'safety_assurance': 'Safety Assurance',
   'support_24_7': '24/7 Support',
   'confirm_booking': 'Confirm Booking',
+
+  'payload': 'Payload',
+  'cargo_box': 'Cargo Box',
+  'axle_type': 'Axle Type',
+  'fuel_type': 'Fuel Type',
+  'loading_type': 'Loading Type',
+  'suitable_for': 'Suitable For',
 
   // ══════════════════════════════════════════════════════════════
   ///  FAVORITES Screen
