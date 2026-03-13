@@ -1,57 +1,89 @@
+// lib/features/auth/signup/controller/signup_controller.dart
+// ════════════════════════════════════════════════════════════════
+//  SIGNUP CONTROLLER
+//  POST /user/auth/register/send-otp
+//  → success            : navigate to OTP screen
+//  → ALREADY_REGISTERED : navigate to Login screen
+// ════════════════════════════════════════════════════════════════
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:userapp/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:userapp/utils/commons/snackbar/app_snackbar.dart';
 
 class SignUpController extends GetxController {
-  // Text Controllers
-  final usernameController = TextEditingController();
-  final mobileController = TextEditingController();
+  late final RegisterSendOtpUseCase _registerSendOtpUseCase;
 
-  // Reactive Variables
+  SignUpController() {
+    _registerSendOtpUseCase = RegisterSendOtpUseCase(AuthRepositoryImpl());
+  }
+
+  final mobileController = TextEditingController();
+  final nameController = TextEditingController();
   final isLoading = false.obs;
-  final mobileNumber = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-
-    // Listen mobile field changes
-    mobileController.addListener(() {
-      mobileNumber.value = mobileController.text.trim();
-    });
+    // Pre-fill mobile if coming from Login screen (NOT_REGISTERED flow)
+    final args = Get.arguments;
+    if (args != null && args['mobile'] != null) {
+      mobileController.text = args['mobile'] as String;
+    }
   }
 
-  void onGetCode() async {
-    final username = usernameController.text.trim();
-    final mobile = mobileNumber.value;
+  void onRegister() async {
+    final mobile = mobileController.text.trim();
+    final name = nameController.text.trim();
 
-    if (username.isEmpty || mobile.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill in all fields",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+    // Validation
+    if (mobile.isEmpty || mobile.length < 10) {
+      AppSnackbar.error('Please enter valid 10-digit mobile number');
+      return;
+    }
+    // name optional — but if entered, min 2 chars
+    if (name.isNotEmpty && name.length < 2) {
+      AppSnackbar.error('Name must be at least 2 characters');
       return;
     }
 
     isLoading.value = true;
 
-    await Future.delayed(const Duration(seconds: 2)); // Fake API
+    final result = await _registerSendOtpUseCase(
+      mobile: mobile,
+      name: name.isEmpty ? null : name,
+    );
 
     isLoading.value = false;
 
-    // Navigate to OTP with argument
-    Get.toNamed(Routes.otpScreen, arguments: mobile);
+    if (result.isSuccess) {
+      // ✅ New user → OTP screen
+      AppSnackbar.success('OTP sent successfully');
+      Get.toNamed(
+        Routes.otpScreen,
+        arguments: {
+          'mobile': mobile,
+          'name': name,
+          'flow': 'register', // OTP controller la flow check pannuvom
+        },
+      );
+    } else if (result.code == 'ALREADY_REGISTERED') {
+      // ❌ Already registered → Login screen
+      AppSnackbar.warning('Already registered! Please login.');
+      Get.toNamed(Routes.loginScreen, arguments: {'mobile': mobile});
+    } else {
+      AppSnackbar.error(result.error ?? 'Something went wrong.');
+    }
   }
 
-  void onLogin() {
-    Get.toNamed(Routes.loginScreen);
-  }
+  void onLogin() => Get.toNamed(Routes.loginScreen);
 
   @override
   void onClose() {
-    usernameController.dispose();
     mobileController.dispose();
+    nameController.dispose();
     super.onClose();
   }
 }

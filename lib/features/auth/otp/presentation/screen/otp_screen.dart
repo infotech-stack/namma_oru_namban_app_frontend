@@ -4,18 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/resposnive/responsiveFont.dart';
-import 'package:userapp/features/auth/signup/controller/signup_controller.dart';
+import 'package:userapp/features/auth/otp/presentation/controller/otp_controller.dart';
 import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
 import 'package:userapp/utils/constants/app_images.dart';
-import '../controller/otp_controller.dart';
 
 class OtpScreen extends GetView<OtpController> {
   const OtpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SignUpController signUpController = Get.find<SignUpController>();
     final primaryColor = Get.theme.colorScheme.primary;
     final theme = Theme.of(context);
 
@@ -54,7 +52,7 @@ class OtpScreen extends GetView<OtpController> {
                         top: 28.h,
                         bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
                       ),
-                      child: _buildFormSection(theme, signUpController),
+                      child: _buildFormSection(theme),
                     ),
                   ),
                 ],
@@ -95,7 +93,7 @@ class OtpScreen extends GetView<OtpController> {
     );
   }
 
-  Widget _buildFormSection(ThemeData theme, SignUpController signUpController) {
+  Widget _buildFormSection(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -106,15 +104,17 @@ class OtpScreen extends GetView<OtpController> {
           isLocalized: true,
         ),
         SizedBox(height: 6.h),
+
+        // 🔥 FIX 1: Use controller.mobileNumber (observable from OtpController)
         Obx(
           () => BText(
-            text:
-                '${'enter_code_sent'.tr}${signUpController.mobileNumber.value}',
+            text: '${'enter_code_sent'.tr} ${controller.mobileNumber.value}',
             fontSize: 12.sp,
             color: theme.dividerColor,
             isLocalized: false,
           ),
         ),
+
         SizedBox(height: 10.h),
         _buildEditMobileRow(theme),
         SizedBox(height: 28.h),
@@ -207,14 +207,24 @@ class OtpScreen extends GetView<OtpController> {
             color: theme.dividerColor,
             isLocalized: true,
           ),
-          GestureDetector(
-            onTap: controller.onResend,
-            child: BText(
-              text: 'send_again',
-              fontSize: 12.sp,
-              color: Get.theme.colorScheme.primary,
-              fontWeight: FontWeight.w600,
-              isLocalized: true,
+
+          // 🔥 FIX 2: Add Obx for resend timer
+          Obx(
+            () => GestureDetector(
+              onTap: controller.resendSeconds.value > 0
+                  ? null
+                  : controller.onResend,
+              child: BText(
+                text: controller.resendSeconds.value > 0
+                    ? 'Resend in ${controller.resendSeconds.value}s'
+                    : 'send_again',
+                fontSize: 12.sp,
+                color: controller.resendSeconds.value > 0
+                    ? theme.dividerColor
+                    : Get.theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+                isLocalized: controller.resendSeconds.value > 0 ? false : true,
+              ),
             ),
           ),
         ],
@@ -223,12 +233,21 @@ class OtpScreen extends GetView<OtpController> {
   }
 
   Widget _buildLoginButton(ThemeData theme) {
-    return BButton(
-      text: "login_btn",
-      isLocalized: true,
-      //textColor: theme.secondaryHeaderColor,
-      onTap: controller.onLogin,
-      suffixIcon: Icon(Icons.arrow_forward, color: theme.colorScheme.secondary),
+    return Obx(
+      () => BButton(
+        text: "login_btn",
+        isLocalized: true,
+        isLoading: controller.isLoading.value,
+        // 🔥 FIX: Use conditional function instead of null
+        onTap: controller.isLoading.value
+            ? () {} // Empty function when loading (does nothing)
+            : controller.onVerify,
+        // Actual function when not loading
+        suffixIcon: Icon(
+          Icons.arrow_forward,
+          color: theme.colorScheme.secondary,
+        ),
+      ),
     );
   }
 }

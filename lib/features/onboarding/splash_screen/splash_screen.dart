@@ -1,3 +1,5 @@
+// lib/features/splash/splash_screen.dart
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,7 +7,9 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:userapp/core/logger/app_logger.dart';
 import 'package:userapp/core/route/app_routes.dart';
+import 'package:userapp/core/storage/hive_service.dart';
 import 'package:userapp/utils/constants/app_images.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,6 +25,9 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _positionAnimation;
   late Animation<double> _scaleAnimation;
 
+  final HiveService _hive = HiveService();
+  Timer? _navigationTimer;
+
   @override
   void initState() {
     super.initState();
@@ -31,25 +38,49 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _positionAnimation = Tween<double>(
-      begin: 300, // start from bottom
-      end: 0, // move to center
+      begin: 300,
+      end: 0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
     _scaleAnimation = Tween<double>(
-      begin: 0.3, // small car
-      end: 1.0, // big car
+      begin: 0.3,
+      end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
 
-    Timer(const Duration(seconds: 4), () {
+    _navigationTimer = Timer(const Duration(seconds: 3), _checkLoginStatus);
+  }
+
+  /// Flow:
+  ///   isLoggedIn = false → Login screen
+  ///   isLoggedIn = true  → Home (wrapper)
+  ///
+  /// Note: isNewUser check வேண்டாம் —
+  ///   register/send-otp → verify-otp success → user created → isLoggedIn = true → home
+  ///   login/send-otp    → verify-otp success → isLoggedIn = true → home
+  Future<void> _checkLoginStatus() async {
+    try {
+      final isLoggedIn = _hive.isLoggedIn();
+      AppLogger.info('🔍 Splash — isLoggedIn: $isLoggedIn');
+
+      if (isLoggedIn) {
+        final name = _hive.getUserName();
+        AppLogger.info('👋 Logged in user: $name → Home');
+        Get.offAllNamed(Routes.wrapper, arguments: 0);
+      } else {
+        AppLogger.info('🔒 Not logged in → Login screen');
+        Get.offAllNamed(Routes.loginScreen);
+      }
+    } catch (e) {
+      AppLogger.error('❌ Splash error: $e');
       Get.offAllNamed(Routes.loginScreen);
-    });
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _navigationTimer?.cancel();
     super.dispose();
   }
 
@@ -70,7 +101,6 @@ class _SplashScreenState extends State<SplashScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /// 🚗 Bottom → Center + Scale Animation
               AnimatedBuilder(
                 animation: _controller,
                 builder: (context, child) {
@@ -86,9 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
                   );
                 },
               ),
-
               SizedBox(height: 60.h),
-
               FadeInUp(
                 delay: const Duration(milliseconds: 800),
                 child: GradientText(
@@ -103,9 +131,7 @@ class _SplashScreenState extends State<SplashScreen>
                   colors: const [Color(0xFF6A00FF), Color(0xFF9D4EDD)],
                 ),
               ),
-
               SizedBox(height: 12.h),
-
               BounceInDown(
                 delay: const Duration(milliseconds: 1500),
                 child: GradientText(
@@ -124,9 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ],
                 ),
               ),
-
               SizedBox(height: 40.h),
-
               FadeIn(
                 delay: const Duration(milliseconds: 2200),
                 child: Text(

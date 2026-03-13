@@ -1,3 +1,5 @@
+// lib/features/home/presentation/controller/home_controller.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
@@ -90,7 +92,6 @@ class HomeController extends GetxController {
       filterKey: 'bus',
       imagePath: AppAssetsConstants.bus,
     ),
-
     VehicleCategory(
       labelKey: 'tractor',
       icon: Icons.agriculture_outlined,
@@ -111,180 +112,153 @@ class HomeController extends GetxController {
       nameKey: 'Mini Bus',
       rating: '4.5',
       capacity: '25 Passengers',
-      fare: '₹40/',
+      fare: '40',
       eta: '20',
       categoryKey: 'bus',
       imagePath: AppAssetsConstants.minibus,
     ),
-
     // 🚗 Car
     VehicleModel(
       nameKey: 'Sedan Car',
       rating: '4.7',
-      capacity: '4 ${'passengers'.tr}',
-      fare: '₹10/',
+      capacity: '4 Passengers',
+      fare: '10',
       eta: '10',
       categoryKey: 'car',
       imagePath: AppAssetsConstants.car2,
     ),
-
-    // // 🚛 Truck
-    // VehicleModel(
-    //   nameKey: 'Container Truck',
-    //   rating: '4.2',
-    //   capacity: '8 Ton',
-    //   fare: '₹20/',
-    //   eta: '22',
-    //   categoryKey: 'truck',
-    //   imagePath: AppAssetsConstants.lorry,
-    // ),
-
     // 🚐 Tata Ace
     VehicleModel(
       nameKey: 'TATA ACE',
       rating: '4.6',
       capacity: '1.5 Ton',
-      fare: '₹18/',
+      fare: '18',
       eta: '15',
       categoryKey: 'tataace',
       imagePath: AppAssetsConstants.tataAce3,
     ),
-
     // 🚚 Lorry
     VehicleModel(
-      nameKey: 'Lorry',
+      nameKey: 'Lorry 6 Ton',
       rating: '4.6',
       capacity: '6 Ton',
-      fare: '₹35/',
+      fare: '35',
       eta: '28',
       categoryKey: 'lorry',
       imagePath: AppAssetsConstants.lorry,
     ),
-
     // 🏗 JCB
     VehicleModel(
       nameKey: 'JCB Machine',
       rating: '4.0',
       capacity: '5 Ton',
-      fare: '₹50/',
+      fare: '50',
       eta: '30',
       categoryKey: 'jcb',
       imagePath: AppAssetsConstants.jcb,
     ),
-
     // 🚜 Tractor
     VehicleModel(
       nameKey: 'Farm Tractor',
       rating: '4.3',
       capacity: '2 Ton',
-      fare: '₹22/',
+      fare: '22',
       eta: '17',
       categoryKey: 'tractor',
       imagePath: AppAssetsConstants.tractor1,
     ),
-
     // 🚗 Car
     VehicleModel(
-      nameKey: 'Sedan Car',
+      nameKey: 'SUV Car',
       rating: '4.3',
-      capacity: '5 Passengers',
-      fare: '₹12/',
+      capacity: '7 Passengers',
+      fare: '12',
       eta: '12',
       categoryKey: 'car',
       imagePath: AppAssetsConstants.car,
     ),
-
-    // // 🚛 Truck
-    // VehicleModel(
-    //   nameKey: 'Container Truck',
-    //   rating: '4.5',
-    //   capacity: '10 Ton',
-    //   fare: '₹25/',
-    //   eta: '18',
-    //   categoryKey: 'truck',
-    //   imagePath: AppAssetsConstants.lorry,
-    // ),
+    // 🌾 Agriculture
     VehicleModel(
       nameKey: 'Harvest Machine',
       rating: '4.4',
       capacity: '3 Ton',
-      fare: '₹60/',
+      fare: '60',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri3,
     ),
     // 🚐 Tata Ace
     VehicleModel(
-      nameKey: 'TATA ACE',
+      nameKey: 'TATA ACE XL',
       rating: '4.6',
-      capacity: '1.5 Ton',
-      fare: '₹18/',
+      capacity: '2 Ton',
+      fare: '20',
       eta: '15',
       categoryKey: 'tataace',
       imagePath: AppAssetsConstants.tataAce2,
     ),
-
     // 🚌 Bus
     VehicleModel(
       nameKey: 'AC Bus',
       rating: '4.8',
       capacity: '40 Passengers',
-      fare: '₹55/',
+      fare: '55',
       eta: '18',
       categoryKey: 'bus',
       imagePath: AppAssetsConstants.bus2,
     ),
+    // 🌾 Agriculture
     VehicleModel(
-      nameKey: 'Harvest Machine',
+      nameKey: 'Tractor',
       rating: '4.4',
       capacity: '3 ACR',
-      fare: '₹60/',
+      fare: '60',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri2,
     ),
+    // 🚜 Tractor
     VehicleModel(
-      nameKey: 'Farm Tractor',
+      nameKey: 'Power Tractor',
       rating: '4.3',
-      capacity: '2 Ton',
-      fare: '₹22/',
+      capacity: '3 Ton',
+      fare: '25',
       eta: '17',
       categoryKey: 'tractor',
       imagePath: AppAssetsConstants.tractor2,
     ),
     // 🚚 Lorry
     VehicleModel(
-      nameKey: 'Lorry',
+      nameKey: 'Lorry 4 Ton',
       rating: '4.4',
       capacity: '4 Ton',
-      fare: '₹30/',
+      fare: '30',
       eta: '25',
       categoryKey: 'lorry',
       imagePath: AppAssetsConstants.lorry2,
     ),
-
     // 🏗 JCB
     VehicleModel(
-      nameKey: 'JCB Machine',
+      nameKey: 'JCB 3DX',
       rating: '4.1',
       capacity: '6 Ton',
-      fare: '₹55/',
+      fare: '55',
       eta: '35',
       categoryKey: 'jcb',
       imagePath: AppAssetsConstants.jcb2,
     ),
-
     // 🌾 Agriculture
     VehicleModel(
-      nameKey: 'Harvest Machine',
+      nameKey: 'Harvester',
       rating: '4.4',
       capacity: '3 Ton',
-      fare: '₹60/',
+      fare: '60',
       eta: '45',
       categoryKey: 'agri',
       imagePath: AppAssetsConstants.agri1,
     ),
   ];
+
   List<VehicleModel> get filteredVehicles {
     final key = categories[selectedCategoryIndex.value].filterKey;
     if (key == 'all') return _allVehicles;
@@ -294,9 +268,40 @@ class HomeController extends GetxController {
   void selectCategory(int index) => selectedCategoryIndex.value = index;
   void onNavTapped(int index) => currentNavIndex.value = index;
   void onSeeAll() {}
+
+  // ── FIXED: Proper navigation based on vehicle type ───────────────────
   void onvehicleDetails(VehicleModel vehicle) {
+    String routeName;
+
+    // Map category to appropriate detail screen
+    switch (vehicle.categoryKey) {
+      case 'car':
+        routeName = Routes.carVehicleDetail;
+        break;
+      case 'lorry':
+        routeName = Routes.lorryVehicleDetail;
+        break;
+      case 'tataace':
+        routeName = Routes.tataAceVehicleDetail;
+        break;
+      case 'bus':
+        routeName = Routes.busVehicleDetail;
+        break;
+      case 'jcb':
+        routeName = Routes.jcbVehicleDetail;
+        break;
+      case 'tractor':
+        routeName = Routes.tractorVehicleDetail;
+        break;
+      case 'agri':
+        routeName = Routes.agriVehicleDetail;
+        break;
+      default:
+        routeName = Routes.vehDetails; // fallback to generic
+    }
+
     Get.toNamed(
-      Routes.vehDetails,
+      routeName,
       arguments: {
         'name': vehicle.nameKey,
         'rating': vehicle.rating,
@@ -306,13 +311,44 @@ class HomeController extends GetxController {
         'imagePath': vehicle.imagePath,
         'distance': '3.2',
         'tripsCompleted': '120',
+        // Add category for additional vehicle-specific data
+        'categoryKey': vehicle.categoryKey,
       },
     );
   }
 
+  // ── FIXED: Proper booking navigation based on vehicle type ───────────
   void onBookNow(VehicleModel vehicle) {
+    String routeName;
+
+    switch (vehicle.categoryKey) {
+      case 'car':
+        routeName = Routes.carBooking;
+        break;
+      case 'lorry':
+        routeName = Routes.lorryBooking;
+        break;
+      case 'tataace':
+        routeName = Routes.tataAceBooking;
+        break;
+      case 'bus':
+        routeName = Routes.busBooking;
+        break;
+      case 'jcb':
+        routeName = Routes.jcbBooking;
+        break;
+      case 'tractor':
+        routeName = Routes.tractorBooking;
+        break;
+      case 'agri':
+        routeName = Routes.agriBooking;
+        break;
+      default:
+        routeName = Routes.bookingDetails; // fallback
+    }
+
     Get.toNamed(
-      Routes.bookingDetails,
+      routeName,
       arguments: {
         'name': vehicle.nameKey,
         'rating': vehicle.rating,
@@ -322,13 +358,13 @@ class HomeController extends GetxController {
         'imagePath': vehicle.imagePath,
         'distance': '3.2',
         'tripsCompleted': '120',
+        'categoryKey': vehicle.categoryKey,
       },
     );
   }
 
   FavoriteVehicle toFavorite(VehicleModel v) {
     return FavoriteVehicle(
-      // unique id — category + name combine (duplicate avoid)
       id: '${v.categoryKey}_${v.nameKey}',
       nameKey: v.nameKey,
       rating: v.rating,
@@ -346,14 +382,11 @@ class HomeController extends GetxController {
 
     if (currentCat.filterKey == 'all') {
       // ── "All" tab — tap → switch to that vehicle's category ──
-      // Find the index of the matching category
       final catIndex = categories.indexWhere(
         (c) => c.filterKey == vehicle.categoryKey,
       );
       if (catIndex != -1) {
-        // Switch category tab → filtered list shows
         selectedCategoryIndex.value = catIndex;
-        // Do NOT navigate — stay on HomeScreen, list updates
       }
     } else {
       // ── Specific category tab — tap → vehicle details ─────────

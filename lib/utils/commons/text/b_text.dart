@@ -11,6 +11,7 @@ class BText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
   final bool isLocalized;
+  final String? textAfter;
 
   const BText({
     super.key,
@@ -22,12 +23,16 @@ class BText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.isLocalized = true,
+    this.textAfter,
   });
 
   @override
   Widget build(BuildContext context) {
+    final fullText = textAfter != null
+        ? "${isLocalized ? text.tr : text}$textAfter"
+        : (isLocalized ? text.tr : text);
     return Text(
-      isLocalized ? text.tr : text,
+      fullText,
       textAlign: textAlign ?? TextAlign.start,
       maxLines: maxLines,
       overflow: overflow,
