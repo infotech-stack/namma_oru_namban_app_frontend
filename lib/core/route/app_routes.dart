@@ -9,4 +9,26 @@ abstract class Routes {
   static const myBooking = '/myBooking';
   static const bookingDetails = '/bookingDetails';
   static const favorites = '/favorites';
+
+  /// All Vehicles Details and Booking Screens
+  static const carVehicleDetail = '/carVehicleDetail';
+  static const carBooking = '/carBooking';
+  //
+  static const busVehicleDetail = '/busVehicleDetail';
+  static const busBooking = '/busBooking';
+  //
+  static const jcbVehicleDetail = '/jcbVehicleDetail';
+  static const jcbBooking = '/jcbBooking';
+  //
+  static const lorryVehicleDetail = '/lorryVehicleDetail';
+  static const lorryBooking = '/lorryBooking';
+  //
+  static const tataAceVehicleDetail = '/tataAceVehicleDetail';
+  static const tataAceBooking = '/tataAceBooking';
+  //
+  static const tractorVehicleDetail = '/tractorVehicleDetail';
+  static const tractorBooking = '/tractorBooking';
+  //
+  static const agriVehicleDetail = '/agriVehicleDetail';
+  static const agriBooking = '/agriBooking';
 }

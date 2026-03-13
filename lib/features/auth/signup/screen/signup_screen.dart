@@ -119,7 +119,7 @@ class SignUpScreen extends GetView<SignUpController> {
 
         // Username
         BTextField(
-          controller: controller.usernameController,
+          controller: controller.nameController,
           hintText: "hint_name",
           isLocalized: true,
           labelText: "username",
@@ -133,6 +133,7 @@ class SignUpScreen extends GetView<SignUpController> {
           isLocalized: true,
           keyboardType: TextInputType.phone,
           labelText: "mobile_number",
+          maxLength: 10,
         ),
         SizedBox(height: 28.h),
 
@@ -149,10 +150,9 @@ class SignUpScreen extends GetView<SignUpController> {
     return BButton(
       text: "get_code",
       isLocalized: true,
+      isLoading: controller.isLoading.value,
       // textColor: theme.secondaryHeaderColor,
-      onTap: () {
-        Get.toNamed(Routes.otpScreen);
-      },
+      onTap: controller.onRegister,
       suffixIcon: Icon(Icons.arrow_forward, color: theme.colorScheme.secondary),
     );
   }

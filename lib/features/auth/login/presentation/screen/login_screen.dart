@@ -121,6 +121,7 @@ class LoginScreen extends GetView<LoginController> {
           isLocalized: true,
           keyboardType: TextInputType.phone,
           labelText: "enter_registered_mobile",
+          maxLength: 10,
         ),
         SizedBox(height: 28.h),
 

@@ -232,6 +232,261 @@ const Map<String, String> en = {
       'You haven\'t saved any vehicle in this category yet.',
   'fav_browse_btn': 'Browse Vehicles',
 
+  // ──────────────────────────────────────────────────────────────
+  //  CAR — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "car_details_title": "Car Details",
+  "car_specifications": "Car Specifications",
+  "car_reviews": "Reviews",
+  "similar_cars": "Similar Cars",
+
+  // "book_now": "Book Now",
+  "ac_car": "AC Car",
+
+  // "available_247": "24/7 Available",
+  // "trips_completed": "trips",
+  "seating": "Seating",
+  "transmission": "Gear",
+
+  //"fuel_type": "Fuel",
+  "manufacturer": "Manufacturer",
+  "model": "Model",
+  "seat_type": "Seat Type",
+  "ac_available": "AC",
+  "music_system": "Music System",
+
+  // "reviews": "Reviews",
+  // "view_all": "View All",
+  // ──────────────────────────────────────────────────────────────
+  //  CAR — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "ac": "AC",
+  "music": "Music",
+  "car_booking_title": "Book Car",
+  "ac_service": "AC Service",
+  "child_seat": "Child Seat",
+  "extra_luggage": "Extra Luggage",
+  "car_instructions_hint":
+      "E.g., Please bring child seat, Need extra luggage space...",
+  "car_instructions_example":
+      "Example: Need car with good AC, Prefer music system",
+  "booking_success_message":
+      "Your car has been booked successfully. Driver will contact you shortly.",
+
+  // ──────────────────────────────────────────────────────────────
+  //  LORRY — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "lorry_details_title": "Lorry Details",
+  "lorry_specifications": "Lorry Specifications",
+  "suitable_load_types": "Suitable Load Types",
+  "similar_lorries": "Similar Lorries",
+
+  "load_capacity": "Capacity",
+  "body_type": "Body Type",
+  "vehicle_model": "Model",
+  "loading_charge": "Loading",
+  "unloading_charge": "Unloading",
+  "driver_bata": "Driver Bata",
+  "pricing_model": "Pricing",
+
+  "lorry_load_m_sand": "M Sand",
+  "lorry_load_p_sand": "P Sand",
+  "lorry_load_river_sand": "River Sand",
+  "lorry_load_10mm_jelly": "10mm Jelly",
+  "lorry_load_20mm_jelly": "20mm Jelly",
+  "lorry_load_40mm_jelly": "40mm Jelly",
+  "lorry_load_cement": "Cement",
+  "lorry_load_bricks": "Bricks",
+  "lorry_load_steel": "Steel",
+  "lorry_load_timber": "Timber",
+  "lorry_load_general_goods": "General Goods",
+  "lorry_load_furniture": "Furniture",
+
+  // ──────────────────────────────────────────────────────────────
+  //  LORRY — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "lorry_booking_title": "Book Lorry",
+  "per_load": "Per Load",
+  "per_trip": "Per Trip",
+  "need_loading_helper": "Need Loading Helper",
+  "need_unloading_helper": "Need Unloading Helper",
+  "lorry_instructions_hint": "E.g., Need help with loading, Heavy items...",
+  "lorry_instructions_example":
+      "Example: Need crane for loading, Fragile items",
+
+  "lorry_booking_success_message":
+      "Your lorry has been booked successfully. Driver will contact you shortly.",
+
+  // ──────────────────────────────────────────────────────────────
+  //  BUS — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "bus_details_title": "Bus Details",
+  "bus_specifications": "Bus Specifications",
+  "bus_amenities": "Amenities",
+  "similar_buses": "Similar Buses",
+  "seating_capacity": "Seating",
+  "bus_category": "Category",
+  "charging_points": "Charging",
+  "entertainment": "Entertainment",
+  "toilet": "Toilet",
+  "water_bottle": "Water Bottle",
+  "first_aid": "First Aid",
+  "tracking": "Live Tracking",
+
+  // ──────────────────────────────────────────────────────────────
+  //  BUS — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "bus_booking_title": "Book Bus",
+  "tour_guide": "Tour Guide",
+  "catering": "Catering",
+  "photography": "Photography",
+  "bus_instructions_hint":
+      "E.g., Need wheelchair access, Prefer front seats...",
+  "bus_instructions_example":
+      "Example: Need space for elderly, Request vegetarian food",
+  "bus_booking_success_message":
+      "Your bus has been booked successfully. Driver will contact you shortly.",
+
+  // ──────────────────────────────────────────────────────────────
+  //  JCB — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "jcb_details_title": "JCB Details",
+  "jcb_specifications": "JCB Specifications",
+  "jcb_working_areas": "Working Areas",
+  "jcb_charging_options": "Charging Options",
+  "similar_jcbs": "Similar JCBs",
+
+  "jcb_model": "Model",
+  "bucket_type": "Bucket Type",
+  "machine_age": "Machine Age",
+  "condition": "Condition",
+  "base_price": "Base Price",
+  "extra_hour": "Extra Hour",
+  "operator_bata": "Operator Bata",
+  "fuel_charge": "Fuel Charge",
+
+  "jcb_charge_per_hour": "Per Hour",
+  "jcb_charge_per_load": "Per Load",
+
+  "big_bucket": "Big Bucket",
+  "small_bucket": "Small Bucket",
+
+  // ──────────────────────────────────────────────────────────────
+  //  JCB — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "jcb_booking_title": "Book JCB",
+  "operator_details": "Operator Details",
+  "extra_operator": "Extra Operator",
+  "night_work": "Night Work",
+  "rock_breaking": "Rock Breaking",
+  "site_clearance": "Site Clearance",
+  "verified_operator": "Verified Operator",
+  "jcb_instructions_hint":
+      "E.g., Need rock breaking, Working in tight space...",
+  "jcb_instructions_example":
+      "Example: Site has hard rock, Need extra operator",
+  "jcb_booking_success_message":
+      "Your JCB has been booked successfully. Operator will contact you shortly.",
+
+  // ──────────────────────────────────────────────────────────────
+  //  TATA ACE — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "tata_ace_details_title": "Tata Ace Details",
+  "tata_ace_specifications": "Vehicle Specifications",
+  "tata_ace_usage_types": "Usage Types",
+  "similar_tata_ace": "Similar Tata Ace",
+
+  "payload_capacity": "Payload",
+  "gross_weight": "Gross Weight",
+  "price_per_km": "Price/km",
+  "price_per_trip": "Price/Trip",
+  "loading_base": "Loading Base",
+
+  "Local": "Local Delivery",
+  "Intercity": "Intercity",
+  "Porter": "Porter Service",
+  "Full Load": "Full Load",
+  'per_day': 'Per Day',
+  // ──────────────────────────────────────────────────────────────
+  //  TATA ACE — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "tata_ace_booking_title": "Book Tata Ace",
+  "loading_helper": "Loading Helper",
+  "unloading_helper": "Unloading Helper",
+  "extra_stops": "Extra Stops",
+  "return_trip": "Return Trip (50% off)",
+  "tata_ace_instructions_hint": "E.g., Need loading help, Fragile items...",
+  "tata_ace_instructions_example": "Example: Glass items, Need extra care",
+  "tata_ace_booking_success_message":
+      "Your Tata Ace has been booked successfully. Driver will contact you shortly.",
+
+  // ──────────────────────────────────────────────────────────────
+  //  TRACTOR — VEHICLE DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "tractor_details_title": "Tractor Details",
+  "tractor_specifications": "Tractor Specifications",
+  "tractor_suitable_for": "Suitable For",
+  "similar_tractors": "Similar Tractors",
+
+  "tractor_category": "Category",
+  "tractor_brand": "Brand",
+  "tractor_hp": "Horse Power",
+  "tractor_attachment": "Attachment",
+  "available_hours": "Available Hours",
+  "min_hours": "Min Hours",
+  "operator_charge": "Operator Charge",
+
+  "ploughing": "Ploughing",
+  "tilling": "Tilling",
+  "harvesting": "Harvesting",
+  "transport": "Transport",
+  "spraying": "Spraying",
+
+  // ──────────────────────────────────────────────────────────────
+  //  TRACTOR — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "tractor_booking_title": "Book Tractor",
+  "attachment_rental": "Attachment Rental",
+  "fuel_supply": "Fuel Supply",
+  "tractor_instructions_hint":
+      "E.g., Need specific attachment, Field location...",
+  "tractor_instructions_example": "Example: Need rotavator, Field is 5 acres",
+  "tractor_booking_success_message":
+      "Your tractor has been booked successfully. Operator will contact you shortly.",
+  "per_acre": "Per Acre",
+
+  // ──────────────────────────────────────────────────────────────
+  //  AGREE — Agricultural Equipment Details
+  // ──────────────────────────────────────────────────────────────
+  "agri_details_title": "Agricultural Equipment Details",
+  "agri_specifications": "Equipment Specifications",
+  "agri_availability": "Availability",
+  "agri_suitable_for": "Suitable For",
+  "similar_equipment": "Similar Equipment",
+
+  "equipment_type": "Equipment Type",
+  "model_name": "Model",
+
+  "available_from": "Available From",
+  "available_to": "Available To",
+  "min_booking": "Minimum Booking",
+
+  "threshing": "Threshing",
+  "reaping": "Reaping",
+  "combining": "Combining",
+
+  // ──────────────────────────────────────────────────────────────
+  //  AGREE — BOOKING DETAIL
+  // ──────────────────────────────────────────────────────────────
+  "agri_booking_title": "Book Agricultural Equipment",
+  "agri_instructions_hint":
+      "E.g., Field size, Crop type, Special requirements...",
+  "agri_instructions_example":
+      "Example: 5 acres paddy field, Need harvesting today",
+  "agri_booking_success_message":
+      "Your agricultural equipment has been booked successfully. Operator will contact you shortly.",
+
+  //=========================================================
   //-----Booking Confirm dialog
   'booking_confirmed': 'Booking Confirmed!',
   'vehicle_on_way': 'Your vehicle is on the way',
@@ -245,4 +500,5 @@ const Map<String, String> en = {
   'warning': 'Warning',
   'login_success': 'Login successful',
   'login_failed': 'Invalid credentials',
+  'newUserEn ': "You're not registered yet. Please complete your registration.",
 };
