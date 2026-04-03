@@ -20,10 +20,10 @@ class BButton extends StatelessWidget {
   final Widget? suffixIcon;
 
   final double? height;
+  final double? width;
   final double? borderRadius;
   final EdgeInsetsGeometry? padding;
 
-  /// 🔥 NEW
   final double? fontSize;
   final FontWeight? fontWeight;
 
@@ -43,76 +43,87 @@ class BButton extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.padding,
-
-    /// 🔥 NEW
     this.fontSize,
     this.fontWeight,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     final primary = Get.theme.colorScheme.primary;
 
-    return GestureDetector(
-      onTap: isLoading ? null : onTap,
-      child: Container(
-        height: height ?? 45.h,
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
-        decoration: BoxDecoration(
-          gradient: isOutline
-              ? null
-              : gradient ??
-                    LinearGradient(
-                      colors: [primary, primary.withValues(alpha: 0.8)],
-                    ),
-          color: isOutline ? Colors.transparent : backgroundColor,
-          borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
-          border: isOutline
-              ? Border.all(color: borderColor ?? primary, width: 1.5)
-              : null,
-          boxShadow: isOutline
-              ? []
-              : [
-                  BoxShadow(
-                    color: primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-        ),
-        child: Center(
-          child: isLoading
-              ? SizedBox(
-                  height: 20.h,
-                  width: 20.h,
-                  child: const CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (prefixIcon != null) ...[
-                      prefixIcon!,
-                      SizedBox(width: 8.w),
-                    ],
-                    Text(
-                      isLocalized ? text.tr : text,
-                      style: TextStyle(
-                        color:
-                            textColor ?? (isOutline ? primary : Colors.white),
-
-                        fontSize: fontSize ?? responsiveFont(en: 16, ta: 14),
-                        fontWeight: fontWeight ?? FontWeight.w600,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
+        onTap: isLoading ? null : onTap,
+        child: Container(
+          height: height ?? 45.h,
+          width: width ?? double.infinity,
+          padding: padding ?? EdgeInsets.symmetric(horizontal: 12.w),
+          decoration: BoxDecoration(
+            gradient: isOutline
+                ? null
+                : gradient ??
+                      LinearGradient(
+                        colors: [primary, primary.withValues(alpha: 0.8)],
                       ),
+            color: isOutline ? Colors.transparent : backgroundColor,
+            borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
+            border: isOutline
+                ? Border.all(color: borderColor ?? primary, width: 1.5)
+                : null,
+            boxShadow: isOutline
+                ? []
+                : [
+                    BoxShadow(
+                      color: primary.withValues(alpha: 0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                    if (suffixIcon != null) ...[
-                      SizedBox(width: 8.w),
-                      suffixIcon!,
-                    ],
                   ],
-                ),
+          ),
+
+          /// 🔥 CONTENT
+          child: Center(
+            child: isLoading
+                ? SizedBox(
+                    height: 20.h,
+                    width: 20.h,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max, // ✅ important
+                    children: [
+                      if (prefixIcon != null) ...[
+                        prefixIcon!,
+                        SizedBox(width: 4.w),
+                      ],
+
+                      /// ✅ TEXT (NO FLEXIBLE)
+                      Text(
+                        isLocalized ? text.tr : text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color:
+                              textColor ?? (isOutline ? primary : Colors.white),
+                          fontSize: fontSize ?? 13.sp, // 👈 slightly reduce
+                          fontWeight: fontWeight ?? FontWeight.w600,
+                        ),
+                      ),
+
+                      if (suffixIcon != null) ...[
+                        SizedBox(width: 4.w),
+                        suffixIcon!,
+                      ],
+                    ],
+                  ),
+          ),
         ),
       ),
     );

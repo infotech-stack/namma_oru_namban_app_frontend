@@ -31,79 +31,104 @@ class VehicleSpecsContainer extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(18.r),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [p.withValues(alpha: 0.08), p.withValues(alpha: 0.03)],
-        ),
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: p.withValues(alpha: 0.15)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// 🔥 HEADER
           customHeader ??
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(7.r),
+                    padding: EdgeInsets.all(8.r),
                     decoration: BoxDecoration(
-                      color: p.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8.r),
+                      color: p.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Icon(
                       headerIcon ?? Icons.tune_rounded,
-                      size: 16.sp,
+                      size: 18.sp,
                       color: p,
                     ),
                   ),
-                  Gap(10.w),
-                  BText(
-                    text: titleKey,
-                    fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
-                    fontWeight: FontWeight.w700,
-                    isLocalized: true,
+                  Gap(12.w),
+                  Expanded(
+                    child: BText(
+                      text: titleKey,
+                      fontSize: responsiveFont(en: 15.sp, ta: 13.sp),
+                      fontWeight: FontWeight.w700,
+                      isLocalized: true,
+                    ),
                   ),
                 ],
               ),
+
           Gap(16.h),
+
+          /// 🔥 CONTENT
           customContent ??
               Column(
-                children: specs.map((spec) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 10.h),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 6.r,
-                          height: 6.r,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            shape: BoxShape.circle,
+                children: List.generate(specs.length, (index) {
+                  final spec = specs[index];
+
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          /// 👉 Left Label
+                          SizedBox(
+                            width: 120.w,
+                            child: BText(
+                              text: spec.labelKey,
+                              fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
+                              color: Colors.grey[600],
+                              isLocalized: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        Gap(10.w),
-                        SizedBox(
-                          width: 110.w,
-                          child: BText(
-                            text: spec.labelKey,
-                            fontSize: responsiveFont(en: 12.sp, ta: 10.sp),
-                            color: theme.dividerColor,
-                            isLocalized: true,
+
+                          /// 👉 Right Value
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft, // 👈 IMPORTANT
+                              child: BText(
+                                text: spec.value,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                isLocalized: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ),
+                        ],
+                      ),
+
+                      /// 🔥 Divider (except last)
+                      if (index != specs.length - 1) ...[
+                        Gap(10.h),
+                        Divider(
+                          height: 1,
+                          thickness: 0.6,
+                          color: Colors.grey.withValues(alpha: 0.2),
                         ),
-                        Expanded(
-                          child: BText(
-                            text: spec.value,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                            isLocalized: false,
-                          ),
-                        ),
+                        Gap(10.h),
                       ],
-                    ),
+                    ],
                   );
-                }).toList(),
+                }),
               ),
         ],
       ),

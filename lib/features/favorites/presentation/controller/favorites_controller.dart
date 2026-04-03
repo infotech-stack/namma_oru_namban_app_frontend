@@ -1,68 +1,28 @@
-// lib/features/favorites/presentation/controller/favorites_controller.dart
-//
-// ════════════════════════════════════════════════════════════════
-//  FAVORITES CONTROLLER — permanent: true (singleton)
-//
-//  WHY permanent:
-//    HomeScreen + FavoritesScreen both share this controller.
-//    permanent: true ensures it stays alive across navigation.
-//    Heart toggle on HomeScreen instantly reflects on FavScreen.
-//
-//  FLOW:
-//    HomeScreen card heart tap
-//      → FavoritesController.toggleFavorite(vehicle)
-//      → isFavorite(vehicle.id) → true/false
-//      → Heart icon red/grey reactively
-//
-//    FavoritesScreen
-//      → filteredFavorites — shows only saved vehicles
-//      → Remove tap → toggleFavorite → removed from HomeScreen too
-// ════════════════════════════════════════════════════════════════
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:userapp/features/favorites/domain/entities/favorite_entity.dart';
+import 'package:userapp/features/favorites/domain/usecases/get_favorites_usecase.dart';
 import 'package:userapp/core/route/app_routes.dart';
 
-// ── Favorite vehicle model ─────────────────────────────────────
-class FavoriteVehicle {
-  final String id;
-  final String nameKey;
-  final String rating;
-  final String capacity;
-  final String fare;
-  final String eta;
-  final String categoryKey;
-  final String availabilityStatus;
-  String? imagePath;
-
-  FavoriteVehicle({
-    required this.id,
-    required this.nameKey,
-    required this.rating,
-    required this.capacity,
-    required this.fare,
-    required this.eta,
-    required this.categoryKey,
-    this.availabilityStatus = 'available',
-    this.imagePath,
-  });
-}
-
 class FavoritesController extends GetxController {
-  // ── Singleton access ───────────────────────────────────────
   static FavoritesController get to => Get.find();
+
+  final GetFavoritesUseCase _getFavorites;
+  final ToggleFavoriteUseCase _toggleFavorite;
+
+  FavoritesController(this._getFavorites, this._toggleFavorite);
 
   final searchController = TextEditingController();
   final searchQuery = ''.obs;
 
-  // ── Selected category filter ───────────────────────────────
   final selectedCategoryIndex = 0.obs;
 
-  // ── Saved favorites — RxList (reactive) ───────────────────
-  // Key: vehicle id — Value: FavoriteVehicle
-  final _favoriteMap = <String, FavoriteVehicle>{}.obs;
+  /// ✅ SINGLE SOURCE OF TRUTH
+  final favorites = <FavoriteEntity>[].obs;
 
-  // ── Categories ─────────────────────────────────────────────
+  final isLoading = false.obs;
+
+  // ── Categories ─────────────────────────────
   final categories = <Map<String, dynamic>>[
     {
       'labelKey': 'fav_cat_all',
@@ -90,6 +50,11 @@ class FavoritesController extends GetxController {
       'filterKey': 'bus',
     },
     {
+      'labelKey': 'fav_cat_mini_bus',
+      'icon': Icons.directions_bus_rounded,
+      'filterKey': 'mini_bus',
+    },
+    {
       'labelKey': 'fav_cat_tataace',
       'icon': Icons.airport_shuttle_rounded,
       'filterKey': 'tataace',
@@ -109,65 +74,92 @@ class FavoritesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     searchController.addListener(() {
       searchQuery.value = searchController.text;
     });
+
+    fetchFavorites();
   }
 
-  // ════════════════════════════════════════════════════════════
-  //  CORE — Toggle favorite (add/remove)
-  //  Called from HomeScreen heart button tap
-  // ════════════════════════════════════════════════════════════
-  void toggleFavorite(FavoriteVehicle vehicle) {
-    if (_favoriteMap.containsKey(vehicle.id)) {
-      _favoriteMap.remove(vehicle.id); // ← remove
+  // ════════════════════════════════════════════
+  // ✅ FETCH
+  // ════════════════════════════════════════════
+  Future<void> fetchFavorites() async {
+    isLoading.value = true;
+
+    final result = await _getFavorites();
+
+    if (result.isSuccess && result.data != null) {
+      favorites.assignAll(result.data!);
+    }
+
+    isLoading.value = false;
+  }
+
+  // ════════════════════════════════════════════
+  // ✅ TOGGLE (API + UI sync)
+  // ════════════════════════════════════════════
+  Future<void> toggleFavorite(FavoriteEntity vehicle) async {
+    final exists = favorites.any((e) => e.id == vehicle.id);
+
+    /// 🔥 OPTIMISTIC UI UPDATE
+    if (exists) {
+      favorites.removeWhere((e) => e.id == vehicle.id);
     } else {
-      _favoriteMap[vehicle.id] = vehicle; // ← add
+      favorites.add(vehicle);
+    }
+
+    final result = await _toggleFavorite(vehicle.id);
+
+    /// ❌ rollback if API fail
+    if (!result.isSuccess) {
+      if (exists) {
+        favorites.add(vehicle);
+      } else {
+        favorites.removeWhere((e) => e.id == vehicle.id);
+      }
     }
   }
 
-  // ════════════════════════════════════════════════════════════
-  //  CHECK — Is vehicle favorited?
-  //  Used in HomeScreen to show red/grey heart
-  //  Wrap in Obx to react to changes
-  // ════════════════════════════════════════════════════════════
-  bool isFavorite(String vehicleId) => _favoriteMap.containsKey(vehicleId);
+  // ════════════════════════════════════════════
+  // ✅ CHECK (for ❤️)
+  // ════════════════════════════════════════════
+  bool isFavorite(int id) {
+    return favorites.any((e) => e.id == id);
+  }
 
-  // ── All favorites as list ──────────────────────────────────
-  List<FavoriteVehicle> get _allFavorites => _favoriteMap.values.toList();
-
-  // ── Filtered list (category + search) ─────────────────────
-  List<FavoriteVehicle> get filteredFavorites {
+  // ── Filtered list ───────────────────────────
+  List<FavoriteEntity> get filteredFavorites {
     final key = categories[selectedCategoryIndex.value]['filterKey'] as String;
+
     var list = key == 'all'
-        ? _allFavorites
-        : _allFavorites.where((v) => v.categoryKey == key).toList();
+        ? favorites
+        : favorites.where((v) => v.categoryKey == key).toList();
 
     final q = searchQuery.value.trim().toLowerCase();
     if (q.isNotEmpty) {
       list = list.where((v) => v.nameKey.toLowerCase().contains(q)).toList();
     }
+
     return list;
   }
 
-  // ── Total favorites count (for badge on nav bar) ──────────
-  int get favoritesCount => _favoriteMap.length;
+  int get favoritesCount => favorites.length;
 
-  // ── Category has favorites? ────────────────────────────────
   bool get isCurrentCategoryEmpty {
     final key = categories[selectedCategoryIndex.value]['filterKey'] as String;
-    if (key == 'all') return _favoriteMap.isEmpty;
-    return !_allFavorites.any((v) => v.categoryKey == key);
+    if (key == 'all') return favorites.isEmpty;
+    return !favorites.any((v) => v.categoryKey == key);
   }
 
-  // ── Select category ────────────────────────────────────────
   void selectCategory(int index) {
     selectedCategoryIndex.value = index;
     searchController.clear();
   }
 
-  // ── Remove with confirmation dialog ───────────────────────
-  void onRemoveFavorite(FavoriteVehicle vehicle) {
+  // ── REMOVE
+  void onRemoveFavorite(FavoriteEntity vehicle) {
     Get.dialog(
       AlertDialog(
         title: Text('fav_remove_title'.tr),
@@ -175,22 +167,19 @@ class FavoritesController extends GetxController {
         actions: [
           TextButton(onPressed: () => Get.back(), child: Text('fav_cancel'.tr)),
           TextButton(
-            onPressed: () {
-              _favoriteMap.remove(vehicle.id);
+            onPressed: () async {
+              await toggleFavorite(vehicle); // ✅ FIXED
               Get.back();
             },
-            child: Text(
-              'fav_remove_btn'.tr,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: const Text('Remove', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
   }
 
-  // ── Book Now ───────────────────────────────────────────────
-  void onBookNow(FavoriteVehicle vehicle) {
+  // ── NAVIGATION
+  void onBookNow(FavoriteEntity vehicle) {
     Get.toNamed(
       Routes.bookingDetails,
       arguments: {
@@ -200,14 +189,23 @@ class FavoritesController extends GetxController {
         'fare': vehicle.fare,
         'eta': vehicle.eta,
         'imagePath': vehicle.imagePath,
-        'distance': '3.2',
-        'tripsCompleted': '120',
       },
     );
   }
 
-  // ── Vehicle details ────────────────────────────────────────
-  void onVehicleDetails(FavoriteVehicle vehicle) {
+  Future<void> refreshFavorites() async {
+    if (isLoading.value) return;
+
+    await fetchFavorites();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    refreshFavorites();
+  }
+
+  void onVehicleDetails(FavoriteEntity vehicle) {
     Get.toNamed(
       Routes.vehDetails,
       arguments: {
@@ -217,8 +215,6 @@ class FavoritesController extends GetxController {
         'fare': vehicle.fare,
         'eta': vehicle.eta,
         'imagePath': vehicle.imagePath,
-        'distance': '3.2',
-        'tripsCompleted': '120',
       },
     );
   }

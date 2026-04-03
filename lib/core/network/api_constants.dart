@@ -34,11 +34,14 @@ class _UserEndpoints {
   String get home => '/user/home';
 
   // ── Vehicles ──────────────────────────────────────────────────
-  String get vehicles => '/user/vehicles';
-  String get nearbyVehicles => '/user/vehicles/nearby';
-  String get featuredVehicles => '/user/vehicles/featured';
-  String get searchVehicles => '/user/vehicles/search';
-  String vehicleDetail(String id) => '/user/vehicles/$id';
+  // String get vehicles => '/user/vehicles';
+  // String get nearbyVehicles => '/user/vehicles/nearby';
+  // String get featuredVehicles => '/user/vehicles/featured';
+  // String get searchVehicles => '/user/vehicles/search';
+  //String vehicleDetail(String id) => '/user/vehicles/$id';
+  String get homeCategories => '/user/home/categories';
+  String get homeVehicles => '/user/home/vehicles';
+  String get vehicleDetail => '/user/home/vehicles'; // + /{id}
 
   String get carList => '/user/vehicles/car';
   String get busList => '/user/vehicles/bus';
@@ -63,8 +66,9 @@ class _UserEndpoints {
   String get createAgriBooking => '/user/bookings/agri';
 
   // ── Favorites ─────────────────────────────────────────────────
+  // String get favorites => '/user/favorites';
+  // String get addFavorite => '/user/favorites/add';
   String get favorites => '/user/favorites';
-  String get addFavorite => '/user/favorites/add';
   String removeFavorite(String id) => '/user/favorites/$id/remove';
 
   // ── Reviews ───────────────────────────────────────────────────

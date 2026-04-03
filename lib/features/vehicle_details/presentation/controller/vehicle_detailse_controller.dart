@@ -44,9 +44,6 @@ class VehicleDetailController extends GetxController {
 
   List<String?> get vehicleImages => [
     imagePath, // main image
-    AppAssetsConstants.car, // test image 2
-    AppAssetsConstants.car2, // test image 3
-    null, // null safety test
   ];
 
   void onBookNow() {

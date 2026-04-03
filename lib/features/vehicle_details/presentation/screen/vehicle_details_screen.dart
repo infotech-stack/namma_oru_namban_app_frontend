@@ -307,7 +307,7 @@ class VehicleDetailScreen extends GetView<VehicleDetailController> {
         Gap(16.h),
 
         // ── 4. Carousel — full width, no horizontal padding ─────
-        VehicleImageCarousel(
+        BImageCarousel(
           // images: [controller.imagePath],
           images: controller.vehicleImages,
           height: 220,

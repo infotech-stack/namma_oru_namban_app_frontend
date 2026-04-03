@@ -6,7 +6,8 @@ import 'package:userapp/features/auth/otp/presentation/screen/otp_screen.dart';
 import 'package:userapp/features/auth/signup/binding/signup_binding.dart';
 import 'package:userapp/features/auth/signup/screen/signup_screen.dart';
 import 'package:userapp/features/booking/presentation/binding/my_booking_binding.dart';
-import 'package:userapp/features/booking/presentation/screen/my_booking_screen.dart';
+import 'package:userapp/features/booking/presentation/screen/my_booking_detail_screen.dart';
+import 'package:userapp/features/booking/presentation/screen/my_booking_list_screen.dart';
 import 'package:userapp/features/booking_details/agri_machins/presentation/binding/agri_equipment_booking_binding.dart';
 import 'package:userapp/features/booking_details/agri_machins/presentation/screen/agri_equipment_booking_screen.dart';
 import 'package:userapp/features/booking_details/bus/presentation/binding/bus_booking_binding.dart';
@@ -18,13 +19,15 @@ import 'package:userapp/features/booking_details/jcb/presentation/screen/jcb_boo
 import 'package:userapp/features/booking_details/lorry/presentation/binding/lorry_booking_binding.dart';
 import 'package:userapp/features/booking_details/lorry/presentation/screen/lorry_booking_screen.dart';
 import 'package:userapp/features/booking_details/presentation/binding/booking_details_binding.dart';
+import 'package:userapp/features/booking_details/presentation/binding/unified_booking_binding.dart';
 import 'package:userapp/features/booking_details/presentation/screen/booking_details_screen.dart';
+import 'package:userapp/features/booking_details/presentation/screen/location_picker_screen.dart';
+import 'package:userapp/features/booking_details/presentation/screen/unified_booking_screen.dart';
 import 'package:userapp/features/booking_details/tata_ace/presentation/binding/tata_ace_booking_binding.dart';
 import 'package:userapp/features/booking_details/tata_ace/presentation/screen/tata_ace_booking_screen.dart';
 import 'package:userapp/features/booking_details/tractor/presentation/binding/tractor_booking_binding.dart';
 import 'package:userapp/features/booking_details/tractor/presentation/screen/tractor_booking_screen.dart';
 import 'package:userapp/features/favorites/presentation/screen/favorites_screen.dart';
-import 'package:userapp/features/home/presentation/binding/home_binding.dart';
 import 'package:userapp/features/home/presentation/screens/home_screen.dart';
 import 'package:userapp/features/onboarding/splash_screen/splash_screen.dart';
 import 'package:userapp/features/vehicle_details/agri/presentation/binding/agri_equipment_detail_binding.dart';
@@ -38,6 +41,8 @@ import 'package:userapp/features/vehicle_details/jcb/presentation/screen/jcb_veh
 import 'package:userapp/features/vehicle_details/lorry/presentation/binding/lorry_vehicle_detail_binding.dart';
 import 'package:userapp/features/vehicle_details/lorry/presentation/screen/lorry_vehicle_detail_screen.dart';
 import 'package:userapp/features/vehicle_details/presentation/binding/vehicle_binding.dart';
+import 'package:userapp/features/vehicle_details/presentation/screen/similar_vehicles_screen.dart';
+import 'package:userapp/features/vehicle_details/presentation/screen/unified_vehicle_detail_screen.dart';
 import 'package:userapp/features/vehicle_details/presentation/screen/vehicle_details_screen.dart';
 import 'package:userapp/features/vehicle_details/tata_ace/presentation/binding/tata_ace_vehicle_detail_binding.dart';
 import 'package:userapp/features/vehicle_details/tata_ace/presentation/screen/tata_ace_vehicle_detail_screen.dart';
@@ -90,7 +95,7 @@ class AppPages {
     GetPage(
       name: Routes.home,
       page: () => HomeScreen(),
-      binding: HomeBinding(),
+      //binding: HomeBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 300),
     ),
@@ -107,13 +112,40 @@ class AppPages {
     /// My Booking Screen
     GetPage(
       name: Routes.myBooking,
-      page: () => MyBookingScreen(),
-      binding: MyBookingBinding(),
+      page: () => MyBookingListScreen(),
+      binding: MyBookingListBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 300),
     ),
 
-    ///  Booking Details Screen
+    /// My Booking Status Screen
+    GetPage(
+      name: Routes.myBookingStatus,
+      page: () => MyBookingDetailScreen(),
+      binding: MyBookingDetailBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+
+    ///Unified  Booking Details Screen
+    GetPage(
+      name: Routes.unifiedBooking,
+      page: () => UnifiedBookingScreen(),
+      binding: UnifiedBookingBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+
+    GetPage(
+      name: Routes.similarVehicles,
+      page: () => const SimilarVehiclesScreen(),
+      // No binding needed — no controller
+    ),
+
+    GetPage(
+      name: Routes.locationPicker,
+      page: () => const LocationPickerScreen(),
+    ),
     GetPage(
       name: Routes.bookingDetails,
       page: () => BookingDetailsScreen(),
@@ -126,6 +158,12 @@ class AppPages {
     GetPage(name: Routes.favorites, page: () => FavoritesScreen()),
 
     /// All Vehicles Details and Booking Screens
+    ///
+    GetPage(
+      name: Routes.unifiedVehicleDetail,
+      page: () => const UnifiedVehicleDetailScreen(),
+      binding: UnifiedVehicleDetailBinding(),
+    ),
     GetPage(
       name: Routes.carVehicleDetail,
       page: () => CarVehicleDetailScreen(),

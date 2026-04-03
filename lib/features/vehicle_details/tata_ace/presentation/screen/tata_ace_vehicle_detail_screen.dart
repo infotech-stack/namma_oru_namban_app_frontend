@@ -213,7 +213,7 @@ class TataAceVehicleDetailScreen
                       vehicles: [
                         SimilarVehicleItem(
                           name: 'Tata Ace Gold',
-                          fare: '₹18/',
+                          fare: '₹18/', id: 0,
                           rating: '4.8',
                           icon: Icons.local_shipping_rounded,
                         ),
@@ -221,19 +221,19 @@ class TataAceVehicleDetailScreen
                           name: 'Tata Ace Mega',
                           fare: '₹20/',
                           rating: '4.7',
-                          icon: Icons.local_shipping_rounded,
+                          icon: Icons.local_shipping_rounded, id: 0,
                         ),
                         SimilarVehicleItem(
                           name: 'Tata Ace Zip',
                           fare: '₹16/',
                           rating: '4.6',
-                          icon: Icons.local_shipping_rounded,
+                          icon: Icons.local_shipping_rounded, id: 0,
                         ),
                         SimilarVehicleItem(
                           name: 'Tata Ace EV',
                           fare: '₹15/',
                           rating: '4.9',
-                          icon: Icons.local_shipping_rounded,
+                          icon: Icons.local_shipping_rounded, id: 0,
                         ),
                       ],
                     ),

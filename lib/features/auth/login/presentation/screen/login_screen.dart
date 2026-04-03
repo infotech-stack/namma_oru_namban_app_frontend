@@ -135,13 +135,19 @@ class LoginScreen extends GetView<LoginController> {
   }
 
   Widget _buildLoginButton(ThemeData theme) {
-    return BButton(
-      text: "login_btn",
-      isLocalized: true,
-      //textColor: theme.secondaryHeaderColor,
-      onTap: controller.onLogin,
-      suffixIcon: Icon(Icons.arrow_forward, color: theme.colorScheme.secondary),
-    );
+    return Obx(() {
+      return BButton(
+        text: "login_btn",
+        isLocalized: true,
+        isLoading: controller.isLoading.value,
+        //textColor: theme.secondaryHeaderColor,
+        onTap: controller.onLogin,
+        suffixIcon: Icon(
+          Icons.arrow_forward,
+          color: theme.colorScheme.secondary,
+        ),
+      );
+    });
   }
 
   Widget _buildCreateAccountRow(ThemeData theme) {

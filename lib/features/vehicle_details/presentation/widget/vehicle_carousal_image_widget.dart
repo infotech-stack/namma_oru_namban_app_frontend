@@ -4,26 +4,29 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:userapp/utils/commons/catch_image/app_catch_image.dart';
 
-class VehicleImageCarousel extends StatefulWidget {
+class BImageCarousel extends StatefulWidget {
   final List<String?> images;
   final double height;
   final Duration autoScrollDuration;
   final Duration animationDuration;
+  final Function(int index)? onImageTap; // 👈 Added onTap callback
 
-  const VehicleImageCarousel({
+  const BImageCarousel({
     super.key,
     required this.images,
     this.height = 220,
     this.autoScrollDuration = const Duration(seconds: 3),
     this.animationDuration = const Duration(milliseconds: 500),
+    this.onImageTap, // 👈 Optional callback
   });
 
   @override
-  State<VehicleImageCarousel> createState() => _VehicleImageCarouselState();
+  State<BImageCarousel> createState() => _BImageCarouselState();
 }
 
-class _VehicleImageCarouselState extends State<VehicleImageCarousel> {
+class _BImageCarouselState extends State<BImageCarousel> {
   final CarouselSliderController _controller = CarouselSliderController();
   int _currentIndex = 0;
 
@@ -51,16 +54,24 @@ class _VehicleImageCarouselState extends State<VehicleImageCarousel> {
           itemCount: images.length,
           options: CarouselOptions(
             height: widget.height.h,
-            autoPlay: hasMulti, // auto scroll only if multiple
+            autoPlay: hasMulti,
             autoPlayInterval: widget.autoScrollDuration,
             autoPlayAnimationDuration: widget.animationDuration,
             autoPlayCurve: Curves.easeInOutCubic,
-            viewportFraction: 1.0, // full width
+            viewportFraction: 1.0,
             enlargeCenterPage: false,
-            enableInfiniteScroll: hasMulti, // loop only if multiple
+            enableInfiniteScroll: hasMulti,
             onPageChanged: (index, _) => setState(() => _currentIndex = index),
           ),
-          itemBuilder: (_, i, __) => _buildImageCard(theme, p, images[i]),
+          itemBuilder: (_, i, __) => GestureDetector(
+            onTap: () {
+              // Call onImageTap if provided and image exists
+              if (widget.onImageTap != null && images[i] != null) {
+                widget.onImageTap!(i);
+              }
+            },
+            child: _buildImageCard(theme, p, images[i]),
+          ),
         ),
 
         // ── Animated dot indicators ───────────────────────────
@@ -105,28 +116,83 @@ class _VehicleImageCarouselState extends State<VehicleImageCarousel> {
             colors: [p.withValues(alpha: 0.15), p.withValues(alpha: 0.06)],
           ),
           border: Border.all(color: p.withValues(alpha: 0.18), width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: p.withValues(alpha: 0.15),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.r),
           child: imgPath != null
-              ? Image.asset(
-                  imgPath,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  errorBuilder: (_, __, ___) => _buildPlaceholder(theme, p),
+              ? Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Image
+                    // Image.asset(
+                    //   imgPath,
+                    //   fit: BoxFit.cover,
+                    //   width: double.infinity,
+                    //   height: double.infinity,
+                    //   errorBuilder: (_, __, ___) => _buildPlaceholder(theme, p),
+                    // ),
+                    BCachedImage(
+                      imageUrl: imgPath,
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    // Subtle overlay for better visibility
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.02),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // View indicator (appears on hover/tap feedback)
+                    if (widget.onImageTap != null)
+                      Positioned(
+                        bottom: 8.h,
+                        right: 8.w,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.remove_red_eye_rounded,
+                                size: 10.sp,
+                                color: Colors.white,
+                              ),
+                              Gap(4.w),
+                              Text(
+                                'View',
+                                style: TextStyle(
+                                  fontSize: 8.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 )
               : _buildPlaceholder(theme, p),
         ),

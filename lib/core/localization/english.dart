@@ -114,17 +114,72 @@ const Map<String, String> en = {
   //=========================================
   ///Booking Screen
   /////====================================
-  'booking_id': 'Booking ID',
+  // AppBar
+  'booking_detail': 'Booking Detail',
+
+  // Tabs
+  'tab_all': 'All',
+  'tab_active': 'Active',
+  'tab_past': 'Past',
+
+  // Active banner
+  'active_trip_banner': 'You have an active trip',
+  'view': 'View',
+
+  // Status
+  'status_pending': 'Pending',
+  'status_accepted': 'Accepted',
+  'status_ongoing': 'Ongoing',
+  'status_completed': 'Completed',
+  'status_cancelled': 'Cancelled',
+  'status_rejected': 'Rejected',
+
+  // Stepper
+  'step_booked': 'Booked',
+  'step_accepted': 'Accepted',
+  'step_ongoing': 'On the way',
+  'step_delivered': 'Delivered',
+  'trip_status': 'Trip Status',
+
+  // Sections
   'trip_details': 'Trip Details',
-  'pickup': 'PICKUP',
+  'driver_details': 'Driver Details',
+  'payment': 'Payment',
+
+  // Route
+  'pickup': 'Pickup',
   'drop': 'Drop',
+
+  // Info
   'date': 'Date',
   'time': 'Time',
-  'payment': 'Payment',
   'total': 'Total',
+  'vehicle_no': 'Vehicle No',
+
+  // Payment
+  'pay_on_arrival': 'Pay on Arrival',
+
+  // Buttons
   'call_driver': 'Call Driver',
-  'assigned_driver': 'Assigned Driver',
-  //==========================================
+  'cancel_booking': 'Cancel Booking',
+  'track_driver': 'Track Driver',
+  'rebook': 'Book Again',
+
+  // Cancel dialog
+  'cancel_booking_title': 'Cancel Booking',
+  'cancel_booking_msg': 'Are you sure you want to cancel this booking?',
+  'no': 'No',
+  'yes_cancel': 'Yes, Cancel',
+
+  // Empty
+  'no_bookings_found': 'No bookings yet',
+  'no_bookings_sub': 'Your booking history will appear here',
+
+  // Snackbar
+  'booking_cancelled': 'Booking Cancelled',
+  'booking_cancelled_msg': 'Your booking has been cancelled',
+  'calling_driver': 'Calling Driver',
+  //========================================
   // Profile
   //========================================
   'member_since': 'Member since',
@@ -138,7 +193,6 @@ const Map<String, String> en = {
   'car_tatacce': 'Car / Tata Ace',
   'log_out': 'Log Out',
   'logout_confirm': 'Are you sure you want to log out?',
-  'cancel': 'Cancel',
   'confirm': 'Confirm',
   //=============================================
   ///Vehicle booking details screen
@@ -148,7 +202,6 @@ const Map<String, String> en = {
   'drop_address': 'Drop Address',
   'schedule_booking': 'Schedule Booking',
   'schedule_later': 'Schedule Later',
-  'driver_details': 'Driver Details',
   'rating': 'Rating',
   'verified_driver': 'Verified Driver',
   'years_experience': 'Years Experience',
@@ -204,6 +257,7 @@ const Map<String, String> en = {
   'fav_cat_jcb': 'JCB',
   'fav_cat_lorry': 'Lorry',
   'fav_cat_bus': 'Bus',
+  "fav_cat_mini_bus": 'Mini Bus',
   'fav_cat_tataace': 'Tata Ace',
   'fav_cat_tractor': 'Tractor',
   'fav_cat_agri': 'Agri',
@@ -370,6 +424,8 @@ const Map<String, String> en = {
 
   "big_bucket": "Big Bucket",
   "small_bucket": "Small Bucket",
+  "jcb_bucket_big": "Big Bucket",
+  "jcb_bucket_small": "Small Bucket",
 
   // ──────────────────────────────────────────────────────────────
   //  JCB — BOOKING DETAIL
@@ -486,6 +542,87 @@ const Map<String, String> en = {
   "agri_booking_success_message":
       "Your agricultural equipment has been booked successfully. Operator will contact you shortly.",
 
+  //==========Common vehicle detailse
+  "retry": "Retry",
+  "description": "Description",
+  "read_more": "Read More",
+  "read_less": "Read Less",
+  "no_information": "No information available",
+  "vehicle": "Vehicle",
+  "online": "Online",
+  "offline": "Offline",
+  "trips": "Trips",
+  "call": "Call",
+  "message": "Message",
+  "driver_info": "Driver Info",
+
+  // ── Stats row labels ──────────────────────────────────
+  "trans": "Trans",
+  "fuel": "Fuel",
+  "seats": "Seats",
+  "type": "Type",
+  "cap": "Capacity",
+  "cond": "Condition",
+  "load": "Load",
+  "hp": "Horse Power",
+
+  // ── Spec labels (shown in specs card) ────────────────
+  "min_km": "Min KM",
+
+  "extra_km_charge": "Extra KM Charge",
+  "extra_hour_charge": "Extra Hour Charge",
+
+  // JCB specs
+  "working_areas": "Working Areas",
+
+  // Lorry specs
+  "load_types": "Load Types",
+
+  // Tata Ace specs
+  "usage_types": "Usage Types",
+
+  // Tractor specs
+  "attachment": "Attachment",
+
+  // Agri specs
+
+  // ── Specs card titles ─────────────────────────────────
+  "specifications": "Specifications",
+
+  "ace_specifications": "Tata Ace Specifications",
+
+  // ── Type-specific section titles ──────────────────────
+  "tractor_attachments": "Tractor Attachments",
+  "lorry_load_types": "Load Types",
+  "ace_usage_types": "Usage Types",
+
+  // ── Similar vehicles titles ───────────────────────────
+  "similar_ace": "Similar Tata Ace",
+  "similar_jcb": "Similar JCB",
+
+  // ── Vehicle type subtitles ────────────────────────────
+  "heavy_lorry": "Heavy Lorry",
+
+  // ── Pricing model display values ──────────────────────
+  "per_hour": "Per Hour",
+
+  ///================POST REVIEW SCREEN==============
+  'rate_your_trip': 'Rate Your Trip',
+  'rate_your_experience': 'How was your experience?',
+  'review_hint': 'Share your experience...',
+  'submit_review': 'Submit Review',
+  'skip': 'Skip',
+  'review_submitted': 'Review Submitted!',
+  'review_submitted_msg': 'Thank you for your feedback',
+  'rating_1': 'Terrible',
+  'rating_2': 'Bad',
+  'rating_3': 'Okay',
+  'rating_4': 'Good',
+  'rating_5': 'Excellent!',
+  'trip_completed': 'Trip Completed!',
+  'trip_completed_msg': 'Your trip has been completed successfully',
+  'total_paid': 'Total Paid',
+  'done': 'Done',
   //=========================================================
   //-----Booking Confirm dialog
   'booking_confirmed': 'Booking Confirmed!',
@@ -501,4 +638,63 @@ const Map<String, String> en = {
   'login_success': 'Login successful',
   'login_failed': 'Invalid credentials',
   'newUserEn ': "You're not registered yet. Please complete your registration.",
+
+  ///===========================================================================
+  ///               BACKEND REAL DATA'S
+  /// ==========================================================================
+
+  /// FUEL TYPES
+  'Diesel': 'Diesel',
+  'Petrol': 'Petrol',
+  'CNG': 'CNG',
+  'Electric': 'Electric',
+  'Hybrid': 'Hybrid',
+
+  /// CAR SEATS
+  'car_seat_fabric': 'Fabric Seat',
+  'car_seat_leather': 'Leather Seat',
+  'car_seat_ventilated': 'Ventilated Seat',
+  'car_seat_captain': 'Captain Seat',
+  'car_seat_premium_fabric': 'Premium Fabric Seat',
+  'car_seat_sporty': 'Sporty Seat',
+
+  /// BUS SEATS
+  'bus_seat_standard_fixed': 'Standard Seat',
+  'bus_seat_pushback': 'Pushback Seat',
+  'bus_seat_high_back_cushion': 'High Back Cushion Seat',
+  'bus_seat_low_back': 'Low Back Seat',
+  'bus_seat_recliner': 'Recliner Seat',
+  'bus_seat_sleeper': 'Sleeper Seat',
+  'bus_seat_semi_sleeper': 'Semi Sleeper Seat',
+
+  /// AGRI / EQUIPMENT
+  'Harvester': 'Harvester',
+  'Rotavator': 'Rotavator',
+  'Tractor': 'Tractor',
+  'Power Tiller': 'Power Tiller',
+  'Paddy Transplanter': 'Paddy Transplanter',
+  'Seed Drill': 'Seed Drill',
+  'Sprayer': 'Sprayer',
+  'Thresher': 'Thresher',
+  'Baler': 'Baler',
+  'Cultivator': 'Cultivator',
+  'Disc Harrow': 'Disc Harrow',
+
+  /// VEHICLE DETAILS
+  'vehicle_details': 'Vehicle Details',
+
+  'distance': 'Distance',
+
+  /// SPEC KEYS (IMPORTANT)
+  'diesel': 'Diesel',
+  'petrol': 'Petrol',
+  'electric': 'Electric',
+
+  /// VEHICLE CATEGORIES (if needed)
+  'bus_cat_semi_sleeper': 'Semi Sleeper',
+  'bus_cat_town_bus': 'Town Bus',
+  'bus_cat_tourist_bus': 'Tourist Bus',
+  'bus_cat_luxury_seater': 'Luxury Seater',
+  'bus_cat_sleeper_bus': 'Sleeper Bus',
+  'bus_cat_standard': 'Standard Bus',
 };

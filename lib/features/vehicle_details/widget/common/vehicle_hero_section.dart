@@ -137,13 +137,13 @@ class VehicleHeroSection extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-                          Text(
-                            fareUnit,
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              color: Colors.white.withValues(alpha: 0.75),
-                            ),
-                          ),
+                          // Text(
+                          //   fareUnit,
+                          //   style: TextStyle(
+                          //     fontSize: 10.sp,
+                          //     color: Colors.white.withValues(alpha: 0.75),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -222,7 +222,13 @@ class VehicleHeroSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   '$subtitle • ${'available_247'.tr} • $tripsCompleted ${'trips_completed'.tr}',
-                  style: TextStyle(fontSize: 11.sp, color: theme.dividerColor),
+                  style: TextStyle(
+                    fontSize: 13.sp, // 11 → 13
+                    color: theme.colorScheme.onSurface.withValues(
+                      alpha: 0.65,
+                    ), // dividerColor மாத்தி
+                    fontWeight: FontWeight.w500, // bold கொஞ்சம்
+                  ),
                 ),
               ),
             ],
@@ -231,7 +237,7 @@ class VehicleHeroSection extends StatelessWidget {
         Gap(16.h),
 
         // Image Carousel
-        VehicleImageCarousel(
+        BImageCarousel(
           images: vehicleImages,
           height: 220,
           autoScrollDuration: const Duration(seconds: 3),
