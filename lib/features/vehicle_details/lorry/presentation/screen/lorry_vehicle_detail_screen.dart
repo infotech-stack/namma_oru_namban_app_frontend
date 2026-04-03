@@ -208,11 +208,13 @@ class LorryVehicleDetailScreen extends GetView<LorryVehicleDetailController> {
                         SimilarVehicleItem(
                           name: 'Tata 407',
                           fare: '₹35/',
+                          id: 0,
                           rating: '4.8',
                           icon: Icons.local_shipping_rounded,
                         ),
                         SimilarVehicleItem(
                           name: 'Ashok Leyland',
+                          id: 0,
                           fare: '₹40/',
                           rating: '4.5',
                           icon: Icons.local_shipping_rounded,
@@ -220,11 +222,13 @@ class LorryVehicleDetailScreen extends GetView<LorryVehicleDetailController> {
                         SimilarVehicleItem(
                           name: 'Eicher Pro',
                           fare: '₹38/',
+                          id: 0,
                           rating: '4.3',
                           icon: Icons.local_shipping_rounded,
                         ),
                         SimilarVehicleItem(
                           name: 'BharatBenz',
+                          id: 0,
                           fare: '₹42/',
                           rating: '4.6',
                           icon: Icons.local_shipping_rounded,

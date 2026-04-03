@@ -1,5 +1,3 @@
-// lib/features/vehicle_details/bus/controllers/bus_vehicle_detail_controller.dart
-
 import 'package:get/get.dart';
 import 'package:userapp/core/route/app_routes.dart';
 import 'package:userapp/utils/constants/app_images.dart';

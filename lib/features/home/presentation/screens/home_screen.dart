@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,10 +9,14 @@ import 'package:userapp/core/localization/language_controller.dart';
 import 'package:userapp/core/resposnive/responsiveFont.dart';
 import 'package:userapp/core/theme/app_colors.dart';
 import 'package:userapp/features/favorites/presentation/controller/favorites_controller.dart';
+import 'package:userapp/features/home/domain/entities/vehicle_category_entity.dart';
 import 'package:userapp/features/home/presentation/controller/home_controller.dart';
 import 'package:userapp/features/home/presentation/widgets/faveroit_heart_button_widget.dart';
 import 'package:userapp/utils/commons/button/b_button.dart';
+import 'package:userapp/utils/commons/catch_image/app_catch_image.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
+import 'package:userapp/utils/commons/shimmer/b_shimmer_container.dart';
+import 'package:userapp/utils/commons/shimmer/b_shimmer_widget.dart';
 
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({super.key});
@@ -29,73 +35,192 @@ class HomeScreen extends GetView<HomeController> {
         backgroundColor: theme.colorScheme.secondary,
         body: Column(
           children: [
-            _buildTopSection(theme), // ✅ Fixed — never scrolls
+            _buildTopSection(theme),
 
             Expanded(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        Gap(20.h),
-                        _buildChooseVehicle(theme),
-                        Gap(24.h),
-                        _buildTrendTitle(theme),
-                        Gap(14.h),
-                      ]),
+              child: RefreshIndicator(
+                onRefresh: controller.refreshData,
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          Gap(20.h),
+                          _buildChooseVehicle(theme),
+                          Gap(24.h),
+                          _buildTrendTitle(theme),
+                          Gap(14.h),
+                        ]),
+                      ),
                     ),
-                  ),
-                  // GridView sliver...
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: Obx(() {
-                      final vehicles = controller.filteredVehicles;
 
-                      if (vehicles.isEmpty) {
-                        return SliverToBoxAdapter(
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40.h),
-                              child: Text(
-                                'no_vehicles'.tr,
-                                style: TextStyle(
-                                  color: theme.dividerColor,
-                                  fontSize: 14.sp,
+                    // ── Vehicle Grid ────────────────────────────────────────
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      sliver: Obx(() {
+                        // ── Loading State ──
+                        if (controller.isLoadingVehicles.value &&
+                            controller.vehicles.isEmpty) {
+                          return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (_, __) => BShimmerWidget(
+                                child: _buildVehicleCardShimmer(),
+                              ),
+                              childCount: 4,
+                            ),
+                          );
+                        }
+
+                        // ── Error State ──
+                        if (controller.errorMessage.value.isNotEmpty &&
+                            controller.vehicles.isEmpty) {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 40.h),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      color: theme.dividerColor,
+                                      size: 40.sp,
+                                    ),
+                                    Gap(8.h),
+                                    Text(
+                                      controller.errorMessage.value,
+                                      style: TextStyle(
+                                        color: theme.dividerColor,
+                                        fontSize: 13.sp,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Gap(12.h),
+                                    GestureDetector(
+                                      onTap: () =>
+                                          controller.fetchVehicles(reset: true),
+                                      child: Text(
+                                        'retry'.tr,
+                                        style: TextStyle(
+                                          color: theme.colorScheme.primary,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }
+                          );
+                        }
 
-                      return SliverGrid(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 12.w,
-                          mainAxisSpacing: 14.h,
-                          childAspectRatio: 1.35,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (_, index) => InkWell(
-                            onTap: () {
-                              controller.onVehicleCardTap(vehicles[index]);
-                            },
-                            child: _buildVehicleCard(theme, vehicles[index]),
-                          ),
-                          childCount: vehicles.length,
-                        ),
-                      );
-                    }),
-                  ),
-                  SliverToBoxAdapter(child: Gap(16.h)),
-                  SliverToBoxAdapter(child: Gap(16.h)),
-                ],
+                        // ── Empty State ──
+                        final vehicles = controller.filteredVehicles;
+                        if (vehicles.isEmpty) {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 40.h),
+                                child: Text(
+                                  controller.searchQuery.value.isNotEmpty
+                                      ? 'No results for "${controller.searchQuery.value}"'
+                                      : 'no_vehicles'.tr,
+                                  style: TextStyle(
+                                    color: theme.dividerColor,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        // ── Vehicle Grid ──
+                        return SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                crossAxisSpacing: 12.w,
+                                mainAxisSpacing: 14.h,
+                                childAspectRatio: 1.35,
+                              ),
+                          delegate: SliverChildBuilderDelegate((_, index) {
+                            // ── Load More trigger ──
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (index == vehicles.length - 1 &&
+                                  controller.hasMore.value) {
+                                controller.loadMore();
+                              }
+                            });
+                            return InkWell(
+                              onTap: () =>
+                                  controller.onVehicleCardTap(vehicles[index]),
+                              child: _buildVehicleCard(theme, vehicles[index]),
+                            );
+                          }, childCount: vehicles.length),
+                        );
+                      }),
+                    ),
+
+                    // ── Load More Indicator ─────────────────────────────────
+                    SliverToBoxAdapter(
+                      child: Obx(() {
+                        if (controller.isLoadingVehicles.value &&
+                            controller.vehicles.isNotEmpty) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 8.h,
+                            ),
+                            child: BShimmerWidget(
+                              child: _buildVehicleCardShimmer(),
+                            ),
+                          );
+                        }
+                        return Gap(16.h);
+                      }),
+                    ),
+                    SliverToBoxAdapter(child: Gap(16.h)),
+                  ],
+                ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  //------HIGHLIGHT SEARCH------
+  Widget highlightText(String text, String query, TextStyle style) {
+    if (query.isEmpty) return Text(text, style: style);
+
+    final lowerText = text.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+
+    if (!lowerText.contains(lowerQuery)) {
+      return Text(text, style: style);
+    }
+
+    final startIndex = lowerText.indexOf(lowerQuery);
+    final endIndex = startIndex + lowerQuery.length;
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(text: text.substring(0, startIndex), style: style),
+          TextSpan(
+            text: text.substring(startIndex, endIndex),
+            style: style.copyWith(
+              color: Colors.orange,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          TextSpan(text: text.substring(endIndex), style: style),
+        ],
       ),
     );
   }
@@ -130,16 +255,20 @@ class HomeScreen extends GetView<HomeController> {
         children: [
           _buildTopBar(theme),
           Gap(14.h),
-          Obx(
-            () => Text(
-              'greeting_user'.trParams({'name': controller.userName.value}),
+          Obx(() {
+            final name = controller.userName.value.trim();
+
+            return Text(
+              'greeting_user'.trParams({
+                'name': name.isEmpty ? 'Guest' : name, // 🔥 fallback
+              }),
               style: TextStyle(
                 color: theme.colorScheme.secondary,
                 fontSize: responsiveFont(en: 20.sp, ta: 18.sp),
                 fontWeight: FontWeight.w700,
               ),
-            ),
-          ),
+            );
+          }),
           Gap(4.h),
           Text(
             'next_destination'.tr,
@@ -177,7 +306,6 @@ class HomeScreen extends GetView<HomeController> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// 🌍 Language Toggle
               Obx(
                 () => IconButton(
                   splashRadius: 20.r,
@@ -193,14 +321,10 @@ class HomeScreen extends GetView<HomeController> {
                   onPressed: () => langController.toggleLanguage(),
                 ),
               ),
-
-              // ❤️ Favorites heart + badge
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                 child: const FavHeartButton(),
               ),
-
-              /// 🔔 Notification Icon
               IconButton(
                 splashRadius: 20.r,
                 constraints: const BoxConstraints(),
@@ -210,9 +334,7 @@ class HomeScreen extends GetView<HomeController> {
                   color: theme.colorScheme.secondary,
                   size: 22.sp,
                 ),
-                onPressed: () {
-                  // Notification action
-                },
+                onPressed: () {},
               ),
             ],
           ),
@@ -221,7 +343,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildSearchBar(ThemeData theme) {
+  /*Widget _buildSearchBar(ThemeData theme) {
     return Row(
       children: [
         Expanded(
@@ -260,6 +382,20 @@ class HomeScreen extends GetView<HomeController> {
                         fontSize: 13.sp,
                       ),
                       border: InputBorder.none,
+
+                      // 🔥 CLEAR BUTTON
+                      suffixIcon: Obx(() {
+                        return controller.searchQuery.value.isNotEmpty
+                            ? GestureDetector(
+                                onTap: controller.clearSearch,
+                                child: Icon(
+                                  Icons.close,
+                                  size: 18.sp,
+                                  color: theme.colorScheme.secondary,
+                                ),
+                              )
+                            : const SizedBox();
+                      }),
                     ),
                   ),
                 ),
@@ -267,18 +403,94 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
         ),
-        Gap(10.w),
-        Container(
-          width: 46.w,
-          height: 46.h,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: theme.colorScheme.secondary, width: 2),
-          ),
-          child: Icon(
-            Icons.filter_alt_outlined,
-            color: theme.colorScheme.secondary,
-            size: 20.sp,
+        // Gap(10.w),
+        // Container(
+        //   width: 46.w,
+        //   height: 46.h,
+        //   decoration: BoxDecoration(
+        //     shape: BoxShape.circle,
+        //     border: Border.all(color: theme.colorScheme.secondary, width: 2),
+        //   ),
+        //   child: Icon(
+        //     Icons.filter_alt_outlined,
+        //     color: theme.colorScheme.secondary,
+        //     size: 20.sp,
+        //   ),
+        // ),
+      ],
+    );
+  }*/
+  Widget _buildSearchBar(ThemeData theme) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 46.h,
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.r),
+              border: Border.all(
+                color: theme.colorScheme.secondary.withValues(alpha: 0.8),
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  color: theme.colorScheme.secondary,
+                  size: 20.sp,
+                ),
+                Gap(8.w),
+                Expanded(
+                  child: Obx(() {
+                    // Hide TextField and show animated hints when empty & not focused
+                    return controller.searchQuery.value.isEmpty &&
+                            !controller.isSearchFocused.value
+                        ? _AnimatedHintText(
+                            hints: controller.searchHints,
+                            style: TextStyle(
+                              color: theme.colorScheme.secondary,
+                              fontSize: 13.sp,
+                            ),
+                            onTap: controller.focusSearch,
+                          )
+                        : TextField(
+                            cursorColor: theme.secondaryHeaderColor,
+                            controller: controller.searchController,
+                            focusNode: controller.searchFocusNode,
+                            autofocus: controller.isSearchFocused.value,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: theme.secondaryHeaderColor,
+                            ),
+                            decoration: InputDecoration(
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              hintText: controller.searchHints.first,
+                              hintStyle: TextStyle(
+                                color: theme.colorScheme.secondary,
+                                fontSize: 13.sp,
+                              ),
+                              border: InputBorder.none,
+                              suffixIcon: Obx(() {
+                                return controller.searchQuery.value.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: controller.clearSearch,
+                                        child: Icon(
+                                          Icons.close,
+                                          size: 18.sp,
+                                          color: theme.colorScheme.secondary,
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              }),
+                            ),
+                          );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -322,142 +534,230 @@ class HomeScreen extends GetView<HomeController> {
           decoration: BoxDecoration(
             color: theme.primaryColor.withValues(alpha: 0.09),
             borderRadius: BorderRadius.circular(20.r),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: theme.brightness == Brightness.dark
-            //         ? Colors.black.withValues(alpha: 0.35)
-            //         : Colors.black.withValues(alpha: 0.06),
-            //     blurRadius: 18,
-            //     offset: const Offset(0, 8),
-            //   ),
-            // ],
           ),
           child: ClipRRect(
-            // ✅ Prevents overflow outside rounded corners
             borderRadius: BorderRadius.circular(20.r),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 16.h,
-              ), // ✅ Remove horizontal padding here
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: controller.categories.length,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                ), // ✅ Move padding here — fixes first/last item cut
-                separatorBuilder: (_, __) => Gap(16.w),
-                itemBuilder: (_, index) {
-                  final cat = controller.categories[index];
-
-                  return Obx(() {
-                    final isSelected =
-                        controller.selectedCategoryIndex.value == index;
-
-                    return GestureDetector(
-                      onTap: () => controller.selectCategory(index),
-                      child: AnimatedScale(
-                        scale: isSelected ? 1.05 : 1,
-                        duration: const Duration(milliseconds: 200),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize:
-                              MainAxisSize.min, // ✅ Prevent column expand
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.secondary,
-                                borderRadius: BorderRadius.circular(18.r),
+            child: Obx(() {
+              // ── Category Loading State ──
+              if (controller.isLoadingCategories.value &&
+                  controller.categories.isEmpty) {
+                return BShimmerWidget(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 16.h,
+                    ),
+                    child: Row(
+                      children: List.generate(
+                        5,
+                        (_) => Padding(
+                          padding: EdgeInsets.only(right: 16.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              BShimmerContainer.rectangular(
+                                width: 80,
+                                height: 80,
+                                borderRadius: 18,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 250),
-                                  width: 64.w,
-                                  height: 64.w,
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? theme.colorScheme.primary
-                                        : theme.colorScheme.primary.withValues(
-                                            alpha: 0.07,
-                                          ),
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    boxShadow: isSelected
-                                        ? [
-                                            BoxShadow(
-                                              color: theme.colorScheme.primary
-                                                  .withValues(alpha: 0.15),
-                                              blurRadius: 12,
-                                              offset: const Offset(0, 6),
-                                            ),
-                                          ]
-                                        : [],
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: cat.imagePath != null
-                                      ? Image.asset(
-                                          cat.imagePath!,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Icon(
-                                          cat.icon,
-                                          size: 28.sp,
-                                          color: isSelected
-                                              ? theme.colorScheme.onPrimary
-                                              : theme.colorScheme.primary,
-                                        ),
-                                ),
+                              SizedBox(height: 8.h),
+                              BShimmerContainer.rectangular(
+                                width: 50,
+                                height: 10,
+                                borderRadius: 6,
                               ),
-                            ),
-                            Gap(8.h),
-                            AnimatedDefaultTextStyle(
-                              duration: const Duration(milliseconds: 200),
-                              style: Get.textTheme.bodySmall!.copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: isSelected
-                                    ? theme.colorScheme.primary
-                                    : Colors.black,
-                              ),
-                              child: Text(cat.labelKey.tr),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    );
-                  });
-                },
-              ),
-            ),
+                    ),
+                  ),
+                );
+              }
+
+              // ── Category Empty/Error State ──
+              if (controller.categories.isEmpty) {
+                return Center(
+                  child: Text(
+                    'no_categories'.tr,
+                    style: TextStyle(
+                      color: theme.dividerColor,
+                      fontSize: 13.sp,
+                    ),
+                  ),
+                );
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: controller.categories.length,
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  separatorBuilder: (_, __) => Gap(16.w),
+                  itemBuilder: (_, index) {
+                    final cat = controller.categories[index];
+
+                    return Obx(() {
+                      final isSelected =
+                          controller.selectedCategoryIndex.value == index;
+
+                      return GestureDetector(
+                        onTap: () => controller.selectCategory(index),
+                        child: AnimatedScale(
+                          scale: isSelected ? 1.05 : 1,
+                          duration: const Duration(milliseconds: 200),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.secondary,
+                                  borderRadius: BorderRadius.circular(18.r),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    width: 64.w,
+                                    height: 64.w,
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? theme.colorScheme.primary
+                                          : theme.colorScheme.primary
+                                                .withValues(alpha: 0.07),
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      boxShadow: isSelected
+                                          ? [
+                                              BoxShadow(
+                                                color: theme.colorScheme.primary
+                                                    .withValues(alpha: 0.15),
+                                                blurRadius: 12,
+                                                offset: const Offset(0, 6),
+                                              ),
+                                            ]
+                                          : [],
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    // ── Image: network → asset → icon fallback ──
+                                    child: _buildCategoryImage(
+                                      theme,
+                                      cat,
+                                      isSelected,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Gap(8.h),
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 200),
+                                style: Get.textTheme.bodySmall!.copyWith(
+                                  fontSize: 12.sp,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: isSelected
+                                      ? theme.colorScheme.primary
+                                      : Colors.black,
+                                ),
+                                child: Text(cat.name.tr),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+                  },
+                ),
+              );
+            }),
           ),
         ),
       ],
     );
   }
 
+  /// Resolves category image via BCachedImage (handles network/asset/fallback)
+  Widget _buildCategoryImage(
+    ThemeData theme,
+    VehicleCategoryEntity cat,
+    bool isSelected,
+  ) {
+    if (cat.imageUrl != null && cat.imageUrl!.isNotEmpty) {
+      return BCachedImage(
+        imageUrl: cat.imageUrl,
+        fit: BoxFit.cover,
+        errorWidget: _categoryIcon(theme, cat, isSelected),
+      );
+    }
+    return _categoryIcon(theme, cat, isSelected);
+  }
+
+  Widget _categoryIcon(
+    ThemeData theme,
+    VehicleCategoryEntity cat,
+    bool isSelected,
+  ) {
+    return Icon(
+      _iconForCategory(cat.filterKey),
+      size: 28.sp,
+      color: isSelected
+          ? theme.colorScheme.onPrimary
+          : theme.colorScheme.primary,
+    );
+  }
+
+  IconData _iconForCategory(String key) {
+    switch (key) {
+      case 'car':
+        return Icons.directions_car_rounded;
+      case 'jcb':
+        return Icons.construction_rounded;
+      case 'lorry':
+        return Icons.local_shipping_rounded;
+      case 'tataace':
+        return Icons.airport_shuttle_rounded;
+      case 'bus':
+        return Icons.directions_bus_filled_rounded;
+      case 'tractor':
+        return Icons.agriculture_outlined;
+      case 'agri':
+        return Icons.agriculture;
+      default:
+        return Icons.grid_view_rounded;
+    }
+  }
+
   // ── TREND TITLE ───────────────────────────────────────────────────────────
 
   Widget _buildTrendTitle(ThemeData theme) {
     return Obx(() {
-      final cat = controller.categories[controller.selectedCategoryIndex.value];
-      final isAll = cat.filterKey == 'all';
+      if (controller.categories.isEmpty) return const SizedBox.shrink();
+
+      final index = controller.selectedCategoryIndex.value;
+      final cat = index < controller.categories.length
+          ? controller.categories[index]
+          : null;
+      final isAll = cat?.filterKey == 'all';
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            isAll ? 'top_trends'.tr : cat.labelKey.tr,
+            isAll ? 'top_trends'.tr : (cat?.name ?? '').tr,
             style: TextStyle(
-              fontSize: responsiveFont(en: 16.sp, ta: 12.sp),
+              fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
               fontWeight: FontWeight.w700,
             ),
           ),
-          Gap(4.h),
+          Gap(2.h),
           Text(
             isAll
                 ? 'most_booked'.tr
-                : '${'most_booked_prefix'.tr}${cat.labelKey.tr}',
+                : '${'most_booked_prefix'.tr}${(cat?.name ?? '').tr}',
             style: TextStyle(fontSize: 12.sp),
           ),
         ],
@@ -467,29 +767,8 @@ class HomeScreen extends GetView<HomeController> {
 
   // ── VEHICLE CARD ──────────────────────────────────────────────────────────
 
-  // ════════════════════════════════════════════════════════════════
-  //  _buildVehicleCard — Heart button integrated with FavoritesController
-  //
-  //  CHANGES from original:
-  //    1. AnimatedReactButton → Custom Obx heart button
-  //       (AnimatedReactButton has no isFavorite state sync support)
-  //    2. FavoritesController.to.toggleFavorite(fav) on tap
-  //    3. FavoritesController.to.isFavorite(id) for red/grey state
-  //    4. toFavorite() helper converts VehicleModel → FavoriteVehicle
-  //
-  //  ADD toFavorite() to HomeController:
-  //    FavoriteVehicle toFavorite(VehicleModel v) => FavoriteVehicle(
-  //      id: '${v.categoryKey}_${v.nameKey}',
-  //      nameKey: v.nameKey, rating: v.rating,
-  //      capacity: v.capacity, fare: v.fare,
-  //      eta: v.eta, categoryKey: v.categoryKey,
-  //      imagePath: v.imagePath,
-  //    );
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildVehicleCard(ThemeData theme, VehicleModel vehicle) {
-    // Convert VehicleModel → FavoriteVehicle once
-    final fav = controller.toFavorite(vehicle);
+  Widget _buildVehicleCard(ThemeData theme, VehicleEntity vehicle) {
+    final favEntity = controller.toFavorite(vehicle);
     final favCtrl = FavoritesController.to;
 
     return Container(
@@ -520,24 +799,7 @@ class HomeScreen extends GetView<HomeController> {
                 child: Stack(
                   children: [
                     // ── Vehicle Image ──────────────────────────
-                    if (vehicle.imagePath != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16.r),
-                        child: Image.asset(
-                          vehicle.imagePath!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      )
-                    else
-                      Center(
-                        child: Icon(
-                          Icons.fire_truck,
-                          size: 40.sp,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
+                    _buildVehicleImage(vehicle),
 
                     // ── Rating badge — Top Left ────────────────
                     Positioned(
@@ -582,22 +844,21 @@ class HomeScreen extends GetView<HomeController> {
                     ),
 
                     // ── ❤️ Heart button — Top Right ───────────
-                    // Obx: reacts when _favoriteMap changes
-                    // isFavorite(id) → red filled / grey outlined
                     Positioned(
                       top: 8,
                       right: 8,
                       child: Obx(() {
-                        final liked = favCtrl.isFavorite(fav.id);
+                        // final liked = favCtrl.isFavorite(fav.id);
+                        final liked = favCtrl.isFavorite(favEntity.id);
+
                         return GestureDetector(
-                          onTap: () => favCtrl.toggleFavorite(fav),
+                          onTap: () => favCtrl.toggleFavorite(favEntity),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
                             width: 34.r,
                             height: 34.r,
                             decoration: BoxDecoration(
-                              // White bg always — red tint when liked
                               color: liked
                                   ? const Color(
                                       0xFFE53935,
@@ -613,7 +874,6 @@ class HomeScreen extends GetView<HomeController> {
                               ],
                             ),
                             child: Icon(
-                              // Filled heart = liked, outlined = not liked
                               liked
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_border_rounded,
@@ -632,7 +892,7 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
 
-          // ── Info section (unchanged) ─────────────────────────
+          // ── Info section ─────────────────────────────────────
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
             child: Column(
@@ -641,6 +901,7 @@ class HomeScreen extends GetView<HomeController> {
                 Row(
                   children: [
                     Expanded(
+                      // ✅ VERY IMPORTANT
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -651,35 +912,38 @@ class HomeScreen extends GetView<HomeController> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
+                          // highlightText(
+                          //   vehicle.nameKey,
+                          //   controller.searchQuery.value,
+                          //   TextStyle(
+                          //     fontSize: 14.sp,
+                          //     fontWeight: FontWeight.w700,
+                          //   ),
+                          // ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               BText(
                                 text: vehicle.fare,
-                                fontSize: 14.sp,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
                                 color: theme.primaryColor,
-                              ),
-                              Column(
-                                children: [
-                                  BText(
-                                    text: "km",
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: theme.primaryColor,
-                                  ),
-                                ],
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                    BButton(
-                      text: "book".tr,
-                      onTap: () {},
-                      height: 35,
-                      fontSize: 14.sp,
+
+                    Gap(8.w), // spacing
+
+                    Flexible(
+                      child: BButton(
+                        text: "book".tr,
+                        onTap: () => controller.onBookNow(vehicle),
+                        height: 35,
+                        //width: 130.w, // 👈 slightly reduce if needed
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ],
                 ),
@@ -691,6 +955,85 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
+  /// Vehicle image via BCachedImage — handles http URL, asset path, shimmer, error
+  Widget _buildVehicleImage(VehicleEntity vehicle) {
+    return BCachedImage(
+      imageUrl: vehicle.imagePath,
+      width: double.infinity,
+      height: double.infinity,
+      borderRadius: 16,
+      fit: BoxFit.cover,
+      errorWidget: _vehicleIconFallback(vehicle),
+    );
+  }
+
+  /// Shimmer skeleton that mirrors the real vehicle card layout
+  Widget _buildVehicleCardShimmer() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 14.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image area
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: BShimmerContainer.rectangular(
+              width: double.infinity,
+              height: 160,
+              borderRadius: 16,
+            ),
+          ),
+          // Info area
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BShimmerContainer.rectangular(
+                        width: 120,
+                        height: 14,
+                        borderRadius: 6,
+                      ),
+                      SizedBox(height: 6.h),
+                      BShimmerContainer.rectangular(
+                        width: 70,
+                        height: 12,
+                        borderRadius: 6,
+                      ),
+                    ],
+                  ),
+                ),
+                BShimmerContainer.rectangular(
+                  width: 72,
+                  height: 35,
+                  borderRadius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _vehicleIconFallback(VehicleEntity vehicle) {
+    return Center(
+      child: Icon(
+        _iconForCategory(vehicle.categoryKey),
+        size: 40.sp,
+        color: Get.theme.colorScheme.primary,
+      ),
+    );
+  }
+
+  /*
   Widget _infoRow(ThemeData theme, String label, String value) {
     return Padding(
       padding: EdgeInsets.only(bottom: 2.h),
@@ -712,6 +1055,112 @@ class HomeScreen extends GetView<HomeController> {
       ),
     );
   }
+*/
+}
 
-  // ── BOTTOM NAV ────────────────────────────────────────────────────────────
+// ── Animated cycling hint widget (slide up + fade) ───────────────────────────
+// ── Animated cycling hint widget (slide up + fade) ───────────────────────────
+class _AnimatedHintText extends StatefulWidget {
+  final List<String> hints;
+  final TextStyle style;
+  final VoidCallback onTap;
+
+  const _AnimatedHintText({
+    required this.hints,
+    required this.style,
+    required this.onTap,
+  });
+
+  @override
+  State<_AnimatedHintText> createState() => _AnimatedHintTextState();
+}
+
+class _AnimatedHintTextState extends State<_AnimatedHintText>
+    with SingleTickerProviderStateMixin {
+  // ✅ Nullable instead of late — safe against premature build calls
+  AnimationController? _animController;
+  Animation<double>? _fadeAnim;
+  Animation<Offset>? _slideAnim;
+  int _currentIndex = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnim = CurvedAnimation(
+      parent: _animController!,
+      curve: Curves.easeInOut,
+    );
+
+    _slideAnim = Tween<Offset>(
+      begin: const Offset(0, 1), // bottom
+      end: Offset.zero, // center
+    ).animate(CurvedAnimation(parent: _animController!, curve: Curves.easeOut));
+
+    _animController!.forward();
+
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) => _nextHint());
+  }
+
+  void _nextHint() {
+    if (!mounted || _animController == null) return;
+
+    _animController!.reverse().then((_) {
+      if (!mounted) return;
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % widget.hints.length;
+      });
+      _animController!.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _animController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ✅ Safety fallback if build fires before initState finishes
+    if (_slideAnim == null || _fadeAnim == null) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Text(
+          widget.hints[0],
+          style: widget.style,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      behavior: HitTestBehavior.opaque,
+      child: ClipRect(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: SlideTransition(
+            position: _slideAnim!,
+            child: FadeTransition(
+              opacity: _fadeAnim!,
+              child: Text(
+                widget.hints[_currentIndex],
+                style: widget.style,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

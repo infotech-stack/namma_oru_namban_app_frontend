@@ -1,5 +1,3 @@
-// lib/features/booking/presentation/widgets/common/booking_schedule_card.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -35,6 +33,7 @@ class BookingScheduleCard extends StatelessWidget {
       decoration: BookingCardDecoration(theme: theme),
       child: Column(
         children: [
+          /// 🔹 BOOK NOW / SCHEDULE TOGGLE
           Row(
             children: [
               Expanded(
@@ -120,65 +119,97 @@ class BookingScheduleCard extends StatelessWidget {
               ),
             ],
           ),
-          Gap(14.h),
 
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final DateTime today = DateTime.now();
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: today,
-                      firstDate: today,
-                      lastDate: DateTime(today.year + 1, 12, 31),
-                      builder: (ctx, child) => Theme(
-                        data: Theme.of(
-                          ctx,
-                        ).copyWith(colorScheme: Theme.of(ctx).colorScheme),
-                        child: child!,
-                      ),
-                    );
-                    if (picked != null) onDateSelected(picked);
-                  },
-                  child: _pickerBox(
-                    theme,
-                    value: scheduleDate,
-                    icon: Icons.calendar_month_rounded,
-                  ),
-                ),
+          /// 🔥 DATE & TIME PICKER (Animated)
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: SizeTransition(
+                sizeFactor: animation,
+                axisAlignment: -1,
+                child: child,
               ),
-              Gap(10.w),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final TimeOfDay? picked = await showTimePicker(
-                      context: context,
-                      initialTime: const TimeOfDay(hour: 14, minute: 30),
-                      builder: (ctx, child) => Theme(
-                        data: Theme.of(
-                          ctx,
-                        ).copyWith(colorScheme: Theme.of(ctx).colorScheme),
-                        child: child!,
+            ),
+            child: isBookNow
+                ? const SizedBox.shrink()
+                : Column(
+                    key: const ValueKey("schedule_section"),
+                    children: [
+                      Gap(14.h),
+
+                      Row(
+                        children: [
+                          /// 📅 DATE PICKER
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final DateTime today = DateTime.now();
+                                final DateTime? picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: today,
+                                  firstDate: today,
+                                  lastDate: DateTime(today.year + 1, 12, 31),
+                                  builder: (ctx, child) => Theme(
+                                    data: Theme.of(ctx).copyWith(
+                                      colorScheme: Theme.of(ctx).colorScheme,
+                                    ),
+                                    child: child!,
+                                  ),
+                                );
+                                if (picked != null) {
+                                  onDateSelected(picked);
+                                }
+                              },
+                              child: _pickerBox(
+                                theme,
+                                value: scheduleDate,
+                                icon: Icons.calendar_month_rounded,
+                              ),
+                            ),
+                          ),
+
+                          Gap(10.w),
+
+                          /// ⏰ TIME PICKER
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final TimeOfDay? picked = await showTimePicker(
+                                  context: context,
+                                  initialTime: const TimeOfDay(
+                                    hour: 14,
+                                    minute: 30,
+                                  ),
+                                  builder: (ctx, child) => Theme(
+                                    data: Theme.of(ctx).copyWith(
+                                      colorScheme: Theme.of(ctx).colorScheme,
+                                    ),
+                                    child: child!,
+                                  ),
+                                );
+                                if (picked != null) {
+                                  onTimeSelected(picked);
+                                }
+                              },
+                              child: _pickerBox(
+                                theme,
+                                value: scheduleTime,
+                                icon: Icons.access_time_rounded,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                    if (picked != null) onTimeSelected(picked);
-                  },
-                  child: _pickerBox(
-                    theme,
-                    value: scheduleTime,
-                    icon: Icons.access_time_rounded,
+                    ],
                   ),
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 
+  /// 🔹 COMMON PICKER BOX
   Widget _pickerBox(
     ThemeData theme, {
     required String value,
@@ -188,7 +219,7 @@ class BookingScheduleCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
       decoration: BoxDecoration(
         color: theme.dividerColor.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.2)),
       ),
       child: Row(

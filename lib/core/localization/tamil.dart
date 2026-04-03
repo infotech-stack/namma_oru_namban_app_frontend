@@ -110,16 +110,71 @@ const Map<String, String> ta = {
   //============================================
   ///Booking Screen
   //============================================
-  'booking_id': 'முன்பதிவு எண்',
+  // AppBar
+  'booking_detail': 'பதிவு விவரம்',
+
+  // Tabs
+  'tab_all': 'அனைத்தும்',
+  'tab_active': 'செயலில்',
+  'tab_past': 'முந்தையவை',
+
+  // Active banner
+  'active_trip_banner': 'உங்களுக்கு செயலில் உள்ள பயணம் உள்ளது',
+  'view': 'பார்க்க',
+
+  // Status
+  'status_pending': 'நிலுவையில்',
+  'status_accepted': 'ஏற்றுக்கொண்டது',
+  'status_ongoing': 'நடந்து வருகிறது',
+  'status_completed': 'முடிந்தது',
+  'status_cancelled': 'ரத்து செய்யப்பட்டது',
+  'status_rejected': 'நிராகரிக்கப்பட்டது',
+
+  // Stepper
+  'step_booked': 'பதிவு செய்யப்பட்டது',
+  'step_accepted': 'ஏற்றுக்கொண்டது',
+  'step_ongoing': 'வருகிறார்',
+  'step_delivered': 'டெலிவரி ஆனது',
+  'trip_status': 'பயண நிலை',
+
+  // Sections
   'trip_details': 'பயண விவரங்கள்',
+  'driver_details': 'டிரைவர் விவரங்கள்',
+  'payment': 'கட்டணம்',
+
+  // Route
   'pickup': 'எடுக்கும் இடம்',
-  'drop': 'இறங்கும் இடம்',
+  'drop': 'இறக்கும் இடம்',
+
+  // Info
   'date': 'தேதி',
   'time': 'நேரம்',
-  'payment': 'பணம்',
   'total': 'மொத்தம்',
-  'call_driver': 'ஓட்டுனரை அழைக்கவும்',
-  'assigned_driver': 'நியமிக்கப்பட்ட ஓட்டுனர்',
+  'vehicle_no': 'வாகன எண்',
+
+  // Payment
+  'pay_on_arrival': 'வந்தவுடன் செலுத்தவும்',
+
+  // Buttons
+  'call_driver': 'டிரைவரை அழை',
+  'cancel_booking': 'பதிவை ரத்து செய்',
+  'track_driver': 'டிரைவரை கண்காணி',
+  'rebook': 'மீண்டும் பதிவு செய்',
+
+  // Cancel dialog
+  'cancel_booking_title': 'பதிவை ரத்து செய்யவா?',
+  'cancel_booking_msg': 'இந்த பதிவை ரத்து செய்ய விரும்புகிறீர்களா?',
+  'no': 'இல்லை',
+  'yes_cancel': 'ஆம், ரத்து செய்',
+
+  // Empty
+  'no_bookings_found': 'இன்னும் பதிவுகள் இல்லை',
+  'no_bookings_sub': 'உங்கள் பதிவு வரலாறு இங்கே தோன்றும்',
+
+  // Snackbar
+  'booking_cancelled': 'பதிவு ரத்து செய்யப்பட்டது',
+  'booking_cancelled_msg': 'உங்கள் பதிவு ரத்து செய்யப்பட்டது',
+  'calling_driver': 'டிரைவரை அழைக்கிறது',
 
   // Profile
   'member_since': 'உறுப்பினர் தொடங்கி',
@@ -142,7 +197,6 @@ const Map<String, String> ta = {
   'drop_address': 'இறக்கும் முகவரி',
   'schedule_booking': 'பதிவு திட்டமிடு',
   'schedule_later': 'பிறகு திட்டமிடு',
-  'driver_details': 'டிரைவர் விவரங்கள்',
   'rating': 'மதிப்பீடு',
   'verified_driver': 'சரிபார்க்கப்பட்ட டிரைவர்',
   'years_experience': 'ஆண்டு அனுபவம்',
@@ -199,6 +253,7 @@ const Map<String, String> ta = {
   'fav_cat_jcb': 'JCB',
   'fav_cat_lorry': 'லாரி',
   'fav_cat_bus': 'பேருந்து',
+  "fav_cat_mini_bus": 'மினி பஸ்',
   'fav_cat_tataace': 'டாடா ஏஸ்',
   'fav_cat_tractor': 'டிராக்டர்',
   'fav_cat_agri': 'விவசாயம்',
@@ -363,6 +418,8 @@ const Map<String, String> ta = {
 
   "big_bucket": "பெரிய வாளி",
   "small_bucket": "சிறிய வாளி",
+  "jcb_bucket_big": "பெரிய பக்கெட்",
+  "jcb_bucket_small": "சிறிய பக்கெட்",
 
   // ──────────────────────────────────────────────────────────────
   //  JCB — BOOKING DETAIL
@@ -479,6 +536,69 @@ const Map<String, String> ta = {
   "agri_booking_success_message":
       "உங்கள் விவசாய உபகரணம் வெற்றிகரமாக பதிவு செய்யப்பட்டது. ஆபரேட்டர் விரைவில் தொடர்பு கொள்வார்.",
 
+  //==========Common vehicle detailse
+  "retry": "மீண்டும் முயற்சி",
+  "description": "விளக்கம்",
+  "read_more": "மேலும் படிக்க",
+  "read_less": "குறைவாக படிக்க",
+  "no_information": "தகவல் இல்லை",
+  "vehicle": "வாகனம்",
+  "online": "இணையத்தில்",
+  "offline": "இணையத்தில் இல்லை",
+  "trips": "பயணங்கள்",
+  "call": "அழைக்க",
+  "message": "செய்தி",
+  "driver_info": "டிரைவர் தகவல்",
+
+  "trans": "கியர்",
+  "fuel": "எரிபொருள்",
+  "seats": "இருக்கைகள்",
+  "type": "வகை",
+  "cap": "திறன்",
+  "cond": "நிலை",
+  "load": "சுமை",
+  "hp": "குதிரை சக்தி",
+
+  "min_km": "குறைந்தபட்ச கி.மீ",
+  "extra_km_charge": "கூடுதல் கி.மீ கட்டணம்",
+  "extra_hour_charge": "கூடுதல் மணி கட்டணம்",
+
+  "working_areas": "பணி பகுதிகள்",
+  "load_types": "சுமை வகைகள்",
+  "usage_types": "பயன்பாட்டு வகைகள்",
+  "attachment": "இணைப்பு கருவிகள்",
+
+  "specifications": "விவரக்குறிப்புகள்",
+  "ace_specifications": "டாடா ஏஸ் விவரக்குறிப்புகள்",
+
+  "tractor_attachments": "டிராக்டர் இணைப்புகள்",
+  "lorry_load_types": "சுமை வகைகள்",
+  "ace_usage_types": "பயன்பாட்டு வகைகள்",
+
+  "similar_ace": "இதே போன்ற டாடா ஏஸ்",
+  "similar_jcb": "இதே போன்ற JCB",
+
+  "heavy_lorry": "கனரக லாரி",
+
+  "per_hour": "மணிநேரத்திற்கு",
+
+  ///================POST REVIEW SCREEN==============
+  'rate_your_trip': 'உங்கள் பயணத்தை மதிப்பிடுங்கள்',
+  'rate_your_experience': 'உங்கள் அனுபவம் எப்படி இருந்தது?',
+  'review_hint': 'உங்கள் அனுபவத்தை பகிருங்கள்...',
+  'submit_review': 'மதிப்பீடு சமர்ப்பி',
+  'skip': 'தவிர்',
+  'review_submitted': 'மதிப்பீடு சமர்ப்பிக்கப்பட்டது!',
+  'review_submitted_msg': 'உங்கள் கருத்துக்கு நன்றி',
+  'rating_1': 'மிகவும் மோசம்',
+  'rating_2': 'மோசம்',
+  'rating_3': 'சராசரி',
+  'rating_4': 'நல்லது',
+  'rating_5': 'அருமை!',
+  'trip_completed': 'பயணம் முடிந்தது!',
+  'trip_completed_msg': 'உங்கள் பயணம் வெற்றிகரமாக முடிந்தது',
+  'total_paid': 'மொத்தம் செலுத்தியது',
+  'done': 'முடிந்தது',
   //===========================================================
   //-----Booking Confirm dialog
   'booking_confirmed': 'பதிவு உறுதிப்படுத்தப்பட்டது!',
@@ -495,4 +615,63 @@ const Map<String, String> ta = {
   'login_failed': 'தவறான தகவல்கள்',
   'newUserEn ':
       "நீங்கள் இன்னும் பதிவு செய்யவில்லை. தயவுசெய்து உங்கள் பதிவை முடிக்கவும்.",
+
+  ///===========================================================================
+  ///               BACKEND REAL DATA'S
+  /// ==========================================================================
+
+  /// FUEL TYPES
+  'Diesel': 'டீசல்',
+  'Petrol': 'பெட்ரோல்',
+  'CNG': 'சிஎன்ஜி',
+  'Electric': 'மின்சாரம்',
+  'Hybrid': 'ஹைப்ரிட்',
+
+  /// CAR SEATS
+  'car_seat_fabric': 'துணி சீட்',
+  'car_seat_leather': 'லெதர் சீட்',
+  'car_seat_ventilated': 'குளிரூட்டும் சீட்',
+  'car_seat_captain': 'கேப்டன் சீட்',
+  'car_seat_premium_fabric': 'பிரீமியம் துணி சீட்',
+  'car_seat_sporty': 'ஸ்போர்ட்ஸ் சீட்',
+
+  /// BUS SEATS
+  'bus_seat_standard_fixed': 'சாதாரண சீட்',
+  'bus_seat_pushback': 'புஷ்பேக் சீட்',
+  'bus_seat_high_back_cushion': 'உயர் பின்புற மெத்தையுடன் சீட்',
+  'bus_seat_low_back': 'குறைந்த பின்புற சீட்',
+  'bus_seat_recliner': 'ரிக்லைனர் சீட்',
+  'bus_seat_sleeper': 'ஸ்லீப்பர் சீட்',
+  'bus_seat_semi_sleeper': 'அரை ஸ்லீப்பர் சீட்',
+
+  /// AGRI / EQUIPMENT
+  'Harvester': 'அறுவடை இயந்திரம்',
+  'Rotavator': 'ரோட்டவேட்டர்',
+  'Tractor': 'டிராக்டர்',
+  'Power Tiller': 'சக்தி உழவு இயந்திரம்',
+  'Paddy Transplanter': 'நெல் நடவு இயந்திரம்',
+  'Seed Drill': 'விதை விதைக்கும் இயந்திரம்',
+  'Sprayer': 'தெளிப்பு இயந்திரம்',
+  'Thresher': 'தானிய பிரிப்பு இயந்திரம்',
+  'Baler': 'பேலர் இயந்திரம்',
+  'Cultivator': 'உழவு கருவி',
+  'Disc Harrow': 'டிஸ்க் ஹாரோ',
+
+  /// VEHICLE DETAILS
+  'vehicle_details': 'வாகன விவரங்கள்',
+
+  'distance': 'தூரம்',
+
+  /// SPEC KEYS
+  'diesel': 'டீசல்',
+  'petrol': 'பெட்ரோல்',
+  'electric': 'மின்சாரம்',
+
+  /// VEHICLE CATEGORIES
+  'bus_cat_semi_sleeper': 'செமி ஸ்லீப்பர்',
+  'bus_cat_town_bus': 'டவுன் பஸ்',
+  'bus_cat_tourist_bus': 'டூரிஸ்ட் பஸ்',
+  'bus_cat_luxury_seater': 'லக்ஷரி சீட்டர்',
+  'bus_cat_sleeper_bus': 'ஸ்லீப்பர் பஸ்',
+  'bus_cat_standard': 'சாதாரண பஸ்',
 };

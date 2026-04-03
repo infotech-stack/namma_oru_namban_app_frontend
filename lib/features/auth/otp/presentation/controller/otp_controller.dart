@@ -99,6 +99,7 @@ class OtpController extends GetxController {
         Get.offAllNamed(Routes.wrapper);
       } else {
         // ✅ Login success → home
+        await HiveService().init();
         AppSnackbar.success('Welcome back!');
         Get.offAllNamed(Routes.wrapper);
       }

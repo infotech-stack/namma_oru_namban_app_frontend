@@ -9,7 +9,7 @@ import 'package:userapp/utils/commons/text/b_text.dart';
 
 class VehicleReviewsSection extends StatelessWidget {
   final List<ReviewData> reviews;
-  final String vehicleType; // for logging if needed
+  final String vehicleType;
 
   const VehicleReviewsSection({
     super.key,
@@ -20,111 +20,117 @@ class VehicleReviewsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (reviews.isEmpty) return const SizedBox();
+
     final visibleReviews = reviews.take(2).toList();
     final hasMore = reviews.length > 2;
     final avg =
         reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(7.r),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFB300).withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    Icons.star_rounded,
-                    size: 16.sp,
-                    color: const Color(0xFFFFB300),
-                  ),
-                ),
-                Gap(10.w),
-                BText(
-                  text: 'reviews',
-                  fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
-                  fontWeight: FontWeight.w700,
-                  isLocalized: true,
-                ),
-              ],
-            ),
-
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFB300).withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(
-                  color: const Color(0xFFFFB300).withValues(alpha: 0.30),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+    return Container(
+      padding: EdgeInsets.all(14.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// 🔥 HEADER (UPGRADED)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Icon(
-                    Icons.star_rounded,
-                    size: 12.sp,
-                    color: const Color(0xFFFFB300),
+                  Container(
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFB300).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    child: Icon(
+                      Icons.star_rounded,
+                      size: 18.sp,
+                      color: const Color(0xFFFFB300),
+                    ),
                   ),
-                  Gap(3.w),
+                  Gap(10.w),
+                  BText(
+                    text: 'reviews',
+                    fontSize: responsiveFont(en: 15.sp, ta: 13.sp),
+                    fontWeight: FontWeight.w700,
+                    isLocalized: true,
+                  ),
+                ],
+              ),
+
+              /// ⭐ AVG
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
                   Text(
                     avg.toStringAsFixed(1),
                     style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800,
                       color: const Color(0xFFFFB300),
                     ),
                   ),
                   Text(
-                    ' (${reviews.length})',
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      color: theme.dividerColor,
-                    ),
+                    '${reviews.length} reviews',
+                    style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-        Gap(14.h),
-
-        ...visibleReviews.map(
-          (r) => Padding(
-            padding: EdgeInsets.only(bottom: 10.h),
-            child: _buildReviewCard(theme, r),
+            ],
           ),
-        ),
 
-        if (hasMore) ...[
-          Gap(2.h),
-          GestureDetector(
-            onTap: () => _openAllReviewsSheet(context, theme),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.35),
+          Gap(12.h),
+
+          /// 🔥 MINI SUMMARY BAR (NEW 🔥)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.r),
+            child: LinearProgressIndicator(
+              value: avg / 5,
+              minHeight: 6,
+              backgroundColor: Colors.grey[200],
+              valueColor: const AlwaysStoppedAnimation(Color(0xFFFFB300)),
+            ),
+          ),
+
+          Gap(14.h),
+
+          /// 🔥 REVIEW CARDS
+          ...visibleReviews.map(
+            (r) => Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
+              child: _buildReviewCard(theme, r),
+            ),
+          ),
+
+          /// 🔥 VIEW ALL BUTTON
+          if (hasMore)
+            GestureDetector(
+              onTap: () => _openAllReviewsSheet(context),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(14.r),
-                gradient: LinearGradient(
-                  colors: [
-                    theme.colorScheme.primary.withValues(alpha: 0.06),
-                    theme.colorScheme.primary.withValues(alpha: 0.02),
-                  ],
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
+                child: Center(
+                  child: Text(
                     '${'view_all'.tr} ${reviews.length} ${'reviews'.tr}',
                     style: TextStyle(
                       fontSize: 13.sp,
@@ -132,139 +138,26 @@ class VehicleReviewsSection extends StatelessWidget {
                       color: theme.colorScheme.primary,
                     ),
                   ),
-                  Gap(6.w),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 18.sp,
-                    color: theme.colorScheme.primary,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
         ],
-      ],
-    );
-  }
-
-  void _openAllReviewsSheet(BuildContext context, ThemeData theme) {
-    final avg =
-        reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
-
-    Get.bottomSheet(
-      Container(
-        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.secondary,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Gap(12.h),
-            Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: theme.dividerColor.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-            ),
-            Gap(16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BText(
-                      text: 'reviews',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w800,
-                      isLocalized: true,
-                    ),
-                    Gap(2.h),
-                    Text(
-                      '${reviews.length} ${'reviews'.tr}',
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: theme.dividerColor,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 14.w,
-                    vertical: 8.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFB300).withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(
-                      color: const Color(0xFFFFB300).withValues(alpha: 0.30),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        size: 18.sp,
-                        color: const Color(0xFFFFB300),
-                      ),
-                      Gap(5.w),
-                      Text(
-                        avg.toStringAsFixed(1),
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFFFFB300),
-                        ),
-                      ),
-                      Text(
-                        ' / 5',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: theme.dividerColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Gap(16.h),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: Get.height * 0.55),
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: reviews.length,
-                separatorBuilder: (_, __) => Gap(10.h),
-                itemBuilder: (_, i) => _buildReviewCard(theme, reviews[i]),
-              ),
-            ),
-          ],
-        ),
       ),
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
     );
   }
 
+  /// 🔥 MODERN REVIEW CARD
   Widget _buildReviewCard(ThemeData theme, ReviewData review) {
     return Container(
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondary,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.12)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -273,30 +166,25 @@ class VehicleReviewsSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 36.r,
-                height: 36.r,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.colorScheme.primary,
-                      theme.colorScheme.primary.withValues(alpha: 0.70),
-                    ],
-                  ),
-                  shape: BoxShape.circle,
+              /// 👤 AVATAR
+              CircleAvatar(
+                radius: 18.r,
+                backgroundColor: theme.colorScheme.primary.withValues(
+                  alpha: 0.1,
                 ),
-                child: Center(
-                  child: Text(
-                    review.avatar,
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
+                child: Text(
+                  review.avatar,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),
+
               Gap(10.w),
+
+              /// NAME + DATE
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,42 +198,187 @@ class VehicleReviewsSection extends StatelessWidget {
                     ),
                     Text(
                       review.date,
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        color: theme.dividerColor,
-                      ),
+                      style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                     ),
                   ],
                 ),
               ),
+
+              /// ⭐ RATING
               Row(
-                mainAxisSize: MainAxisSize.min,
                 children: List.generate(
                   5,
                   (i) => Icon(
                     i < review.rating
                         ? Icons.star_rounded
-                        : Icons.star_outline_rounded,
-                    size: 13.sp,
-                    color: i < review.rating
-                        ? const Color(0xFFFFB300)
-                        : theme.dividerColor.withValues(alpha: 0.40),
+                        : Icons.star_border_rounded,
+                    size: 14.sp,
+                    color: const Color(0xFFFFB300),
                   ),
                 ),
               ),
             ],
           ),
+
           Gap(10.h),
+
+          /// 💬 COMMENT
           Text(
             review.comment,
             style: TextStyle(
               fontSize: 12.sp,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.80),
               height: 1.5,
+              color: Colors.grey[800],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// 🔥 FULL SCREEN BOTTOM SHEET (REAL APP STYLE)
+  void _openAllReviewsSheet(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final avg =
+        reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
+
+    Get.to(
+      () => Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              /// 🔝 HEADER
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'reviews'.tr,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Get.back(),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+
+              /// 🔥 ADD HERE 👇 (Rating Summary Block)
+              Container(
+                padding: EdgeInsets.all(14.r),
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    /// ⭐ AVG
+                    Column(
+                      children: [
+                        Text(
+                          avg.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 26.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Row(
+                          children: List.generate(
+                            5,
+                            (i) => Icon(
+                              Icons.star_rounded,
+                              size: 14.sp,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Gap(16.w),
+
+                    /// 📊 BARS
+                    Expanded(
+                      child: Column(
+                        children: List.generate(5, (i) {
+                          int star = 5 - i;
+
+                          int count = reviews
+                              .where((r) => r.rating == star)
+                              .length;
+
+                          double percent = count / reviews.length;
+
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 2.h),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '$star',
+                                  style: TextStyle(fontSize: 10.sp),
+                                ),
+                                Gap(4.w),
+                                Icon(
+                                  Icons.star,
+                                  size: 10.sp,
+                                  color: Colors.amber,
+                                ),
+                                Gap(6.w),
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    child: LinearProgressIndicator(
+                                      value: percent,
+                                      minHeight: 6,
+                                      backgroundColor: Colors.grey[200],
+                                      valueColor: const AlwaysStoppedAnimation(
+                                        Colors.amber,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Gap(12.h),
+
+              /// 🔥 LIST (keep this below)
+              Expanded(
+                child: ListView.separated(
+                  padding: EdgeInsets.all(16.w),
+                  itemCount: reviews.length,
+                  separatorBuilder: (_, __) => Gap(12.h),
+                  itemBuilder: (_, i) => _buildReviewCard(theme, reviews[i]),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      transition: Transition.downToUp, // 👈 comes from top
+      duration: const Duration(milliseconds: 300),
     );
   }
 }

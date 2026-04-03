@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:userapp/features/booking/presentation/screen/my_booking_screen.dart';
+import 'package:userapp/features/booking/presentation/screen/my_booking_list_screen.dart';
 import 'package:userapp/features/favorites/presentation/screen/favorites_screen.dart';
 import 'package:userapp/features/home/presentation/controller/home_controller.dart';
 import 'package:userapp/features/home/presentation/screens/home_screen.dart';
@@ -19,7 +19,7 @@ class _MainWrapperState extends State<MainWrapper> {
   final pages = [
     HomeScreen(),
     FavoritesScreen(),
-    MyBookingScreen(),
+    MyBookingListScreen(),
     ProfileScreen(),
   ];
 
@@ -27,10 +27,17 @@ class _MainWrapperState extends State<MainWrapper> {
   void initState() {
     super.initState();
 
-    final args = Get.arguments;
-    final int initialIndex = (args is int) ? args : 0;
-
-    controller.currentNavIndex.value = initialIndex;
+    // final args = Get.arguments;
+    // final int initialIndex = (args is int) ? args : 0;
+    //
+    // controller.currentNavIndex.value = initialIndex;
+    // initState la direct .value = set pannina build phase la
+    // Obx trigger aguthu — "setState during build" error varuthu
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = Get.arguments;
+      final int initialIndex = (args is int) ? args : 0;
+      controller.currentNavIndex.value = initialIndex;
+    });
   }
 
   @override

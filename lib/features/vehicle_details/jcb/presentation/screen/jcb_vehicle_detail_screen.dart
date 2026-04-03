@@ -246,11 +246,11 @@ class JcbVehicleDetailScreen extends GetView<JcbVehicleDetailController> {
                         SimilarVehicleItem(
                           name: 'JCB 3DX',
                           fare: '₹800/',
-                          rating: '4.8',
+                          rating: '4.8', id: 0,
                           icon: Icons.construction_rounded,
                         ),
                         SimilarVehicleItem(
-                          name: 'JCB 3DX Super',
+                          name: 'JCB 3DX Super', id: 0,
                           fare: '₹900/',
                           rating: '4.7',
                           icon: Icons.construction_rounded,
@@ -258,11 +258,11 @@ class JcbVehicleDetailScreen extends GetView<JcbVehicleDetailController> {
                         SimilarVehicleItem(
                           name: 'JCB JS81',
                           fare: '₹1100/',
-                          rating: '4.9',
+                          rating: '4.9', id: 0,
                           icon: Icons.construction_rounded,
                         ),
                         SimilarVehicleItem(
-                          name: 'KOMATSU',
+                          name: 'KOMATSU', id: 0,
                           fare: '₹1500/',
                           rating: '4.8',
                           icon: Icons.construction_rounded,

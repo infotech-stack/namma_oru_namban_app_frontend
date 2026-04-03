@@ -1,76 +1,9 @@
-// lib/features/vehicle_details/presentation/widgets/common/vehicle_stats_row.dart
+// lib/features/vehicle_details/widget/common/vehicle_stats_row.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:userapp/core/resposnive/responsiveFont.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
-
-class VehicleStatsRow extends StatelessWidget {
-  final List<StatItem> stats;
-
-  const VehicleStatsRow({super.key, required this.stats});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: stats.asMap().entries.map((e) {
-        final i = e.key;
-        final stat = e.value;
-        final color = stat.color;
-
-        return Expanded(
-          child: Container(
-            margin: EdgeInsets.only(right: i < stats.length - 1 ? 10.w : 0),
-            padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 10.w),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color.withValues(alpha: 0.12),
-                  color.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: color.withValues(alpha: 0.20)),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(7.r),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(stat.icon, size: 16.sp, color: color),
-                ),
-                Gap(7.h),
-                BText(
-                  text: stat.labelKey,
-                  fontSize: responsiveFont(en: 9.sp, ta: 8.sp),
-                  color: theme.dividerColor,
-                  isLocalized: true,
-                ),
-                Gap(3.h),
-                BText(
-                  text: stat.value,
-                  fontSize: responsiveFont(en: 11.sp, ta: 9.sp),
-                  fontWeight: FontWeight.w700,
-                  isLocalized: false,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
 
 class StatItem {
   final IconData icon;
@@ -84,4 +17,70 @@ class StatItem {
     required this.value,
     required this.color,
   });
+}
+
+class VehicleStatsRow extends StatelessWidget {
+  final List<StatItem> stats;
+
+  const VehicleStatsRow({super.key, required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (stats.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: stats.map((stat) {
+        return Container(
+          width: 100.w, // Fixed width
+          margin: EdgeInsets.only(right: 8.w),
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(
+              color: theme.dividerColor.withValues(alpha: 0.1),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: stat.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(stat.icon, size: 18.sp, color: stat.color),
+              ),
+              Gap(6.h),
+              BText(
+                text: stat.value,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+                isLocalized: true,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              Gap(3.h),
+              BText(
+                text: stat.labelKey,
+                fontSize: 9.sp,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                isLocalized: true,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
 }

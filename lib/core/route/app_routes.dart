@@ -7,10 +7,20 @@ abstract class Routes {
   static const home = '/home';
   static const vehDetails = '/vehDetails';
   static const myBooking = '/myBooking';
+  static const myBookingStatus = '/myBookingStatus';
   static const bookingDetails = '/bookingDetails';
   static const favorites = '/favorites';
 
   /// All Vehicles Details and Booking Screens
+  static const String unifiedVehicleDetail = '/unifiedVehicleDetail';
+
+  static const similarVehicles = '/similarVehicles';
+
+  static const locationPicker = '/locationPicker';
+
+  ///Unified Booking Screen
+  static const unifiedBooking = '/unifiedBooking';
+
   static const carVehicleDetail = '/carVehicleDetail';
   static const carBooking = '/carBooking';
   //
