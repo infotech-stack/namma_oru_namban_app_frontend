@@ -75,6 +75,7 @@ class MyBookingDetailBinding extends Bindings {
       Get.lazyPut<ApiService>(() => ApiService());
     }
 
+    // ── Booking detail deps ───────────────────────────────────
     if (!Get.isRegistered<MyBookingDetailRemoteDataSource>()) {
       Get.lazyPut<MyBookingDetailRemoteDataSource>(
         () => MyBookingDetailRemoteDataSourceImpl(),
@@ -93,23 +94,41 @@ class MyBookingDetailBinding extends Bindings {
       );
     }
 
-    // bookingId comes from navigation arguments
-    //final args = Get.arguments;
-    //final int bookingId = args is Map ? (args['id'] as int? ?? 0) : 0;
-
-    Get.lazyPut<MyBookingDetailController>(
-      () => MyBookingDetailController(getBookingDetailUseCase: Get.find()),
-    );
-    // Review dependencies - register globally
+    // ── Review deps — use Get.put (not lazyPut) so they resolve immediately ──
     if (!Get.isRegistered<ReviewRemoteDataSource>()) {
-      Get.lazyPut<ReviewRemoteDataSource>(() => ReviewRemoteDataSourceImpl());
-      Get.lazyPut<ReviewRepository>(() => ReviewRepositoryImpl());
-      Get.lazyPut<AddReviewUseCase>(
-        () => AddReviewUseCase(Get.find<ReviewRepository>()),
-      );
-      Get.lazyPut<GetReviewsUseCase>(
-        () => GetReviewsUseCase(Get.find<ReviewRepository>()),
+      Get.put<ReviewRemoteDataSource>(
+        ReviewRemoteDataSourceImpl(),
+        permanent: false,
       );
     }
+
+    if (!Get.isRegistered<ReviewRepository>()) {
+      Get.put<ReviewRepository>(
+        ReviewRepositoryImpl(ds: Get.find<ReviewRemoteDataSource>()),
+        permanent: false,
+      );
+    }
+
+    if (!Get.isRegistered<AddReviewUseCase>()) {
+      Get.put<AddReviewUseCase>(
+        AddReviewUseCase(Get.find<ReviewRepository>()),
+        permanent: false,
+      );
+    }
+
+    if (!Get.isRegistered<GetReviewsUseCase>()) {
+      Get.put<GetReviewsUseCase>(
+        GetReviewsUseCase(Get.find<ReviewRepository>()),
+        permanent: false,
+      );
+    }
+
+    // ── Controller ────────────────────────────────────────────
+    Get.lazyPut<MyBookingDetailController>(
+      () => MyBookingDetailController(
+        getBookingDetailUseCase: Get.find(),
+        getReviewsUseCase: Get.find(),
+      ),
+    );
   }
 }

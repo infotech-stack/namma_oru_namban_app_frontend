@@ -23,6 +23,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   double? _selectedLat;
   double? _selectedLng;
 
+  // Add instance of new LocationService
+  final LocationService _locationService = LocationService();
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -44,7 +47,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
       final addresses = <String>[];
       for (final loc in locations.take(5)) {
-        final address = await LocationService.getAddressFromLatLng(
+        // Use new method - call instance method directly
+        final address = await _locationService.getAddressFromCoordinates(
           loc.latitude,
           loc.longitude,
         );
@@ -62,16 +66,13 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Future<void> _useCurrentLocation() async {
     _isSearching.value = true;
 
-    final position = await LocationService.getCurrentPosition();
-    if (position != null) {
-      final address = await LocationService.getAddressFromLatLng(
-        position.latitude,
-        position.longitude,
-      );
-      _selectedLat = position.latitude;
-      _selectedLng = position.longitude;
-      _selectedAddress.value = address;
-      _searchController.text = address;
+    // Use new method
+    final locationResult = await _locationService.getCurrentLocation();
+    if (locationResult != null) {
+      _selectedLat = locationResult.lat;
+      _selectedLng = locationResult.lng;
+      _selectedAddress.value = locationResult.address;
+      _searchController.text = locationResult.address;
       _searchResults.clear();
       _addressResults.clear();
     } else {

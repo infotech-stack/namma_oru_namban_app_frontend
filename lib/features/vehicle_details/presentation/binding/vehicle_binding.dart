@@ -9,14 +9,6 @@ import 'package:userapp/features/review/driver_review/data/repositories/review_r
 import 'package:userapp/features/review/driver_review/domain/repositories/review_repository.dart';
 import 'package:userapp/features/review/driver_review/domain/usecases/get_reviews_usecase.dart';
 import 'package:userapp/features/vehicle_details/presentation/controller/unified_vehicle_detail_controller.dart';
-import 'package:userapp/features/vehicle_details/presentation/controller/vehicle_detailse_controller.dart';
-
-class VehicleDetailBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut<VehicleDetailController>(() => VehicleDetailController());
-  }
-}
 
 class UnifiedVehicleDetailBinding extends Bindings {
   @override
@@ -58,7 +50,7 @@ class UnifiedVehicleDetailBinding extends Bindings {
         Get.find<GetVehicleDetailUseCase>(),
         Get.find<GetReviewsUseCase>(),
       ),
-      fenix: false,
+      fenix: true,
     );
   }
 }

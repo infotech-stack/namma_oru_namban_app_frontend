@@ -996,30 +996,24 @@ class UnifiedBookingController extends GetxController {
   final dropLat = 0.0.obs;
   final dropLng = 0.0.obs;
   final isLoadingLocation = false.obs;
+  final LocationService _locationService = LocationService();
   // fetchCurrentLocation fix
   Future<void> fetchCurrentLocation() async {
     isLoadingLocation.value = true;
 
-    final position = await LocationService.getCurrentPosition();
+    final locationResult = await _locationService.getCurrentLocation();
 
-    if (position != null) {
-      pickupLat.value = position.latitude;
-      pickupLng.value = position.longitude;
+    if (locationResult != null) {
+      pickupLat.value = locationResult.lat;
+      pickupLng.value = locationResult.lng;
+      pickupController.text = locationResult.address;
 
-      final address = await LocationService.getAddressFromLatLng(
-        position.latitude,
-        position.longitude,
-      );
-
-      pickupController.text = address;
-
-      // ✅ booking model-லயும் update பண்ணு
       final current = booking.value;
       if (current != null) {
         booking.value = current.copyWith(
-          pickupAddress: address,
-          pickupLat: position.latitude, // ← இது add பண்ணு
-          pickupLng: position.longitude, // ← இது add பண்ணு
+          pickupAddress: locationResult.address,
+          pickupLat: locationResult.lat,
+          pickupLng: locationResult.lng,
         );
       }
     } else {
@@ -1032,6 +1026,43 @@ class UnifiedBookingController extends GetxController {
 
     isLoadingLocation.value = false;
   }
+  /*
+  Future<void> fetchCurrentLocation() async {
+    isLoadingLocation.value = true;
+
+    final position = await LocationService.g();
+
+    if (position != null) {
+      pickupLat.value = position.latitude;
+      pickupLng.value = position.longitude;
+
+      final address = await LocationService.getAddressFromLatLng(
+        position.latitude,
+        position.longitude,
+      );
+
+      pickupController.text = address;
+
+      // ✅
+      final current = booking.value;
+      if (current != null) {
+        booking.value = current.copyWith(
+          pickupAddress: address,
+          pickupLat: position.latitude,
+          pickupLng: position.longitude,
+        );
+      }
+    } else {
+      Get.snackbar(
+        'error'.tr,
+        'enable_location'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+
+    isLoadingLocation.value = false;
+  }
+*/
 
   // setDropLocation fix
   Future<void> setDropLocation(String address, double lat, double lng) async {

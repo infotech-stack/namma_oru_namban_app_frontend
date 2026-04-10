@@ -53,6 +53,7 @@ const Map<String, String> en = {
   'fare': 'Fare',
   'eta': 'ETA',
   'book_now': 'Book now',
+  "currently_unavailable": "Not Available",
   'book_n': 'Book now',
   'home': 'Home',
   'my_booking': 'My Booking',
@@ -194,7 +195,71 @@ const Map<String, String> en = {
   'log_out': 'Log Out',
   'logout_confirm': 'Are you sure you want to log out?',
   'confirm': 'Confirm',
+
   //=============================================
+  /// Notification screen
+  //=============================================
+  'notifications': 'Notifications',
+  'no_notifications': 'No Notifications',
+  'no_notifications_sub':
+      'You\'re all caught up! New updates will appear here.',
+  'mark_all_read': 'Mark all read',
+  'clear_notifications': 'Clear All',
+  'clear_notifications_msg':
+      'Are you sure you want to clear all notifications? This cannot be undone.',
+  'clear': 'Clear',
+  'cancel': 'Cancel',
+  'failed_to_load_notifications': 'Failed to load notifications',
+  'failed_to_mark_all': 'Failed to mark all as read',
+  'failed_to_clear': 'Failed to clear notifications',
+  'just_now': 'Just now',
+
+  // Notification type labels
+  'trip_completed': 'Trip Completed',
+  'trip_started': 'Trip Started',
+  'booking_accepted': 'Booking Confirmed',
+  'booking_rejected': 'Booking Rejected',
+  //=============================================
+  ///Address screen
+  //=============================================
+  // 'saved_addresses':         'Saved Addresses',
+  'add_address': 'Add Address',
+  'edit_address': 'Edit Address',
+  'no_addresses': 'No Saved Addresses',
+  'no_addresses_sub':
+      'Add your home, work or other locations for quick access.',
+  'add_first_address': 'Add Your First Address',
+  'address_label': 'Label',
+  'label_home': 'Home',
+  'label_work': 'Work',
+  'label_other': 'Other',
+  'address': 'Address',
+  'address_hint': 'Enter your full address',
+  'use_current_location': 'Use My Location',
+  'fetching_location': 'Getting location...',
+  'set_as_default_address': 'Set as default address',
+  'default': 'Default',
+  'set_default': 'Set as Default',
+  'save_address': 'Save Address',
+  'update_address': 'Update Address',
+  'delete_address_title': 'Delete Address',
+  'delete_address_msg': 'Are you sure you want to delete this address?',
+  'address_created': 'Address added successfully',
+  'address_updated': 'Address updated successfully',
+  'address_deleted': 'Address removed successfully',
+  'max_addresses_reached': 'Maximum 5 addresses allowed',
+  'address_required': 'Please enter an address',
+  'location_required': 'Please use your location or enter an address',
+  'failed_to_load_addresses': 'Failed to load addresses',
+  'failed_to_create_address': 'Failed to add address',
+  'failed_to_update_address': 'Failed to update address',
+  'failed_to_delete_address': 'Failed to delete address',
+  'location_fetch_failed': 'Could not get your location',
+  'location_permission_title': 'Location Access Required',
+  'location_permission_msg':
+      'Please allow location access to automatically fill your address. Tap "Open Settings" to enable it.',
+  'open_settings': 'Open Settings',
+  // =============================================
   ///Vehicle booking details screen
   //=============================================
   'booking_details': 'Booking Details',
@@ -619,10 +684,18 @@ const Map<String, String> en = {
   'rating_3': 'Okay',
   'rating_4': 'Good',
   'rating_5': 'Excellent!',
-  'trip_completed': 'Trip Completed!',
   'trip_completed_msg': 'Your trip has been completed successfully',
   'total_paid': 'Total Paid',
   'done': 'Done',
+
+  'select_rating_hint': 'Tap a star to rate your trip',
+  'review_thank_you': 'Thank you for your review!',
+  'already_reviewed': 'Already Reviewed',
+  'already_reviewed_msg': 'You have already submitted a review for this trip.',
+  'please_select_rating': 'Please select a star rating first',
+  'rating_range_error': 'Rating must be between 1 and 5',
+  'vehicle_not_found': 'Vehicle not found',
+  'network_error': 'Network error, please try again',
   //=========================================================
   //-----Booking Confirm dialog
   'booking_confirmed': 'Booking Confirmed!',
@@ -681,6 +754,8 @@ const Map<String, String> en = {
   'Disc Harrow': 'Disc Harrow',
 
   /// VEHICLE DETAILS
+  'driver_busy_title': 'Driver Currently Busy',
+  'driver_available': 'Driver Ready for Booking',
   'vehicle_details': 'Vehicle Details',
 
   'distance': 'Distance',

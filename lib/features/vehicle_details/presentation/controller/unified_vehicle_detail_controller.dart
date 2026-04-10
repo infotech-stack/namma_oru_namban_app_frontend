@@ -15,6 +15,7 @@ import 'package:userapp/features/vehicle_details/widget/common/vehicle_reviews_s
 import 'package:userapp/features/vehicle_details/widget/common/vehicle_similar_list.dart';
 import 'package:userapp/features/vehicle_details/widget/common/vehicle_specs_container.dart';
 import 'package:userapp/features/vehicle_details/widget/common/vehicle_stats_row.dart';
+import 'package:userapp/utils/commons/snackbar/app_snackbar.dart';
 import 'package:userapp/utils/constants/app_images.dart';
 
 class UnifiedVehicleDetailController extends GetxController {
@@ -40,7 +41,7 @@ class UnifiedVehicleDetailController extends GetxController {
   // Review state
   final reviews = <ReviewEntity>[].obs;
   final isLoadingReviews = false.obs;
-  final avgRating = 0.obs;
+  final avgRating = 0.0.obs;
 
   // ─── Helper: specs array-லயும் extraData-லயும் தேடு ───────────────────────
   /// API specs array-ல் [label] match பண்ணி value return பண்றது.
@@ -142,6 +143,10 @@ class UnifiedVehicleDetailController extends GetxController {
       ? '${vehicle.value!.minHours} hrs'
       : '4 hrs';
   List<String> get suitableFor => _getListValue('suitable_for');
+
+  bool get canBook => vehicle.value?.canBook ?? true;
+  bool get isBusy => vehicle.value?.isDriverBusy ?? false;
+  String get busyReason => vehicle.value?.busyReason ?? 'driver_unavailable'.tr;
 
   // ─── List helper ─────────────────────────────────────────────────────────────
   /// specs array-ல் comma-separated value-ஐ List-ஆ return பண்றது.
@@ -716,6 +721,14 @@ class UnifiedVehicleDetailController extends GetxController {
   void onPageChanged(int index) => currentImageIndex.value = index;
 
   void onBookNow() {
+    if (!canBook) {
+      AppSnackbar.warning(
+        busyReason,
+        title: 'driver_busy_title'.tr,
+        isRaw: true,
+      );
+      return;
+    }
     AppLogger.info('UnifiedVehicleDetailController: Booking vehicle: $name');
 
     // ✅ Debug - Check what's in vehicle.value

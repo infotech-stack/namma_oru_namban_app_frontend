@@ -21,24 +21,9 @@ abstract class Routes {
   ///Unified Booking Screen
   static const unifiedBooking = '/unifiedBooking';
 
-  static const carVehicleDetail = '/carVehicleDetail';
-  static const carBooking = '/carBooking';
-  //
-  static const busVehicleDetail = '/busVehicleDetail';
-  static const busBooking = '/busBooking';
-  //
-  static const jcbVehicleDetail = '/jcbVehicleDetail';
-  static const jcbBooking = '/jcbBooking';
-  //
-  static const lorryVehicleDetail = '/lorryVehicleDetail';
-  static const lorryBooking = '/lorryBooking';
-  //
-  static const tataAceVehicleDetail = '/tataAceVehicleDetail';
-  static const tataAceBooking = '/tataAceBooking';
-  //
-  static const tractorVehicleDetail = '/tractorVehicleDetail';
-  static const tractorBooking = '/tractorBooking';
-  //
-  static const agriVehicleDetail = '/agriVehicleDetail';
-  static const agriBooking = '/agriBooking';
+  ///Notification screen
+  static const notification = '/notification';
+
+  /// Address screen
+  static const addresses = '/addresses';
 }

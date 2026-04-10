@@ -41,10 +41,13 @@ class ProfileController extends GetxController {
 
   void onNotificationSettings() {
     // TODO: Navigate to Notification Settings screen
+    Get.toNamed(Routes.notification);
   }
 
   void onSavedAddresses() {
     // TODO: Navigate to Saved Addresses screen
+
+    Get.toNamed(Routes.addresses);
   }
 
   Future<void> onLogOut() async {

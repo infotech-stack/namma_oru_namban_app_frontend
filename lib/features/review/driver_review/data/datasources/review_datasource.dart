@@ -34,8 +34,23 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDataSource {
       "comment": comment,
     });
 
+    // if (!res.isSuccess) {
+    //   throw ApiException(message: res.error ?? 'Failed to add review');
+    // }
+    // ── Check both HTTP status AND response body success flag ──
     if (!res.isSuccess) {
-      throw ApiException(message: res.error ?? 'Failed to add review');
+      // Extract message from response body if available
+      final body = res.data as Map<String, dynamic>?;
+      final message =
+          body?['message'] as String? ?? res.error ?? 'Failed to add review';
+      throw ApiException(message: message);
+    }
+
+    // Some APIs return 200 but with success: false in body
+    final body = res.data as Map<String, dynamic>?;
+    if (body != null && body['success'] == false) {
+      final message = body['message'] as String? ?? 'Failed to add review';
+      throw ApiException(message: message);
     }
   }
 }

@@ -98,7 +98,7 @@ class VehicleSimilarList extends StatelessWidget {
                     fontSize:
                         langController.currentLocale.value.languageCode == 'en'
                         ? 16.sp
-                        : 14.sp,
+                        : 12.sp,
                     fontWeight: FontWeight.w700,
                     isLocalized: true,
                   ),

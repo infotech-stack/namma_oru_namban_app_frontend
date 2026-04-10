@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/theme/app_colors.dart';
+import 'package:userapp/features/booking/domain/entities/my_booking_detail_entity.dart';
 import 'package:userapp/features/booking/presentation/controller/my_booking_detail_controller.dart';
 import 'package:userapp/features/booking/presentation/widget/my_booking_detail_shimmer.dart';
 import 'package:userapp/features/review/driver_review/data/datasources/review_datasource.dart';
@@ -341,37 +342,51 @@ class _MyBookingDetailScreenState extends State<MyBookingDetailScreen> {
           ),
           Padding(
             padding: EdgeInsets.all(14.w),
+
+            // Inside _buildRatingSection → replace the Obx content
             child: Obx(() {
-              // Show error state if there's an error message
+              // ── State 1: Already reviewed / submitted ─────────────────
+              if (ratingController.isSubmitted.value) {
+                return _buildRatingSuccessView(
+                  theme,
+                  isAlreadyReviewed: ratingController.isAlreadyReviewed.value,
+                );
+              }
+
+              // ── State 2: Validation/API error ────────────────────────
               if (ratingController.errorMessage.value.isNotEmpty) {
                 return Column(
                   children: [
+                    // Error banner
                     Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.1),
+                        color: Colors.red.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(10.r),
+                        border: Border.all(
+                          color: Colors.red.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.error_outline,
                             color: Colors.red,
-                            size: 20.sp,
+                            size: 18.sp,
                           ),
-                          Gap(10.w),
+                          Gap(8.w),
                           Expanded(
                             child: Text(
                               ratingController.errorMessage.value,
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: Colors.red,
+                                color: Colors.red.shade700,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => ratingController.clearError(),
+                            onTap: ratingController.clearError,
                             child: Icon(
                               Icons.close,
                               color: Colors.red,
@@ -382,256 +397,14 @@ class _MyBookingDetailScreenState extends State<MyBookingDetailScreen> {
                       ),
                     ),
                     Gap(16.h),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          ratingController.clearError();
-                          ratingController.selectedRating.value = 0;
-                          ratingController.commentController.clear();
-                          ratingController.commentText.value = '';
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
-                        ),
-                        child: Text(
-                          'Try Again',
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.secondary,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Show the rating form again so user can retry
+                    _buildRatingForm(theme, ratingController, b),
                   ],
                 );
               }
 
-              // Show success state
-              if (ratingController.isSubmitted.value) {
-                return _buildRatingSuccessView(theme);
-              }
-
-              // Show rating form
-              return Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 42.w,
-                        height: 42.h,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withValues(
-                            alpha: 0.1,
-                          ),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Icon(
-                          Icons.person_rounded,
-                          color: theme.colorScheme.primary,
-                          size: 24.sp,
-                        ),
-                      ),
-                      Gap(12.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              b.driverName,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              b.vehicleName,
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                color: theme.dividerColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 4.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFD1FAE5),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Text(
-                          'trip_completed'.tr,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF059669),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Gap(20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (i) {
-                      final starIndex = i + 1;
-                      return Obx(
-                        () => GestureDetector(
-                          onTap: () => ratingController.setRating(starIndex),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: AnimatedScale(
-                              scale:
-                                  ratingController.selectedRating.value >=
-                                      starIndex
-                                  ? 1.2
-                                  : 1.0,
-                              duration: const Duration(milliseconds: 150),
-                              child: Icon(
-                                ratingController.selectedRating.value >=
-                                        starIndex
-                                    ? Icons.star_rounded
-                                    : Icons.star_outline_rounded,
-                                size: 38.sp,
-                                color:
-                                    ratingController.selectedRating.value >=
-                                        starIndex
-                                    ? const Color(0xFFF59E0B)
-                                    : theme.dividerColor.withValues(
-                                        alpha: 0.35,
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                  Gap(6.h),
-                  Obx(
-                    () => ratingController.selectedRating.value > 0
-                        ? Center(
-                            child: Text(
-                              ratingController.ratingLabel,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
-                                color: _getRatingLabelColor(
-                                  ratingController.selectedRating.value,
-                                ),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  Gap(16.h),
-                  TextField(
-                    controller: ratingController.commentController,
-                    onChanged: (v) => ratingController.commentText.value = v,
-                    maxLines: 3,
-                    maxLength: 150,
-                    decoration: InputDecoration(
-                      hintText: 'review_hint'.tr,
-                      hintStyle: TextStyle(
-                        fontSize: 12.sp,
-                        color: theme.dividerColor.withValues(alpha: 0.5),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 10.h,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color: theme.dividerColor.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color: theme.dividerColor.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color: theme.colorScheme.primary,
-                          width: 1.5,
-                        ),
-                      ),
-                      counterStyle: TextStyle(
-                        fontSize: 9.sp,
-                        color: theme.dividerColor,
-                      ),
-                    ),
-                  ),
-                  Gap(16.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Obx(
-                      () => ElevatedButton(
-                        onPressed:
-                            ratingController.canSubmit &&
-                                !ratingController.isSubmitting.value
-                            ? () => ratingController.submitReview(
-                                bookingId: b.id,
-                                vehicleId: b.vehicleId,
-                              )
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primary,
-                          disabledBackgroundColor: theme.colorScheme.primary
-                              .withValues(alpha: 0.35),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
-                        ),
-                        child: ratingController.isSubmitting.value
-                            ? SizedBox(
-                                width: 18.w,
-                                height: 18.h,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: theme.colorScheme.secondary,
-                                ),
-                              )
-                            : Text(
-                                'submit_review'.tr,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: theme.colorScheme.secondary,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                  Gap(8.h),
-                  GestureDetector(
-                    onTap: () => ratingController.skip(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 6.h),
-                      child: Text(
-                        'skip'.tr,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: theme.dividerColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+              // ── State 3: Rating form ──────────────────────────────────
+              return _buildRatingForm(theme, ratingController, b);
             }),
           ),
         ],
@@ -639,44 +412,384 @@ class _MyBookingDetailScreenState extends State<MyBookingDetailScreen> {
     );
   }
 
-  Widget _buildRatingSuccessView(ThemeData theme) {
+  Widget _buildRatingForm(
+    ThemeData theme,
+    ReviewController ratingController,
+    MyBookingDetailEntity b,
+  ) {
     return Column(
       children: [
-        Center(
-          child: Container(
-            width: 56.w,
-            height: 56.h,
-            decoration: const BoxDecoration(
-              color: Color(0xFFD1FAE5),
-              shape: BoxShape.circle,
+        // Driver info row
+        Row(
+          children: [
+            Container(
+              width: 42.w,
+              height: 42.h,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(
+                Icons.person_rounded,
+                color: theme.colorScheme.primary,
+                size: 24.sp,
+              ),
             ),
-            child: Icon(
-              Icons.check_rounded,
-              color: const Color(0xFF059669),
-              size: 28.sp,
+            Gap(12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    b.driverName,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    b.vehicleName,
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: theme.dividerColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD1FAE5),
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Text(
+                'trip_completed'.tr,
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF059669),
+                ),
+              ),
+            ),
+          ],
         ),
-        Gap(12.h),
-        Center(
-          child: Text(
-            'review_submitted'.tr,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
+
+        Gap(20.h),
+
+        // Stars — require rating before submit
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (i) {
+            final starIndex = i + 1;
+            return Obx(
+              () => GestureDetector(
+                onTap: () => ratingController.setRating(starIndex),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: AnimatedScale(
+                    scale: ratingController.selectedRating.value >= starIndex
+                        ? 1.2
+                        : 1.0,
+                    duration: const Duration(milliseconds: 150),
+                    child: Icon(
+                      ratingController.selectedRating.value >= starIndex
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      size: 38.sp,
+                      color: ratingController.selectedRating.value >= starIndex
+                          ? const Color(0xFFF59E0B)
+                          : theme.dividerColor.withValues(alpha: 0.35),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
         ),
+
         Gap(4.h),
-        Center(
-          child: Text(
-            'review_submitted_msg'.tr,
-            style: TextStyle(fontSize: 11.sp, color: theme.dividerColor),
+
+        // "Please select a rating" hint — shown when no star selected
+        Obx(
+          () => ratingController.selectedRating.value == 0
+              ? Text(
+                  'select_rating_hint'.tr,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: theme.dividerColor.withValues(alpha: 0.6),
+                  ),
+                )
+              : Text(
+                  ratingController.ratingLabel,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: _getRatingLabelColor(
+                      ratingController.selectedRating.value,
+                    ),
+                  ),
+                ),
+        ),
+
+        Gap(16.h),
+
+        // Comment field
+        TextField(
+          controller: ratingController.commentController,
+          onChanged: (v) => ratingController.commentText.value = v,
+          maxLines: 3,
+          maxLength: 150,
+          decoration: InputDecoration(
+            hintText: 'review_hint'.tr,
+            hintStyle: TextStyle(
+              fontSize: 12.sp,
+              color: theme.dividerColor.withValues(alpha: 0.5),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 12.w,
+              vertical: 10.h,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(
+                color: theme.dividerColor.withValues(alpha: 0.2),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(
+                color: theme.dividerColor.withValues(alpha: 0.2),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 1.5,
+              ),
+            ),
+            counterStyle: TextStyle(fontSize: 9.sp, color: theme.dividerColor),
+          ),
+        ),
+
+        Gap(16.h),
+
+        // Submit button — disabled until star selected
+        SizedBox(
+          width: double.infinity,
+          child: Obx(
+            () => ElevatedButton(
+              onPressed:
+                  ratingController.canSubmit &&
+                      !ratingController.isSubmitting.value
+                  ? () => ratingController.submitReview(
+                      bookingId: b.id,
+                      vehicleId: b.vehicleId,
+                    )
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                disabledBackgroundColor: theme.colorScheme.primary.withValues(
+                  alpha: 0.35,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+              ),
+              child: ratingController.isSubmitting.value
+                  ? SizedBox(
+                      width: 18.w,
+                      height: 18.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: theme.colorScheme.secondary,
+                      ),
+                    )
+                  : Text(
+                      'submit_review'.tr,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.secondary,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+
+        Gap(8.h),
+
+        // Skip
+        GestureDetector(
+          onTap: ratingController.skip,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 6.h),
+            child: Text(
+              'skip'.tr,
+              style: TextStyle(fontSize: 12.sp, color: theme.dividerColor),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildRatingSuccessView(
+    ThemeData theme, {
+    bool isAlreadyReviewed = false,
+  }) {
+    final myReview = controller.myReview.value;
+
+    return Column(
+      children: [
+        // ── Icon ────────────────────────────────────────────────
+        Center(
+          child: Container(
+            width: 56.w,
+            height: 56.h,
+            decoration: BoxDecoration(
+              color: isAlreadyReviewed
+                  ? const Color(0xFFEDE9FE)
+                  : const Color(0xFFD1FAE5),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.check_rounded,
+              color: isAlreadyReviewed
+                  ? const Color(0xFF7C3AED)
+                  : const Color(0xFF059669),
+              size: 28.sp,
+            ),
+          ),
+        ),
+
+        Gap(12.h),
+
+        // ── Title ────────────────────────────────────────────────
+        Text(
+          isAlreadyReviewed ? 'already_reviewed'.tr : 'review_submitted'.tr,
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+
+        Gap(4.h),
+
+        Text(
+          isAlreadyReviewed
+              ? 'already_reviewed_msg'.tr
+              : 'review_submitted_msg'.tr,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 11.sp, color: theme.dividerColor),
+        ),
+
+        // ── Submitted review card ─────────────────────────────────
+        if (myReview != null) ...[
+          Gap(16.h),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(14.w),
+            decoration: BoxDecoration(
+              color: theme.dividerColor.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.12),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Stars + label row ──────────────────────────
+                Row(
+                  children: [
+                    // Stars
+                    Row(
+                      children: List.generate(5, (i) {
+                        return Icon(
+                          i < myReview.rating
+                              ? Icons.star_rounded
+                              : Icons.star_outline_rounded,
+                          size: 18.sp,
+                          color: i < myReview.rating
+                              ? const Color(0xFFF59E0B)
+                              : theme.dividerColor.withValues(alpha: 0.3),
+                        );
+                      }),
+                    ),
+                    Gap(8.w),
+                    // Rating label badge
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 3.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getRatingLabelColor(
+                          myReview.rating,
+                        ).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        _getRatingText(myReview.rating),
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w600,
+                          color: _getRatingLabelColor(myReview.rating),
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    // Date
+                    Text(
+                      myReview.date,
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: theme.dividerColor,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // ── Comment ────────────────────────────────────
+                if (myReview.comment.isNotEmpty) ...[
+                  Gap(10.h),
+                  Text(
+                    myReview.comment,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: theme.colorScheme.onSurface,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  // ── Helper: rating text ───────────────────────────────────────────────────────
+  String _getRatingText(int rating) {
+    switch (rating) {
+      case 1:
+        return 'Poor'.tr;
+      case 2:
+        return 'Fair'.tr;
+      case 3:
+        return 'Good'.tr;
+      case 4:
+        return 'Very Good'.tr;
+      case 5:
+        return 'Excellent'.tr;
+      default:
+        return '';
+    }
   }
 
   Color _getRatingLabelColor(int rating) {
