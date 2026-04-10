@@ -11,6 +11,7 @@ import 'package:userapp/core/theme/app_colors.dart';
 import 'package:userapp/features/profile/presentation/controller/profile_controller.dart';
 import 'package:userapp/features/profile/presentation/widget/profile_model_widget.dart';
 import 'package:userapp/utils/commons/app_dialogs/app_confirm_dialog_widget.dart';
+import 'package:userapp/utils/commons/button/b_button.dart';
 import 'package:userapp/utils/commons/text/b_text.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
@@ -41,8 +42,8 @@ class ProfileScreen extends GetView<ProfileController> {
                     children: [
                       Gap(20.h),
                       _buildMenuCard(theme, p),
-                      Gap(24.h),
-                      _buildVehiclePreferences(theme, p),
+                      // Gap(24.h),
+                      // _buildVehiclePreferences(theme, p),
                       Gap(30.h),
                       _buildLogOutButton(theme),
                       Gap(30.h),
@@ -471,7 +472,8 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget _buildLogOutButton(ThemeData theme) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: GestureDetector(
+      child: BButton(
+        text: 'log_out',
         onTap: () => AppConfirmDialog.show(
           theme: theme,
           title: "log_out",
@@ -481,29 +483,11 @@ class ProfileScreen extends GetView<ProfileController> {
           iconColor: AppTheme.red,
           onConfirm: controller.onLogOut,
         ),
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 14.h),
-          decoration: BoxDecoration(
-            color: AppTheme.red.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(color: AppTheme.red.withValues(alpha: 0.25)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.logout_rounded, color: AppTheme.red, size: 18.sp),
-              Gap(8.w),
-              BText(
-                text: 'log_out',
-                fontSize: responsiveFont(en: 14.sp, ta: 12.sp),
-                fontWeight: FontWeight.w600,
-                color: AppTheme.red,
-                isLocalized: true,
-              ),
-            ],
-          ),
-        ),
+        isOutline: true,
+        textColor: AppTheme.redDark,
+        // backgroundColor: AppTheme.redDark,
+        borderColor: AppTheme.redDark,
+        suffixIcon: Icon(Icons.logout, color: AppTheme.redDark, size: 18),
       ),
     );
   }

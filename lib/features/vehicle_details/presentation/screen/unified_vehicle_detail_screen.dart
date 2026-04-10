@@ -1,4 +1,7 @@
 // lib/features/vehicle_details/unified/screens/unified_vehicle_detail_screen.dart
+// ════════════════════════════════════════════════════════════════
+//  UNIFIED VEHICLE DETAIL SCREEN — Fixed null safety
+// ════════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,18 +36,22 @@ class UnifiedVehicleDetailScreen
         backgroundColor: theme.colorScheme.secondary,
         bottomNavigationBar: _buildBookButton(theme),
         body: Obx(() {
+          // ✅ First check if loading
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // ✅ Then check for error
           if (controller.errorMessage.value.isNotEmpty) {
             return _buildErrorState(theme);
           }
 
+          // ✅ Finally check if vehicle is null
           if (controller.vehicle.value == null) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // ✅ Now safe to access vehicle data
           return CustomScrollView(
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
@@ -96,6 +103,9 @@ class UnifiedVehicleDetailScreen
                               ),
                             ),
                             Gap(24.h),
+                            // ✅ Safe availability badge
+                            _buildAvailabilityBadge(theme),
+                            Gap(24.h),
                             VehicleSpecsContainer(
                               titleKey: _getSpecsTitleKey(),
                               headerIcon: Icons.tune_rounded,
@@ -113,9 +123,13 @@ class UnifiedVehicleDetailScreen
                               _buildDescriptionCard(theme),
                             Obx(() {
                               if (controller.isLoadingReviews.value) {
-                                return CircularProgressIndicator();
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
                               }
-
                               return VehicleReviewsSection(
                                 reviews: controller.reviewList,
                                 vehicleType:
@@ -137,6 +151,163 @@ class UnifiedVehicleDetailScreen
             ],
           );
         }),
+      ),
+    );
+  }
+
+  // ✅ Fixed availability badge - no Obx wrapper needed inside
+  Widget _buildAvailabilityBadge(ThemeData theme) {
+    // Check if vehicle exists first
+    if (controller.vehicle.value == null) {
+      return const SizedBox.shrink();
+    }
+
+    final canBook = controller.vehicle.value?.canBook ?? false;
+    final isBusy = controller.vehicle.value?.isDriverBusy ?? false;
+    final busyReason =
+        controller.vehicle.value?.busyReason ??
+        'Driver is currently busy with another booking';
+    final isAvailable = controller.vehicle.value?.isAvailable ?? true;
+
+    // Available — show green badge
+    if (canBook && !isBusy && isAvailable) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: const Color(0xFFD1FAE5),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: const Color(0xFF059669).withValues(alpha: 0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 8.w,
+              height: 8.h,
+              decoration: const BoxDecoration(
+                color: Color(0xFF059669),
+                shape: BoxShape.circle,
+              ),
+            ),
+            Gap(10.w),
+            Expanded(
+              child: BText(
+                text: 'driver_available',
+                isLocalized: true,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Vehicle not available (maintenance etc)
+    if (!isAvailable) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFEE2E2),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.car_crash, size: 18.sp, color: const Color(0xFFB91C1C)),
+            Gap(10.w),
+            Expanded(
+              child: Text(
+                'Vehicle currently unavailable for booking',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF991B1B),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Busy — show red/orange badge with reason
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF3C7),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.access_time_rounded,
+            size: 18.sp,
+            color: const Color(0xFF92400E),
+          ),
+          Gap(10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'driver_busy_title'.tr,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF92400E),
+                  ),
+                ),
+                Gap(4.h),
+                Text(
+                  busyReason,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: const Color(0xFF92400E).withValues(alpha: 0.8),
+                  ),
+                ),
+                Gap(8.h),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFEF3C7),
+                    borderRadius: BorderRadius.circular(4.r),
+                    border: Border.all(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 12.sp,
+                        color: const Color(0xFF92400E),
+                      ),
+                      Gap(4.w),
+                      Text(
+                        'Try another vehicle or check back later',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: const Color(0xFF92400E),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -479,7 +650,6 @@ class UnifiedVehicleDetailScreen
           ],
         );
 
-      // ✅ FIXED: Tractor section - proper null/empty/N/A check with Obx
       case 'tractor':
         return Obx(() {
           final attachmentValue = controller.attachment;
@@ -758,30 +928,42 @@ class UnifiedVehicleDetailScreen
   }
 
   Widget _buildBookButton(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 28.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: BButton(
-          text: 'book_now',
-          onTap: controller.onBookNow,
-          suffixIcon: Icon(
-            Icons.arrow_forward_rounded,
-            color: Colors.white,
-            size: 20.sp,
+    return Obx(() {
+      // Check if vehicle exists and can book
+      final canBook = controller.vehicle.value?.canBook ?? false;
+      final isDriverBusy = controller.vehicle.value?.isDriverBusy ?? false;
+      final isAvailable = controller.vehicle.value?.isAvailable ?? true;
+
+      final isButtonEnabled = canBook && isAvailable && !isDriverBusy;
+
+      return Container(
+        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 28.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: BButton(
+            text: isButtonEnabled ? 'book_now' : 'currently_unavailable',
+            onTap: isButtonEnabled ? controller.onBookNow : () {},
+            suffixIcon: Icon(
+              Icons.arrow_forward_rounded,
+              color: Colors.white,
+              size: 20.sp,
+            ),
+            backgroundColor: isButtonEnabled
+                ? theme.primaryColor
+                : theme.primaryColor.withValues(alpha: 0.5),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   String _getSubtitle() {

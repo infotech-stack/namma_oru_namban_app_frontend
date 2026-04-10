@@ -124,6 +124,10 @@ class VehicleModel {
   final Map<String, dynamic>? driverDetails;
   final List<String>? amenities;
   final List<String>? working_areas;
+  // NEW: Driver availability fields
+  final DriverAvailabilityModel? driverAvailability;
+  final bool isAvailable;
+  final bool? isFavorited;
   VehicleModel({
     required this.id,
     required this.nameKey,
@@ -162,6 +166,9 @@ class VehicleModel {
     this.driverDetails,
     this.amenities,
     this.working_areas,
+    this.driverAvailability,
+    this.isAvailable = true,
+    this.isFavorited = false,
   });
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) {
@@ -233,6 +240,17 @@ class VehicleModel {
     if (!isOnline) {
       isOnline = _parseBool(json['isOnline']);
     }
+
+    // Parse driver availability
+    DriverAvailabilityModel? driverAvailability;
+    if (json['driverAvailability'] != null) {
+      driverAvailability = DriverAvailabilityModel.fromJson(
+        json['driverAvailability'] as Map<String, dynamic>,
+      );
+    }
+
+    final isAvailable = _parseBool(json['isAvailable'] ?? true);
+    final isFavorited = _parseBool(json['isFavorited'] ?? false);
     return VehicleModel(
       id: _parseInt(json['id']),
       nameKey: _parseString(
@@ -283,6 +301,9 @@ class VehicleModel {
       working_areas: (json['working_areas'] as List?)
           ?.map((e) => e.toString())
           .toList(),
+      driverAvailability: driverAvailability,
+      isAvailable: isAvailable,
+      isFavorited: isFavorited,
     );
   }
 
@@ -384,113 +405,12 @@ class VehicleModel {
       amenities: amenities,
       working_areas: working_areas,
       driverPhone: driverDetails?['phone']?.toString(),
+      driverAvailability: driverAvailability?.toEntity(),
+      isAvailable: isAvailable,
+      isFavorited: isFavorited,
     );
   }
-} /*class VehicleModel {
-  final int id;
-  final String nameKey;
-  final String rating;
-  final String capacity;
-  final String fare;
-  final String eta;
-  final String categoryKey;
-  final String imagePath;
-  final String? registrationNo;
-  final String driverName;
-  final String? driverPhoto;
-  final int driverTrips;
-  final bool isOnline;
-  final String? make;
-  final String categorySlug;
-  final String categoryName;
-
-  const VehicleModel({
-    required this.id,
-    required this.nameKey,
-    required this.rating,
-    required this.capacity,
-    required this.fare,
-    required this.eta,
-    required this.categoryKey,
-    required this.imagePath,
-    this.registrationNo,
-    required this.driverName,
-    this.driverPhoto,
-    required this.driverTrips,
-    required this.isOnline,
-    this.make,
-    required this.categorySlug,
-    required this.categoryName,
-  });
-
-  factory VehicleModel.fromJson(Map<String, dynamic> json) {
-    return VehicleModel(
-      id: _parseInt(json['id']),
-      nameKey: _parseString(json['nameKey']),
-      rating: _parseString(json['rating']),
-      capacity: _parseString(json['capacity']),
-      fare: _parseString(json['fare']),
-      eta: _parseString(json['eta']),
-      categoryKey: _parseString(json['categoryKey']),
-      imagePath: _parseString(json['imagePath']),
-      registrationNo: _parseNullableString(json['registrationNo']),
-      driverName: _parseString(json['driverName']),
-      driverPhoto: _parseNullableString(json['driverPhoto']),
-      driverTrips: _parseInt(json['driverTrips']),
-      isOnline: _parseBool(json['isOnline']),
-      make: _parseNullableString(json['make']),
-      categorySlug: _parseString(json['categorySlug']),
-      categoryName: _parseString(json['categoryName']),
-    );
-  }
-
-  static String _parseString(dynamic value) {
-    if (value == null) return '';
-    if (value is String) return value;
-    return value.toString();
-  }
-
-  static String? _parseNullableString(dynamic value) {
-    if (value == null) return null;
-    if (value is String) return value;
-    return value.toString();
-  }
-
-  static int _parseInt(dynamic value) {
-    if (value == null) return 0;
-    if (value is int) return value;
-    if (value is String) return int.tryParse(value) ?? 0;
-    if (value is double) return value.toInt();
-    return 0;
-  }
-
-  static bool _parseBool(dynamic value) {
-    if (value == null) return false;
-    if (value is bool) return value;
-    if (value is int) return value == 1;
-    if (value is String) return value.toLowerCase() == 'true';
-    return false;
-  }
-
-  VehicleEntity toEntity() => VehicleEntity(
-    id: id,
-    nameKey: nameKey,
-    rating: rating,
-    capacity: capacity,
-    fare: fare,
-    eta: eta,
-    categoryKey: categoryKey,
-    imagePath: imagePath,
-    registrationNo: registrationNo,
-    driverName: driverName,
-    driverPhoto: driverPhoto,
-    driverTrips: driverTrips,
-    isOnline: isOnline,
-    make: make,
-    categorySlug: categorySlug,
-    categoryName: categoryName,
-  );
-}*/
+}
 
 // lib/features/home/data/models/vehicles_response_model.dart
 // ════════════════════════════════════════════════════════════════
@@ -556,4 +476,54 @@ class VehiclesResponseModel {
     limit: limit,
     offset: offset,
   );
+}
+
+// ════════════════════════════════════════════════════════════════
+//  DRIVER AVAILABILITY MODEL — Data Layer
+// ════════════════════════════════════════════════════════════════
+
+class DriverAvailabilityModel {
+  final bool isBusy;
+  final String? busyReason;
+  final String? estimatedFreeTime;
+  final String? bookingStatus;
+  final bool canBook;
+
+  const DriverAvailabilityModel({
+    required this.isBusy,
+    this.busyReason,
+    this.estimatedFreeTime,
+    this.bookingStatus,
+    required this.canBook,
+  });
+
+  factory DriverAvailabilityModel.fromJson(Map<String, dynamic> json) {
+    return DriverAvailabilityModel(
+      isBusy: json['isBusy'] ?? false,
+      busyReason: json['busyReason'],
+      estimatedFreeTime: json['estimatedFreeTime'],
+      bookingStatus: json['bookingStatus'],
+      canBook: json['canBook'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'isBusy': isBusy,
+      'busyReason': busyReason,
+      'estimatedFreeTime': estimatedFreeTime,
+      'bookingStatus': bookingStatus,
+      'canBook': canBook,
+    };
+  }
+
+  DriverAvailabilityEntity toEntity() {
+    return DriverAvailabilityEntity(
+      isBusy: isBusy,
+      busyReason: busyReason,
+      estimatedFreeTime: estimatedFreeTime,
+      bookingStatus: bookingStatus,
+      canBook: canBook,
+    );
+  }
 }

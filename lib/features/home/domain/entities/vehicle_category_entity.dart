@@ -45,6 +45,7 @@ class VehicleEntity {
   final String? make;
   final String categorySlug;
   final String categoryName;
+  final bool? isFavorited;
 
   // Detailed fields from /vehicles/:id API
   final String? description;
@@ -68,6 +69,9 @@ class VehicleEntity {
   final Map<String, dynamic>? driverDetails;
   final List<String>? amenities;
   final List<String>? working_areas;
+  // NEW: Driver availability status
+  final DriverAvailabilityEntity? driverAvailability;
+  final bool isAvailable;
 
   const VehicleEntity({
     required this.id,
@@ -108,7 +112,16 @@ class VehicleEntity {
     this.amenities,
     this.working_areas,
     this.driverPhone,
+    this.driverAvailability,
+    this.isAvailable = true,
+    this.isFavorited = false,
   });
+  // Helper getters for UI
+  // bool get canBook => driverAvailability?.canBook ?? isAvailable;
+  bool get canBook => driverAvailability?.canBook ?? (isOnline && isAvailable);
+  bool get isDriverBusy => driverAvailability?.isBusy ?? false;
+  String? get busyReason => driverAvailability?.busyReason;
+  String? get estimatedFreeTime => driverAvailability?.estimatedFreeTime;
 
   // Copy with method for updating with detailed data
   VehicleEntity copyWith({
@@ -150,6 +163,9 @@ class VehicleEntity {
     Map<String, dynamic>? driverDetails,
     List<String>? amenities,
     List<String>? working_areas,
+    DriverAvailabilityEntity? driverAvailability,
+    bool? isAvailable,
+    bool? isFavorited,
   }) {
     return VehicleEntity(
       id: id ?? this.id,
@@ -190,6 +206,9 @@ class VehicleEntity {
       driverDetails: driverDetails ?? this.driverDetails,
       amenities: amenities ?? this.amenities,
       working_areas: working_areas ?? this.working_areas,
+      driverAvailability: driverAvailability ?? this.driverAvailability,
+      isAvailable: isAvailable ?? this.isAvailable,
+      isFavorited: isFavorited ?? this.isFavorited,
     );
   }
 }
@@ -212,4 +231,30 @@ class VehiclesResponseEntity {
     required this.limit,
     required this.offset,
   });
+}
+
+class DriverAvailabilityEntity {
+  final bool isBusy;
+  final String? busyReason;
+  final String? estimatedFreeTime;
+  final String? bookingStatus;
+  final bool canBook;
+
+  const DriverAvailabilityEntity({
+    required this.isBusy,
+    this.busyReason,
+    this.estimatedFreeTime,
+    this.bookingStatus,
+    required this.canBook,
+  });
+
+  factory DriverAvailabilityEntity.fromJson(Map<String, dynamic> json) {
+    return DriverAvailabilityEntity(
+      isBusy: json['isBusy'] ?? false,
+      busyReason: json['busyReason'],
+      estimatedFreeTime: json['estimatedFreeTime'],
+      bookingStatus: json['bookingStatus'],
+      canBook: json['canBook'] ?? false,
+    );
+  }
 }

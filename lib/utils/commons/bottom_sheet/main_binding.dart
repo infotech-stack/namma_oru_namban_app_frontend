@@ -1,4 +1,5 @@
 // lib/features/main/bindings/main_binding.dart
+
 import 'package:get/get.dart';
 import 'package:userapp/core/network/api_service.dart';
 import 'package:userapp/features/booking/data/datasources/my_booking_remote_datasource.dart';
@@ -18,24 +19,29 @@ import 'package:userapp/features/home/domain/usecases/get_categories_usecase.dar
 import 'package:userapp/features/home/domain/usecases/get_vehicles_usecase.dart';
 import 'package:userapp/features/home/presentation/controller/home_controller.dart';
 import 'package:userapp/features/profile/presentation/controller/profile_controller.dart';
+import 'package:userapp/features/profile/presentation/screen/notification_screen/data/repositories/notification_repository_impl.dart';
+import 'package:userapp/features/profile/presentation/screen/notification_screen/domain/repositories/notification_repository.dart';
+import 'package:userapp/features/profile/presentation/screen/notification_screen/domain/usecases/get_notifications_usecase.dart';
+
+import 'package:userapp/features/profile/presentation/screen/notification_screen/data/datasources/notification_remote_datasource.dart';
 
 class MainBinding extends Bindings {
   @override
   void dependencies() {
-    // Get.lazyPut(() => HomeController());
-    // ════════════════════════════════════════
+    // ── Shared ────────────────────────────────────────────────
+    Get.put<ApiService>(ApiService(), permanent: true);
+
+    // ════════════════════════════════════════════════════════
     // 🔵 HOME MODULE
-    // ════════════════════════════════════════
-    // 1️⃣ Data Source
+    // ════════════════════════════════════════════════════════
+
     Get.put<HomeRemoteDataSource>(HomeRemoteDataSourceImpl(), permanent: true);
 
-    // 2️⃣ Repository
     Get.put<HomeRepository>(
       HomeRepositoryImpl(dataSource: Get.find<HomeRemoteDataSource>()),
       permanent: true,
     );
 
-    // 3️⃣ UseCases
     Get.put<GetCategoriesUseCase>(
       GetCategoriesUseCase(Get.find<HomeRepository>()),
       permanent: true,
@@ -46,68 +52,97 @@ class MainBinding extends Bindings {
       permanent: true,
     );
 
-    // 4️⃣ Controller
-    Get.put<HomeController>(
-      HomeController(
-        Get.find<GetCategoriesUseCase>(),
-        Get.find<GetVehiclesUseCase>(),
+    // ════════════════════════════════════════════════════════
+    // 🔔 NOTIFICATION MODULE
+    // ← Must be registered BEFORE HomeController
+    // ════════════════════════════════════════════════════════
+
+    Get.put<NotificationRemoteDataSource>(
+      NotificationRemoteDataSourceImpl(),
+      permanent: true,
+    );
+
+    Get.put<NotificationRepository>(
+      NotificationRepositoryImpl(
+        dataSource: Get.find<NotificationRemoteDataSource>(),
       ),
       permanent: true,
     );
 
-    ///=======================================
-    if (!Get.isRegistered<ApiService>()) {
-      Get.lazyPut<ApiService>(() => ApiService());
-    }
+    Get.put<GetNotificationsUseCase>(
+      GetNotificationsUseCase(Get.find<NotificationRepository>()),
+      permanent: true,
+    );
+
+    // ════════════════════════════════════════════════════════
+    // 🏠 HOME CONTROLLER
+    // ← Now GetNotificationsUseCase is available ✅
+    // ════════════════════════════════════════════════════════
+
+    Get.put<HomeController>(
+      HomeController(
+        Get.find<GetCategoriesUseCase>(),
+        Get.find<GetVehiclesUseCase>(),
+        Get.find<GetNotificationsUseCase>(),
+      ),
+      permanent: true,
+    );
+
+    // ════════════════════════════════════════════════════════
+    // 📦 BOOKING MODULE
+    // ════════════════════════════════════════════════════════
 
     if (!Get.isRegistered<MyBookingRemoteDataSource>()) {
-      Get.lazyPut<MyBookingRemoteDataSource>(
-        () => MyBookingRemoteDataSourceImpl(),
-      );
+      Get.put<MyBookingRemoteDataSource>(MyBookingRemoteDataSourceImpl());
     }
 
     if (!Get.isRegistered<MyBookingRepository>()) {
-      Get.lazyPut<MyBookingRepository>(() => MyBookingRepositoryImpl());
+      Get.put<MyBookingRepository>(MyBookingRepositoryImpl());
     }
 
     if (!Get.isRegistered<GetMyBookingsUseCase>()) {
-      Get.lazyPut<GetMyBookingsUseCase>(() => GetMyBookingsUseCase(Get.find()));
+      Get.put<GetMyBookingsUseCase>(
+        GetMyBookingsUseCase(Get.find<MyBookingRepository>()),
+      );
     }
 
     Get.lazyPut<MyBookingListController>(
       () => MyBookingListController(Get.find<GetMyBookingsUseCase>()),
     );
-    //Get.lazyPut(() => MyBookingListController());
-    Get.lazyPut(() => ProfileController());
-    //Get.put<FavoritesController>(FavoritesController(), permanent: true);
-    // ════════════════════════════════════════
+
+    // ════════════════════════════════════════════════════════
     // ❤️ FAVORITES MODULE
-    // ════════════════════════════════════════
-    // 1️⃣ Data Source
+    // ════════════════════════════════════════════════════════
+
     Get.put<FavoritesRemoteDataSource>(
       FavoritesRemoteDataSourceImpl(),
       permanent: true,
     );
 
-    // 2️⃣ Repository
     Get.put<FavoritesRepository>(
       FavoritesRepositoryImpl(Get.find()),
       permanent: true,
     );
 
-    // 3️⃣ UseCases
     Get.put<GetFavoritesUseCase>(
       GetFavoritesUseCase(Get.find()),
       permanent: true,
     );
+
     Get.put<ToggleFavoriteUseCase>(
       ToggleFavoriteUseCase(Get.find()),
       permanent: true,
     );
 
     Get.put<FavoritesController>(
-      FavoritesController(Get.find(), Get.find()), // ✅ correct constructor
+      FavoritesController(Get.find(), Get.find()),
       permanent: true,
     );
+
+    // ════════════════════════════════════════════════════════
+    // 👤 PROFILE
+    // ════════════════════════════════════════════════════════
+
+    Get.lazyPut(() => ProfileController());
   }
 }

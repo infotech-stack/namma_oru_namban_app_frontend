@@ -79,6 +79,10 @@ class _UserEndpoints {
   String get notifications => '/user/notifications';
   String get markAllRead => '/user/notifications/read-all';
   String markRead(String id) => '/user/notifications/$id/read';
+
+  // Address
+  String get addresses => '/user/addresses';
+  String addressById(int id) => '/user/addresses/$id';
 }
 
 // ════════════════════════════════════════════════════════════════

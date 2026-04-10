@@ -74,7 +74,7 @@ class FavHeartButton extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 3.w),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(color: p, width: 1.2),
                       boxShadow: [
@@ -91,7 +91,7 @@ class FavHeartButton extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 8.sp,
                           fontWeight: FontWeight.w800,
-                          color: Colors.red, // ← purple number on white badge
+                          color: Colors.white, // ← purple number on white badge
                           height: 1,
                         ),
                       ),

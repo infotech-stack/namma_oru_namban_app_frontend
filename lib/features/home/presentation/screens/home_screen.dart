@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:userapp/core/localization/language_controller.dart';
 import 'package:userapp/core/resposnive/responsiveFont.dart';
+import 'package:userapp/core/route/app_routes.dart';
 import 'package:userapp/core/theme/app_colors.dart';
 import 'package:userapp/features/favorites/presentation/controller/favorites_controller.dart';
 import 'package:userapp/features/home/domain/entities/vehicle_category_entity.dart';
@@ -306,6 +307,7 @@ class HomeScreen extends GetView<HomeController> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ── Language toggle ───────────────────────────────
               Obx(
                 () => IconButton(
                   splashRadius: 20.r,
@@ -321,21 +323,74 @@ class HomeScreen extends GetView<HomeController> {
                   onPressed: () => langController.toggleLanguage(),
                 ),
               ),
+
+              // ── Favourites ────────────────────────────────────
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                 child: const FavHeartButton(),
               ),
-              IconButton(
-                splashRadius: 20.r,
-                constraints: const BoxConstraints(),
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.notifications_outlined,
-                  color: theme.colorScheme.secondary,
-                  size: 22.sp,
-                ),
-                onPressed: () {},
-              ),
+
+              // ── Notification with badge ───────────────────────
+              Obx(() {
+                final count = controller.notificationUnreadCount.value;
+                return GestureDetector(
+                  onTap: () async {
+                    await Get.toNamed(Routes.notification);
+                    // Refresh count when returning from notification screen
+                    controller.refreshNotificationCount();
+                  },
+                  child: SizedBox(
+                    width: 36.w,
+                    height: 36.w,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Bell icon
+                        Center(
+                          child: Icon(
+                            count > 0
+                                ? Icons.notifications_rounded
+                                : Icons.notifications_outlined,
+                            color: theme.colorScheme.secondary,
+                            size: 22.sp,
+                          ),
+                        ),
+
+                        // Badge — only show when count > 0
+                        if (count > 0)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              constraints: BoxConstraints(minWidth: 16.w),
+                              height: 16.h,
+                              padding: EdgeInsets.symmetric(horizontal: 4.w),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEF4444),
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(
+                                  color: theme.colorScheme.primary,
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  count > 99 ? '99+' : '$count',
+                                  style: TextStyle(
+                                    fontSize: 9.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    height: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
             ],
           ),
         ),
@@ -939,7 +994,7 @@ class HomeScreen extends GetView<HomeController> {
                     Flexible(
                       child: BButton(
                         text: "book".tr,
-                        onTap: () => controller.onBookNow(vehicle),
+                        onTap: () => controller.onVehicleDetails(vehicle),
                         height: 35,
                         //width: 130.w, // 👈 slightly reduce if needed
                         fontSize: 14.sp,

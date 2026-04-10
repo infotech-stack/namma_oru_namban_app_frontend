@@ -12,12 +12,18 @@ import 'package:userapp/features/favorites/domain/entities/favorite_entity.dart'
 import 'package:userapp/features/home/domain/entities/vehicle_category_entity.dart';
 import 'package:userapp/features/home/domain/usecases/get_categories_usecase.dart';
 import 'package:userapp/features/home/domain/usecases/get_vehicles_usecase.dart';
+import 'package:userapp/features/profile/presentation/screen/notification_screen/domain/usecases/get_notifications_usecase.dart';
 
 class HomeController extends GetxController {
   final GetCategoriesUseCase _getCategoriesUseCase;
   final GetVehiclesUseCase _getVehiclesUseCase;
+  final GetNotificationsUseCase _getNotificationsUseCase;
 
-  HomeController(this._getCategoriesUseCase, this._getVehiclesUseCase);
+  HomeController(
+    this._getCategoriesUseCase,
+    this._getVehiclesUseCase,
+    this._getNotificationsUseCase,
+  );
 
   @override
   void onInit() {
@@ -25,6 +31,7 @@ class HomeController extends GetxController {
     AppLogger.info('HomeController → onInit');
     loadUserFromHive();
     loadInitialData();
+    fetchNotificationCount();
     searchFocusNode.addListener(() {
       isSearchFocused.value = searchFocusNode.hasFocus;
     });
@@ -55,6 +62,8 @@ class HomeController extends GetxController {
   final RxBool hasMore = true.obs;
 
   final int pageSize = 20;
+  //----NOTIFICATION COUT
+  final RxInt notificationUnreadCount = 0.obs;
 
   // ── Load Initial Data ─────────────────────────────────────────
   Future<void> loadInitialData() async {
@@ -211,11 +220,32 @@ class HomeController extends GetxController {
     searchFocusNode.requestFocus();
   }
 
+  //--------Notification---------------------
+  // ── Fetch only unread count ───────────────────────────────────
+  Future<void> fetchNotificationCount() async {
+    try {
+      // Reuse NotificationRemoteDataSource if registered,
+      // otherwise use ApiService directly (lightweight)
+      final result = await _getNotificationsUseCase();
+      if (result.isSuccess && result.data != null) {
+        notificationUnreadCount.value = result.data!.unreadCount;
+        AppLogger.info(
+          'HomeController → fetchNotificationCount: ${notificationUnreadCount.value} unread',
+        );
+      }
+    } catch (e) {
+      AppLogger.error('HomeController → fetchNotificationCount: error=$e');
+    }
+  }
+
+  // Call this when returning from notification screen
+  void refreshNotificationCount() => fetchNotificationCount();
   // ── Refresh Data ─────────────────────────────────────────────
   Future<void> refreshData() async {
     AppLogger.info('HomeController → refreshData');
     await fetchCategories();
     await fetchVehicles(reset: true);
+    await fetchNotificationCount();
   }
 
   // ── Get Filtered Vehicles (for backward compatibility) ───────
@@ -299,132 +329,6 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.unifiedVehicleDetail, arguments: {'id': vehicle.id});
   }
 
-  /*
-  void onBookNow(VehicleEntity vehicle) {
-    String routeName;
-
-    switch (vehicle.categoryKey) {
-      case 'car':
-        routeName = Routes.carBooking;
-        break;
-      case 'lorry':
-        routeName = Routes.lorryBooking;
-        break;
-      case 'tataace':
-        routeName = Routes.tataAceBooking;
-        break;
-      case 'bus':
-        routeName = Routes.busBooking;
-        break;
-      case 'jcb':
-        routeName = Routes.jcbBooking;
-        break;
-      case 'tractor':
-        routeName = Routes.tractorBooking;
-        break;
-      case 'agri':
-        routeName = Routes.agriBooking;
-        break;
-      default:
-        routeName = Routes.bookingDetails;
-    }
-
-    AppLogger.info(
-      'HomeController → onBookNow: '
-      'vehicle=${vehicle.nameKey}, category=${vehicle.categoryKey}, route=$routeName',
-    );
-
-    Get.toNamed(
-      routeName,
-      arguments: {
-        'id': vehicle.id,
-        'name': vehicle.nameKey,
-        'rating': vehicle.rating,
-        'capacity': vehicle.capacity,
-        'fare': vehicle.fare,
-        'eta': vehicle.eta,
-        'imagePath': vehicle.imagePath,
-        'distance': '3.2',
-        'tripsCompleted': vehicle.driverTrips.toString(),
-        'categoryKey': vehicle.categoryKey,
-        'driverName': vehicle.driverName,
-        'driverPhoto': vehicle.driverPhoto,
-      },
-    );
-  }
-*/
-  void onBookNow(VehicleEntity vehicle) {
-    AppLogger.info(
-      'HomeController → onBookNow: '
-      'vehicle=${vehicle.nameKey}, category=${vehicle.categoryKey}',
-    );
-
-    // Parse fare value
-    double farePerKm = 0.0;
-    if (vehicle.fare.isNotEmpty) {
-      farePerKm =
-          double.tryParse(
-            vehicle.fare.replaceAll('₹', '').replaceAll('/km', '').trim(),
-          ) ??
-          0.0;
-    }
-
-    Get.toNamed(
-      Routes.unifiedBooking,
-      arguments: {
-        // Basic vehicle info
-        'id': vehicle.id,
-        'vehicleId': vehicle.id,
-        'vehicleName': vehicle.nameKey,
-        'name': vehicle.nameKey,
-        'imagePath': vehicle.imagePath,
-        'vehicleNumber': vehicle.registrationNo ?? '',
-        'driverName': vehicle.driverName,
-        'driverRating': double.tryParse(vehicle.rating) ?? 4.5,
-        'vehicleType': vehicle.categoryKey,
-        'categoryKey': vehicle.categoryKey,
-
-        // Pricing
-        'basePrice': vehicle.basePrice ?? 0.0,
-        'fare': vehicle.fare,
-        'farePerKm': farePerKm,
-        'extraKmCharge': vehicle.extraKmCharge ?? 0.0,
-        'extraHourCharge': vehicle.extraHourCharge ?? 0.0,
-        'driverBata': vehicle.driverBata ?? 0.0,
-        'operatorBata': vehicle.operatorBata ?? 0.0,
-        'loadingCharge': vehicle.loadingCharge ?? 0.0,
-        'unloadingCharge': vehicle.unloadingCharge ?? 0.0,
-
-        // Vehicle specific fields
-        'seatingCapacity': vehicle.capacity,
-        'busCategory': vehicle.extraData?['bus_category'],
-        'loadCapacity': vehicle.capacity,
-        'bodyType': vehicle.extraData?['body_type'],
-        'bucketType': vehicle.extraData?['bucket_type'],
-        'fuelType': vehicle.fuelType,
-        'horsePower': vehicle.extraData?['hp'],
-        'attachment': vehicle.extraData?['attachment'],
-        'equipmentType': vehicle.extraData?['equipment_type'],
-        'capacity': vehicle.capacity,
-        //'distance': vehicle.d ?? 10.0,
-      },
-    );
-  }
-
-  // ── Helper Methods for UI Compatibility ───────────────────────
-  // FavoriteVehicle toFavorite(VehicleEntity v) {
-  //   return FavoriteVehicle(
-  //     id: v.id.toString(),
-  //     nameKey: v.nameKey,
-  //     rating: v.rating,
-  //     capacity: v.capacity,
-  //     fare: v.fare,
-  //     eta: v.eta,
-  //     categoryKey: v.categoryKey,
-  //     availabilityStatus: v.isOnline ? 'available' : 'unavailable',
-  //     imagePath: v.imagePath,
-  //   );
-  // }
   FavoriteEntity toFavorite(VehicleEntity v) {
     return FavoriteEntity(
       id: v.id,
